@@ -1,0 +1,150 @@
+{
+  "title": "The Intel® IoT Developer Kit for the Intel® Joule™ module",
+  "views": {
+    "front": {
+      "image": "front.svg",
+      "components": {
+        "MIPI": {
+          "name": "MIPI Display",
+          "description": "MIPI Display",
+          "keywords": [ "mipi" ]
+        },
+        "SW1": {
+          "name": "General Purpose Button",
+          "description": "General Purpose Button"
+        },
+        "SW2": {
+          "name": "Power Button",
+          "description": "Power Button"
+        },
+        "SW3": {
+          "name": "DnX Button",
+          "description": "DnX Button"
+        },
+        "J4": {
+          "name": "DC Jack",
+          "description": "DC Jack"
+        },
+        "J6": {
+          "name": "USB 3.0",
+          "description": "USB 3.0",
+          "keywords": [ "usb" ]
+        },
+        "J7": {
+          "name": "USB Type-C OTG",
+          "description": "USB Type-C OTG",
+          "keywords": [ "usb-otg" ]
+        },
+        "J8": {
+          "name": "Unknown"
+        },
+        "J9": {
+          "name": "microUSB Type-B",
+          "description": "microUSB Type-B",
+          "keywords": [ "usb" ]
+        },
+        "J10": {
+          "name": "microHDMI",
+          "description": "microHDMI",
+          "keywords": [ "hdmi" ]
+        },
+        "J12": {
+          "name": "Breakout 1",
+          "description": "Breakout 1",
+          "pins": {
+            "1": { "description": "HW_RST_N", "type": "female", "keywords": [] },
+            "2": { "description": "SPI_1_MISO", "type": "female", "keywords": [] },
+            "3": { "description": "PMIC_RESET_N", "type": "female", "keywords": [] },
+            "4": { "description": "SPI_1_MOSI", "type": "female", "keywords": [] },
+            "5": { "description": "CLK_19P2M", "type": "female", "keywords": [] },
+            "6": { "description": "SPI_1_FS0", "type": "female", "keywords": [] },
+            "7": { "description": "UART_0_TXD", "type": "female", "keywords": [] },
+            "8": { "description": "SPI_1_FS2", "type": "female", "keywords": [] },
+            "9": { "description": "PMIC_PWRGOOD", "type": "female", "keywords": [] },
+            "10": { "description": "SPI_1_CLK", "type": "female", "keywords": [] },
+            "11": { "description": "I2C_0_SDA", "type": "female", "keywords": [] },
+            "12": { "description": "I2S_1_RXD", "type": "female", "keywords": [] },
+            "13": { "description": "I2C_0_SCL", "type": "female", "keywords": [] },
+            "14": { "description": "I2S_1_TXD", "type": "female", "keywords": [] },
+            "15": { "description": "ISH_I2C_0_SDA", "type": "female", "keywords": [] },
+            "16": { "description": "I2S_1_FS", "type": "female", "keywords": [] },
+            "17": { "description": "ISH_I2C_0_SCL", "type": "female", "keywords": [] },
+            "18": { "description": "I2S_1_CLK", "type": "female", "keywords": [] },
+            "19": { "description": "ISH_I2C_1_SDA", "type": "female", "keywords": [] },
+            "20": { "description": "CODEC_MCLK", "type": "female", "keywords": [] },
+            "21": { "description": "ISH_I2C_1_SCL", "type": "female", "keywords": [] },
+            "22": { "description": "UART_1_TXD", "type": "female", "keywords": [] },
+            "23": { "description": "ISH_GPIO_6", "type": "female", "keywords": [] },
+            "24": { "description": "UART_1_RXD", "type": "female", "keywords": [] },
+            "25": { "description": "ISH_GPIO_5", "type": "female", "keywords": [] },
+            "26": { "description": "PWM_0", "type": "female", "keywords": [] },
+            "27": { "description": "ISH_GPIO_4", "type": "female", "keywords": [] },
+            "28": { "description": "PWM_1", "type": "female", "keywords": [] },
+            "29": { "description": "ISH_GPIO_3", "type": "female", "keywords": [] },
+            "30": { "description": "PWM_2", "type": "female", "keywords": [] },
+            "31": { "description": "ISH_GPIO_2", "type": "female", "keywords": [] },
+            "32": { "description": "PWM_3", "type": "female", "keywords": [] },
+            "33": { "description": "ISH_GPIO_1", "type": "female", "keywords": [] },
+            "34": { "description": "VDD1", "type": "female", "keywords": [] },
+            "35": { "description": "ISH_GPIO_0", "type": "female", "keywords": [] },
+            "36": { "description": "GND", "type": "female", "keywords": [] },
+            "37": { "description": "GND", "type": "female", "keywords": [] },
+            "38": { "description": "GND", "type": "female", "keywords": [] },
+            "39": { "description": "GND", "type": "female", "keywords": [] },
+            "40": { "description": "VDD3", "type": "female", "keywords": [] }
+          }
+        },
+        "J13": {
+          "name": "Breakout 2",
+          "description": "Breakout 2",
+          "pins": {
+            "1": { "description": "GND", "type": "female", "keywords": [] },
+            "2": { "description": "V5P0V", "type": "female", "keywords": [] },
+            "3": { "description": "GND", "type": "female", "keywords": [] },
+            "4": { "description": "V5P0V", "type": "female", "keywords": [] },
+            "5": { "description": "GND", "type": "female", "keywords": [] },
+            "6": { "description": "V3P3V", "type": "female", "keywords": [] },
+            "7": { "description": "GND", "type": "female", "keywords": [] },
+            "8": { "description": "V3P3V", "type": "female", "keywords": [] },
+            "9": { "description": "GND", "type": "female", "keywords": [] },
+            "10": { "description": "V1P8V", "type": "female", "keywords": [] },
+            "11": { "description": "DISPLAY_0_RST_N", "type": "female", "keywords": [] },
+            "12": { "description": "V1P8V", "type": "female", "keywords": [] },
+            "13": { "description": "DISPLAY_0_BIAS_EN", "type": "female", "keywords": [] },
+            "14": { "description": "GND", "type": "female", "keywords": [] },
+            "15": { "description": "DISPLAY_0_BKLT_EN", "type": "female", "keywords": [] },
+            "16": { "description": "FLASH_TORCH", "type": "female", "keywords": [] },
+            "17": { "description": "BLDRW_0_PWM", "type": "female", "keywords": [] },
+            "18": { "description": "FLASH_RST_N", "type": "female", "keywords": [] },
+            "19": { "description": "SPI_0_FS0", "type": "female", "keywords": [] },
+            "20": { "description": "FLASH_TRIGGER", "type": "female", "keywords": [] },
+            "21": { "description": "SPI_0_FS1", "type": "female", "keywords": [] },
+            "22": { "description": "AVS_M_DATA_1", "type": "female", "keywords": [] },
+            "23": { "description": "SPI_0_FS2", "type": "female", "keywords": [] },
+            "24": { "description": "AVS_M_CLK_B1", "type": "female", "keywords": [] },
+            "25": { "description": "SPI_0_CLK", "type": "female", "keywords": [] },
+            "26": { "description": "AVS_M_CLK_A1", "type": "female", "keywords": [] },
+            "27": { "description": "SPI_0_MOSI", "type": "female", "keywords": [] },
+            "28": { "description": "UART_0_RXD", "type": "female", "keywords": [] },
+            "29": { "description": "SPI_0_MISO", "type": "female", "keywords": [] },
+            "30": { "description": "UART_0_RTS", "type": "female", "keywords": [] },
+            "31": { "description": "I2C_1_SDA", "type": "female", "keywords": [] },
+            "32": { "description": "UART_0_CTS", "type": "female", "keywords": [] },
+            "33": { "description": "I2C_1_SCL", "type": "female", "keywords": [] },
+            "34": { "description": "ISH_UART_0_TXD", "type": "female", "keywords": [] },
+            "35": { "description": "I2C_2_SDA", "type": "female", "keywords": [] },
+            "36": { "description": "ISH_UART_0_RXD", "type": "female", "keywords": [] },
+            "37": { "description": "I2C_2_SCL", "type": "female", "keywords": [] },
+            "38": { "description": "ISH_UART_0_RTS", "type": "female", "keywords": [] },
+            "39": { "description": "PMIC_SLPCLK_1", "type": "female", "keywords": [] },
+            "40": { "description": "ISH_UART_0_CTS", "type": "female", "keywords": [] }
+          }
+        },
+        "J14": {
+          "name": "Jumpers",
+          "description": "Jumpers"
+        }
+      }
+    }
+  }
+}

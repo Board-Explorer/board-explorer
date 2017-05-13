@@ -1,0 +1,293 @@
+{
+  "title": "Arduino 101",
+  "views": {
+    "front": {
+      "image": "genuino101.svg",
+      "components": {
+        "J12": {
+          "refdes": "J12",
+          "name": "J12",
+          "description": "No description provided.",
+          "pins": {
+            "1": {
+              "refdes": "J12Pin1",
+              "name": "1",
+              "component": "J12",
+              "description": "No description provided."
+            },
+            "2": {
+              "refdes": "J12Pin2",
+              "name": "2",
+              "component": "J12",
+              "description": "No description provided."
+            },
+            "3": {
+              "refdes": "J12Pin3",
+              "name": "3",
+              "component": "J12",
+              "description": "No description provided."
+            },
+            "4": {
+              "refdes": "J12Pin4",
+              "name": "4",
+              "component": "J12",
+              "description": "No description provided."
+            },
+            "5": {
+              "refdes": "J12Pin5",
+              "name": "5",
+              "component": "J12",
+              "description": "No description provided."
+            },
+            "6": {
+              "refdes": "J12Pin6",
+              "name": "6",
+              "component": "J12",
+              "description": "No description provided."
+            }
+          }
+        },
+        "J13": {
+          "refdes": "J13",
+          "name": "J13",
+          "description": "No description provided.",
+          "pins": {
+            "1": {
+              "refdes": "J13Pin1",
+              "name": "1",
+              "component": "J13",
+              "description": "No description provided."
+            },
+            "2": {
+              "refdes": "J13Pin2",
+              "name": "2",
+              "component": "J13",
+              "description": "No description provided."
+            },
+            "3": {
+              "refdes": "J13Pin3",
+              "name": "3",
+              "component": "J13",
+              "description": "No description provided."
+            },
+            "4": {
+              "refdes": "J13Pin4",
+              "name": "4",
+              "component": "J13",
+              "description": "No description provided."
+            },
+            "5": {
+              "refdes": "J13Pin5",
+              "name": "5",
+              "component": "J13",
+              "description": "No description provided."
+            },
+            "6": {
+              "refdes": "J13Pin6",
+              "name": "6",
+              "component": "J13",
+              "description": "No description provided."
+            },
+            "7": {
+              "refdes": "J13Pin7",
+              "name": "7",
+              "component": "J13",
+              "description": "No description provided."
+            },
+            "8": {
+              "refdes": "J13Pin8",
+              "name": "8",
+              "component": "J13",
+              "description": "No description provided."
+            }
+          }
+        },
+        "J16": {
+          "refdes": "J16",
+          "name": "J16",
+          "description": "No description provided."
+        },
+        "J17": {
+          "refdes": "J17",
+          "name": "J17",
+          "description": "No description provided."
+        },
+        "SW12": {
+          "refdes": "SW12",
+          "name": "SW12",
+          "description": "No description provided."
+        },
+        "SW10": {
+          "refdes": "SW10",
+          "name": "SW10",
+          "description": "No description provided."
+        },
+        "J14": {
+          "refdes": "J14",
+          "name": "J14",
+          "description": "No description provided.",
+          "pins": {
+            "1": {
+              "refdes": "J14Pin1",
+              "name": "1",
+              "component": "J14",
+              "description": "No description provided."
+            },
+            "2": {
+              "refdes": "J14Pin2",
+              "name": "2",
+              "component": "J14",
+              "description": "No description provided."
+            },
+            "3": {
+              "refdes": "J14Pin3",
+              "name": "3",
+              "component": "J14",
+              "description": "No description provided."
+            },
+            "4": {
+              "refdes": "J14Pin4",
+              "name": "4",
+              "component": "J14",
+              "description": "No description provided."
+            },
+            "5": {
+              "refdes": "J14Pin5",
+              "name": "5",
+              "component": "J14",
+              "description": "No description provided."
+            },
+            "6": {
+              "refdes": "J14Pin6",
+              "name": "6",
+              "component": "J14",
+              "description": "No description provided."
+            }
+          }
+        },
+        "J10": {
+          "refdes": "J10",
+          "name": "J10",
+          "description": "No description provided.",
+          "pins": {
+            "1": {
+              "refdes": "J10Pin1",
+              "name": "1",
+              "component": "J10",
+              "description": "No description provided."
+            },
+            "2": {
+              "refdes": "J10Pin2",
+              "name": "2",
+              "component": "J10",
+              "description": "No description provided."
+            },
+            "3": {
+              "refdes": "J10Pin3",
+              "name": "3",
+              "component": "J10",
+              "description": "No description provided."
+            },
+            "4": {
+              "refdes": "J10Pin4",
+              "name": "4",
+              "component": "J10",
+              "description": "No description provided."
+            },
+            "5": {
+              "refdes": "J10Pin5",
+              "name": "5",
+              "component": "J10",
+              "description": "No description provided."
+            },
+            "6": {
+              "refdes": "J10Pin6",
+              "name": "6",
+              "component": "J10",
+              "description": "No description provided."
+            },
+            "7": {
+              "refdes": "J10Pin7",
+              "name": "7",
+              "component": "J10",
+              "description": "No description provided."
+            },
+            "8": {
+              "refdes": "J10Pin8",
+              "name": "8",
+              "component": "J10",
+              "description": "No description provided."
+            }
+          }
+        },
+        "J11": {
+          "refdes": "J11",
+          "name": "J11",
+          "description": "No description provided.",
+          "pins": {
+            "1": {
+              "refdes": "J11Pin1",
+              "name": "1",
+              "component": "J11",
+              "description": "No description provided."
+            },
+            "2": {
+              "refdes": "J11Pin2",
+              "name": "2",
+              "component": "J11",
+              "description": "No description provided."
+            },
+            "3": {
+              "refdes": "J11Pin3",
+              "name": "3",
+              "component": "J11",
+              "description": "No description provided."
+            },
+            "4": {
+              "refdes": "J11Pin4",
+              "name": "4",
+              "component": "J11",
+              "description": "No description provided."
+            },
+            "5": {
+              "refdes": "J11Pin5",
+              "name": "5",
+              "component": "J11",
+              "description": "No description provided."
+            },
+            "6": {
+              "refdes": "J11Pin6",
+              "name": "6",
+              "component": "J11",
+              "description": "No description provided."
+            },
+            "7": {
+              "refdes": "J11Pin7",
+              "name": "7",
+              "component": "J11",
+              "description": "No description provided."
+            },
+            "8": {
+              "refdes": "J11Pin8",
+              "name": "8",
+              "component": "J11",
+              "description": "No description provided."
+            },
+            "9": {
+              "refdes": "J11Pin9",
+              "name": "9",
+              "component": "J11",
+              "description": "No description provided."
+            },
+            "10": {
+              "refdes": "J11Pin10",
+              "name": "10",
+              "component": "J11",
+              "description": "No description provided."
+            }
+          }
+        }
+      }
+    }
+  }
+}

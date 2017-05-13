@@ -1,0 +1,1270 @@
+<!doctype html>
+<html>
+<head>
+  <title>Board Explorer</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+  <script src="bower_components/es6-shim/es6-shim.min.js"></script>
+
+  <link rel="import" href="bower_components/app-route/app-route.html">
+  <link rel="import" href="bower_components/app-route/app-location.html">
+
+  <link rel="import" href="bower_components/iron-icons/iron-icons.html">
+  <link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+  <link rel="import" href="bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+
+  <link rel="import" href="bower_components/iron-icon/iron-icon.html">
+  <link rel="import" href="bower_components/paper-button/paper-button.html">
+  <link rel="import" href="bower_components/paper-material/paper-material.html">
+  <link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
+
+  <link rel="import" href="board-viewer.html">
+
+  <script src="bower_components/highlightjs/highlight.pack.min.js"></script>
+
+  <link rel="stylesheet" href="bower_components/highlightjs/styles/atom-one-light.css"-->
+
+  <!-- Clear Sans font -->
+  <link rel="stylesheet" href="css/clear-sans.css">
+
+  <style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning"></style>
+
+  <style is="custom-style">
+    :root {
+      --primary-color-1: #23ccfc; /* Blue. */
+      --primary-color-2: #98ca3c; /* Green. */
+    }
+  </style>
+
+  <style>
+    body {
+      font-family: "Clear Sans", IntelClearLight, MuliRegular, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-y: scroll;
+    }
+  </style>
+</head>
+
+<body class="fullbleed layout vertical">
+<script src="ie9-block.js"></script>
+<dom-module id="board-explorer">
+<template>
+  <style include="iron-flex iron-flex-alignment iron-positioning">
+    :host {
+      /* Used in board-viewer tab header */
+      --focus-foreground-color: #52595a;
+      --focus-background-color: #d6eab0;
+      --focus-border-color: #97ca41;
+      --blur-foreground-color: #52595a;
+      --blur-background-color: #f8f8f1;
+      --blur-border-color: #f0efe0;
+      --bg-l: #f8f8f1;
+    }
+
+    board-viewer {
+      position: relative;
+      height: 480px;
+    }
+
+    a[is-button] {
+      cursor: pointer;
+      display: inline-block;
+      box-sizing: border-box;
+      padding: 0.25em 0.5em;
+      margin: 0.25em 0.5em;
+      border-radius: 3px;
+      border: 1px solid rgba(0, 0, 0, 0.5);
+      min-width: 8em;
+      white-space: nowrap;
+      text-align: center;
+      text-decoration: none;
+      background-color: #f0f0f0;
+      color: black;
+      font-size: 1em;
+    }
+
+    a[is-button]:hover {
+      background-color: #e0e0e0;
+    }
+
+    a[is-button].selected {
+      background-color: #404040;
+      color: #f0f0f0;
+    }
+
+    a[is-button].item-with-name div:first-child {
+      font-size: 0.6em;
+      line-height: 0.8em;
+    }
+
+    a[is-button].item-with-name div:last-child {
+      font-size: 1em;
+      line-height: 1em;
+    }
+
+    a[is-button]:not(.item-with-name) div:last-child {
+      display: none;
+    }
+
+    paper-material {
+      margin: 0.5em;
+      padding: 1em;
+    }
+
+    paper-toolbar {
+      --paper-toolbar-background: #f0f0f0;
+      --paper-toolbar-color: #444;
+      --paper-toolbar-sm-height: 64px;
+      padding: 0;
+      -webkit-transition: 0.15s all ease;
+      transition: 0.15s all ease;
+    }
+
+
+    #info div:not(.item-with-name) #name {
+      display: none;
+    }
+
+    /* NOTE: For this to not horribly squash image aspect ratios, we have
+     * the item width hard coded to fixed pixels. We could use various
+     * image-fill css attributes, but then we might letterbox the wrong
+     * part of the image... */
+    .board-card {
+      width: 320px;
+      cursor: pointer;
+      border: 3px solid rgba(255, 255, 255, 0);
+      padding: 1rem;
+      margin: 0.25rem;
+    }
+
+    .board-card > * {
+    }
+
+    .board-card:not(.filler) {
+      @apply(--board-selector-item-theme);
+    }
+
+    .board-card:hover:not(.filler) {
+      background-color: #d0e8f8;
+    }
+
+    /* fill up the space of the last row */
+    .filler {
+      dispaly: inline-block;
+      width: 320px;
+      height: 1px;
+      max-height: 1px;
+      pointer-events: none;
+      margin: 0.25rem;
+    }
+
+    .filler.tiny,
+    .board-card.tiny {
+      width: 100%;
+    }
+
+    .board-card .title {
+      margin: 0.5em 0;
+      width: 100%; /* Fix IE not wrapping text in the paper-button */
+    }
+
+    .board-card .image {
+      position: relative;
+      width: 100%;
+      height: calc(240px - 2rem);
+      background-size: contain;
+      background-position: 50% 50%;
+      background-repeat: no-repeat;
+    }
+
+    #board-selector .heading {
+      margin: 0 0 0.5em 0;
+      font-weight: bold;
+    }
+
+    #board-selector paper-button {
+      margin: 0.5em;
+    }
+
+    #documentation table {
+      padding: 0px;
+      margin: 0px;
+      border-spacing: 0px;
+    }
+
+    #documentation th,
+    #documentation td {
+      border-right: 1px solid black;
+      padding: 0 0.5em;
+    }
+
+    #documentation th {
+      border-bottom: 1px solid black;
+    }
+
+    #documentation th:last-child,
+    #documentation td:last-child {
+      border-right: 1px none black;
+    }
+
+    /* Fix IE not wrapping correctly in flex wrap layouts */
+    .wrap {
+      width: 100%;
+    }
+  </style>
+
+  <app-location id="location" route="{{route}}" use-hash-as-path>
+  </app-location>
+
+  <app-route
+    route="{{route}}"
+    pattern="/:board/:pinList?"
+    data="{{routeData}}"
+    active="{{boardActive}}">
+  </app-route>
+
+  <paper-material id="board-selector" hidden$="[[hideSelector(board,initialized)]]" class="layout vertical start">
+    <div class="vertical layout wrap">
+      <div class="heading">Select a board to explore</div>
+      <div class="layout horizontal start-justified wrap">
+        <template is="dom-repeat" items="[[boards]]">
+          <paper-button raised noink class="board-card layout vertical" tabindex$="[[index]]" on-tap="boardClicked">
+            <div class="image" style$="background-image: url('boards/[[item.board]]/[[item.image]]');">
+            </div>
+            <div class="title">[[item.name]]</div>
+          </paper-button>
+        </template>
+        <!-- horrible hack to left justify the last column; this could
+             be replaced with a dom-repeat with the count of filler-items set
+             based on the width of the page -->
+        <template is="dom-repeat" items="[ 1, 2, 3, 4, 5, 6 ]">
+          <div class$="filler [[gridClass]]"></div>
+        </template>
+      </div>
+    </div>
+  </paper-material>
+
+  <div hidden$="[[isEmpty(board)]]" class="horizontal layout justified">
+    <div class="vertical layout flex">
+      <paper-material class="vertical layout start">
+        <div hidden$="[[isEmpty(board)]]">Showing:</div>
+        <a is-button on-click="unloadBoard" hidden$="[[isEmpty(board)]]">
+          [[getBoardBoxTitle(board)]]
+          <iron-icon hidden$="[[isEmpty(board)]]" icon="close"></iron-icon>
+        </a>
+      </paper-material>
+
+      <paper-material id="keywords" hidden$="[[isEmpty(keywords)]]" class="vertical layout start">
+        <div hidden$="[[!isEmpty(keyword)]]">
+          <div hidden$="[[isEmpty(component)]]">Keywords for [[component.refdes]]</div>
+          <div hidden$="[[!isEmpty(component)]]">Filter by keyword</div>
+        </div>
+        <div hidden$="[[isEmpty(keyword)]]"><b>Filtering by</b>:</div>
+        <a is-button on-click="clearKeyword" hidden$="[[isEmpty(keyword)]]">
+          [[keyword.keyword]]
+          <iron-icon hidden$="[[isEmpty(keyword)]]" icon="close"></iron-icon>
+        </a>
+        <div hidden$="[[!isEmpty(keyword)]]" class="horizontal layout wrap">
+          <template is="dom-repeat" items="[[keywords]]">
+            <a is-button on-click="itemClicked" match$="[[item.keyword]]" on-mouseover="itemOver" on-mouseout="itemOut">[[item.keyword]]</a>
+          </template>
+        </div>
+      </paper-material>
+
+      <paper-material id="components" hidden$="[[isEmpty(components)]]" class="vertical layout start">
+        <div hidden$="[[!isEmpty(component)]]">Filter by component</div>
+        <div hidden$="[[isEmpty(component)]]"><b>Filtering by</b>:</div>
+        <a is-button on-click="clearComponent" hidden$="[[isEmpty(component)]]">
+          [[component.refdes]]: [[component.name]]
+          <iron-icon hidden$="[[isEmpty(component)]]" icon="close"></iron-icon>
+        </a>
+        <div hidden$="[[!isEmpty(component)]]" class="layout horizontal wrap">
+          <template is="dom-repeat" items="[[components]]">
+            <a is-button on-click="itemClicked" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="itemOver" on-mouseout="itemOut">
+              <div>[[itemRefDes(item)]]</div>
+              <div>[[itemName(item)]]</div>
+            </a>
+          </template>
+        </div>
+      </paper-material>
+
+      <paper-material id="pins" hidden$="[[isEmpty(pins)]]" class="vertical layout start">
+        <div hidden$="[[!isEmpty(pin)]]">Select a pin</div>
+        <div hidden$="[[isEmpty(pin)]]"><b>Filtering by</b>:</div>
+        <a is-button on-click="clearPin" hidden$="[[isEmpty(pin)]]">
+          [[pin.refdes]]: [[pin.name]]
+          <iron-icon hidden$="[[isEmpty(pin)]]" icon="close"></iron-icon>
+        </a>
+        <div hidden$="[[!isEmpty(pin)]]" class="layout horizontal wrap">
+          <template is="dom-repeat" items="[[pins]]">
+            <a is-button on-click="itemClicked" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="itemOver" on-mouseout="itemOut">
+              <div>[[itemRefDes(item)]]</div>
+              <div>[[itemName(item)]]</div>
+            </a>
+          </template>
+        </div>
+      </paper-material>
+    </div>
+
+    <div class="vertical layout flex">
+      <board-viewer class="flex-grow" hidden$="[[isEmpty(board)]]" id="boardViewer" disable-zoom disable-drag></board-viewer>
+
+      <paper-material id="info" hidden$="[[isEmpty(hover)]]" class$="[[itemClassList(hover)]] vertical layout">
+        <paper-toolbar><div hidden$="[[hideReadable(hover)]]">[[hover.readable]]: </div><div>[[hover.name]]</div></paper-toolbar>
+        <div hidden$="[[isEmpty(hover.component)]]">Component: [[hover.component]]</div>
+        <div hidden$="[[isEmpty(hover.pins)]]">Pins: [[hover.pins.length]]</div>
+        <div hidden$="[[isEmpty(hover.keywords)]]">Keywords:
+          <template is="dom-repeat" items="[[hover.keywords]]" as="keyword">
+            <a href="#[[board]]/[[keyword]]">[[keyword]]</a>
+          </template>
+        </div>
+        <div hidden$="[[isEmpty(hover.description)]]">Description: [[hover.description]]</div>
+        <div><div id="documentation"></div></div>
+      </paper-material>
+    </div>
+  </div>
+</template>
+<script>
+"use strict";
+
+document.addEventListener("WebComponentsReady", function() {
+  Polymer({
+    is: "board-explorer",
+
+    properties: {
+      boards: {
+        type: Array,
+        value: []
+      },
+      board: {
+        type: String,
+        value: null
+      },
+      keywords: {
+        type: Array,
+        value: []
+      },
+      keyword: {
+        type: String,
+        value: null
+      },
+
+      filters: {
+        type: Object
+      },
+
+      components: {
+        type: Array,
+        value: []
+      },
+      component: {
+        type: Object,
+        value: null
+      },
+
+      pins: {
+        type: Array,
+        value: []
+      },
+      pin: {
+        type: Object,
+        value: null
+      },
+
+      infoTitle: {
+        type: String,
+        value: ""
+      },
+
+      hover: { /* item currently hovered over */
+        type: Object,
+        value: null
+      },
+
+      initialized: {
+        type: Boolean,
+        value: false
+      }
+    },
+
+    observers: [
+      "onComponentChanged(component)",
+      "onKeywordChanged(keyword)",
+      "onPinChanged(pin)",
+      "onHoverChanged(hover)",
+      "setBoardAndFiltersFromHash(boards, hash)"
+    ],
+
+    listeners: {
+      "boardViewer.board-changed": "onBoardChanged",
+      "boardViewer.item-hover": "onItemHover",
+      "boardViewer.item-tap": "onItemTap"
+    },
+
+    hideSelector: function(board, initialized) {
+      return !this.isEmpty(board) || !initialized;
+    },
+
+    hideReadable: function(item) {
+      return !item || this.isEmpty(item.readable) ||  item.readable == item.name;
+    },
+
+    unloadBoard: function() {
+      this.$.boardViewer.setBoard();
+      /* Remove all filters */
+      this.$.boardViewer.removeFilter();
+      this.filters = [];
+      this.infoTitle = "";
+      this.onFiltersChanged(this.board, this.filters);
+    },
+
+    clearKeyword: function() {
+      this.keyword = null;
+      this.hover = this.boardInfo;
+      this.selected = null;
+    },
+
+    clearComponent: function() {
+      this.component = null;
+      this.infoTitle = "";
+      this.hover = this.boardInfo;
+      this.selected = null;
+    },
+
+    clearPin: function() {
+      this.pin = null;
+      this.infoTitle = "";
+      this.hover = this.boardInfo;
+      this.selected = null;
+    },
+
+    itemClassList: function(item) {
+      var name = item ? item.name : null;
+      if (name && name != item.readable) {
+          return "item-with-name";
+      }
+      return "";
+    },
+
+    itemRefDes: function(item) {
+      return item.readable || item.refdes || "";
+    },
+
+    itemDescription: function(item) {
+      return item.description || "";
+    },
+
+    itemName: function(item) {
+      return item.name || item.readable || item.refdes || "";
+    },
+
+    isEmpty: function(item) {
+      return (!item
+        || (Array.isArray(item) && item.length == 0)
+        || item == null
+        || item == "") ? true : false;
+    },
+
+    getBoardBoxTitle: function(name) {
+      if (!name) {
+        return;
+      }
+
+      for (var i = 0; i < this.boards.length; i++) {
+        if (this.boards[i].directory == name) {
+          return this.boards[i].name;
+        }
+      }
+    },
+
+    getDocumentation: function(item, type) {
+      return new Promise(function(resolve, reject) {
+        if (item.html) {
+          return resolve({
+            status: 200,
+            content: item.html
+          });
+        }
+
+        this.$.boardViewer.getDocumentation(item.refdes, type, function(results) {
+          if (!results || results.error) {
+            if (results.status == 400) {
+              return resolve({status: 400});
+            }
+            return reject(new Error(results.error));
+          }
+
+          return resolve(results);
+        });
+      }.bind(this));
+    },
+
+    loadingQueue: function(item) {
+      /* If there is already a load in progress, set the next load
+       * to this item */
+      if (this.loading) {
+        this.loading = item;
+        return;
+      }
+
+      /* Load this item */
+      this.loading = item;
+
+      this.getDocumentation(item, "HTML").then(function(item, results) {
+        if (results.status == 200) {
+          return results.content;
+        }
+
+        if (results.status != 400) {
+          return Promise.reject(new Error("Error returned from getDocumentation"));
+        }
+
+        /* If there was no content, and there is a parent component,
+         * and the current hover item is still the one being fetched,
+         * fetch the documentation for the parent component and set this
+         * item's content to that */
+        if (!item.component) {
+          return "<p>No additional documentation for " + item.refdes;
+        }
+
+        var component = this.$.boardViewer.findComponent(item.component);
+        if (component.html) {
+          return component.html;
+        }
+
+        /* If the current hover item is no longer this one, do not chain
+         * to lookup the component's documentation. */
+        if (this.hover != item) {
+          return Promise.reject();
+        }
+
+        return this.getDocumentation(component, "HTML").then(function(results) {
+          if (results.status == 200) {
+            component.html = "<p>No additional documentation for " + component.refdes;
+            return component.html;
+          }
+          return results.content;
+        });
+      }.bind(this, item)).then(function(item, html) {
+        item.html = html;
+
+        /* If this is the item currently being hovered on, notify the UI
+         * to update the DOM */
+        if (this.hover == item) {
+          Polymer.dom(this.$.documentation).innerHTML = html;
+        }
+      }.bind(this, item)).catch(function(error) {
+        console.log(error);
+      }).then(function(item) {
+        /* Fire off the most recent load request if it changed while the above
+         * was resolving */
+        if (this.loading != item) {
+          item = this.loading;
+          this.loading = null;
+          if (item) {
+            this.loadingQueue(item);
+          }
+        } else {
+          this.loading = null;
+        }
+      }.bind(this, item));
+    },
+
+    onHoverChanged: function(hover) {
+      if (!hover) {
+        return;
+      }
+
+      if (hover.html) {
+        Polymer.dom(this.$.documentation).innerHTML = hover.html;
+        return;
+      }
+
+      Polymer.dom(this.$.documentation).innerHTML = "Loading...";
+      this.loadingQueue(hover);
+    },
+
+    onItemHover: function(event) {
+      var details = event.detail,
+        info = this.$.boardViewer.getInfo(details.refdes);
+
+      if (!details.in) {
+        if (this.hover == info) {
+          /* If no item has been selected via tapping, hover will show info */
+          if (!this.selected) {
+            this.hover = this.boardInfo;
+          }
+        }
+
+        /* If the hover is leaving the item, and the last hover has not yet
+         * triggered, clear the debounce. */
+        if (this.pendingHover == info) {
+          this.pendingHover = null;
+          this.cancelDebouncer("pendingHover");
+        } else {
+          /* Otherwise clear the item leaving */
+          this.highlightItem(info, details.in);
+          this.highlightKeywords(info.keywords, details.in);
+        }
+
+        return;
+      }
+
+      this.pendingHover = info;
+      /* If no item has been selected via tapping, hover will show info */
+      if (!this.selected) {
+        this.hover = info;
+      }
+
+      if (details.in) {
+        this.debounce("pendingHover", function() {
+          if (!this.pendingHover) {
+            return;
+          }
+          this.highlightItem(this.pendingHover, 1);
+          this.highlightKeywords(this.pendingHover.keywords, 1);
+          this.pendingHover = null;
+        }, 100);
+      }
+    },
+
+    /* Fired by the board-viewer */
+    onItemTap: function(event) {
+      var refdes = event.detail.refdes,
+        parts = refdes.split("Pin"),
+        isPin = parts.length == 2,
+        isControlPressed = event.detail.event.ctrlKey;
+
+      var item = null;
+      for (var i = 0; i < this.components.length; i++) {
+        item = this.components[i];
+        if (item.refdes == parts[0]) {
+          break;
+        }
+      }
+
+      if (!item) {
+        return;
+      }
+
+      if (!isPin) {
+        this.activateItem(item, isControlPressed);
+        return;
+      }
+
+      for (var i = 0; i < item.pins.length; i++) {
+        if (item.pins[i].refdes == refdes) {
+          this.activateItem(item.pins[i], isControlPressed);
+          return;
+        }
+      }
+    },
+
+    boardClicked: function(event) {
+      var board = event.model.item.directory;
+      console.log("Loading " + board);
+      /* Remove all filters */
+      this.$.boardViewer.removeFilter();
+      this.filters = [];
+      this.$.boardViewer.setBoard(board);
+      this.onFiltersChanged(board, this.filters);
+    },
+
+    onBoardChanged: function(event) {
+      var board = event.detail.value || "";
+
+      this.selected = null;
+      this.hover = null;
+
+      this.board = board;
+      this.availableKeywords = [];
+      this.keywords = [];
+      this.pins = [];
+      this.availableComponents = [];
+      this.components = [];
+
+      if (!board) {
+        console.log("Board Explorer unloaded board.");
+        /* Remove all filters */
+        this.$.boardViewer.removeFilter();
+        return;
+      }
+
+      console.log("Board Explorer has a board loaded and ready.");
+      /* If a board has been set, the app is initialized */
+      this.initialized = true;
+
+      this.boardInfo = {
+        name: this.board,
+        html: "No description of " + this.board + " available."
+      };
+
+      for (var i = 0; i < this.boards.length; i++) {
+        if (this.boards[i].directory === this.board) {
+          this.boardInfo.name = this.boards[i].name;
+          break;
+        }
+      }
+
+      /* Turn on the 'Everything' interactive filters;
+       * Pins will be Green
+       * Components will be Cyan */
+      this.$.boardViewer.addFilter("Pins", { type: "PIN", pattern: "*" }, {
+        color: "#00ffff",
+        alwaysVisible: false
+      });
+      this.$.boardViewer.addFilter("Components", { type: "COMPONENT", pattern: "*" }, {
+        color: "#00ffff",
+        alwaysVisible: false
+      });
+
+      // Draw current filters in the url if they are properly set in the var.
+      if (this.filters.length) {
+        this.$.boardViewer.addFilter("selected", { type: "LIST", set: this.filters
+        }, {
+          color: "#ffff00",
+          interactive: false,
+          alwaysVisible: true
+        });
+      }
+
+      console.log("Asking for keywords...");
+      this.$.boardViewer.getKeywords(function(object) {
+        var keywords = [];
+        for (var key in object) {
+          if (typeof object[key] !== "string") {
+            continue;
+          }
+          keywords.push({
+            type: "keyword",
+            keyword: object[key],
+            refdes: []
+          });
+        }
+        console.log("Keywords received: " + keywords.length);
+        this.availableKeywords = keywords;
+        this.set("keywords", keywords);
+
+        console.log("Asking for components...");
+        this.$.boardViewer.getComponents(function(results) {
+          var components = [];
+          results.forEach(function(refdes) {
+            components.push(this.$.boardViewer.getInfo(refdes));
+          }, this);
+          console.log("Components received: " + components.length);
+          this.availableComponents = components;
+          this.set("components", components);
+
+          if (this.filters.length) {
+            this.selected = this.$.boardViewer.findComponent(this.filters[0]);
+            this.hover = this.selected;
+          }
+
+          /* Load the board top-level documentation */
+          this.$.boardViewer.getDocumentation(null, "HTML", function(results) {
+            if (!results || results.error) {
+              console.log(results.error);
+              this.hover = this.boardInfo;
+              return;
+            }
+
+            this.boardInfo.html = results.content;
+            if (!this.selected) {
+              this.hover = this.boardInfo;
+            }
+          }.bind(this));
+        }.bind(this));
+      }.bind(this));
+    },
+
+    toggleSelected: function(container, match) {
+      var items = container.querySelectorAll("a.selected");
+      Array.prototype.forEach.call(items, function(el) {
+        el.classList.remove("selected");
+      });
+
+      if (!match) {
+        return;
+      }
+
+      var item = container.querySelector("[match='" + match + "']");
+      if (item) {
+        item.classList.add("selected");
+      }
+    },
+
+    onKeywordChanged: function(keyword) {
+      this.toggleSelected(
+        Polymer.dom(this.$.keywords),
+        keyword ? keyword.keyword : undefined);
+      if (!keyword) {
+        this.$.boardViewer.removeFilter("keyword");
+        this.set("components", this.availableComponents);
+      }
+    },
+
+    onComponentChanged: function(component) {
+      this.toggleSelected(Polymer.dom(this.$.components),
+        component ? component.refdes : undefined);
+      if (!component) {
+        this.$.boardViewer.removeFilter("component");
+        this.pin = null;
+        this.pins = [];
+        this.set("keywords", this.availableKeywords);
+      }
+    },
+
+    onPinChanged: function(pin) {
+      this.toggleSelected(Polymer.dom(this.$.pins),
+        pin ? pin.refdes : undefined);
+      if (!pin) {
+        this.$.boardViewer.removeFilter("pin");
+        console.log("TODO: Filter keywords on component if still selected");
+        this.set("keywords", this.availableKeywords);
+      }
+    },
+
+    itemClicked: function(event) {
+      this.activateItem(event.model.item, event.ctrlKey);
+    },
+
+    activateItem: function(item, isControlPressed) {
+      switch (item.type) {
+      case "keyword":
+        if (this.keyword && this.keyword.keyword == item.keyword) {
+          this.selected = null;
+          this.$.boardViewer.removeFilter("keyword");
+          this.keyword = null;
+          this.set("components", this.availableComponents);
+          return;
+        }
+
+        this.keyword = item;
+
+        this.$.boardViewer.addFilter("keyword", item.keyword, {
+          color: "#00ff00",    /* color for highlight border */
+          interactive: false,  /* Always bright */
+          alwaysVisible: true
+        });
+
+        this.components = this.availableComponents.filter(function(component) {
+          var match = component.keywords ? (component.keywords.indexOf(item.keyword) != -1) : false;
+          if (match) {
+            return true;
+          }
+          if (!component.pins) {
+            return false;
+          }
+          for (var i = 0; i < component.pins.length; i++) {
+            if (component.pins[i].keywords && (component.pins[i].keywords.indexOf(item.keyword) != -1)) {
+              return true;
+            }
+          }
+          return false;
+        });
+        return;
+
+      case "component":
+        if (this.component && this.component.refdes == item.refdes) {
+          this.selected = null;
+          this.$.boardViewer.removeFilter("component");
+          this.component = null;
+          this.set("keywords", this.availableKeywords);
+          return;
+        }
+
+        this.component = item;
+        this.pins = this.component.pins;
+
+        this.keywords = this.availableKeywords.filter(function(keyword) {
+          keyword = keyword.keyword;
+          var match = item.keywords ? (item.keywords.indexOf(keyword) != -1) : false;
+          if (match) {
+            return true;
+          }
+          if (!item.pins) {
+            return false;
+          }
+          for (var i = 0; i < item.pins.length; i++) {
+            if (item.pins[i].keywords && (item.pins[i].keywords.indexOf(keyword) != -1)) {
+              return true;
+            }
+          }
+          return false;
+        });
+
+        break;
+
+      case "pin":
+        if (this.pin && this.pin.refdes == item.refdes) {
+          this.selected = null;
+          this.$.boardViewer.removeFilter("pin");
+          this.pin = null;
+          this.set("keywords", this.availableKeywords);
+          return;
+        }
+
+        this.pin = item;
+
+        this.keywords = this.availableKeywords.filter(function(keyword) {
+          return item.keywords ? (item.keywords.indexOf(keyword.keyword) != -1) : false;
+        });
+
+        break;
+      }
+
+      this.selected = item;
+      this.hover = item;
+
+      /* Behavior with control pressed:
+       * If the item is in the filter list, remove it. Otherwise add it.
+       * If the list is empty, remove the filter
+       *
+       * Behavior without control pressed:
+       * If the item is in the only item in filter list, remove it
+       * Otherwise set the filter list to the item.
+       */
+      var index = this.filters.indexOf(item.refdes);
+      if (isControlPressed) {
+        if (index != -1) {
+          this.filters.splice(index, 1);
+        } else {
+          this.filters.push(item.refdes);
+        }
+      } else {
+        if (this.filters.length == 1 && this.filters[0] == item.refdes) {
+          this.filters = [];
+        } else {
+          this.filters = [ item.refdes ];
+        }
+      }
+
+      if (this.filters.length == 0) {
+        this.$.boardViewer.removeFilter("selected");
+      } else {
+        this.$.boardViewer.addFilter("selected", {
+          type: "LIST",
+          set: this.filters
+        }, {
+          color: "#ffff00",   /* color for highlight border */
+          interactive: false, /* Always bright */
+          alwaysVisible: true
+        });
+      }
+
+      this.onFiltersChanged(this.board, this.filters);
+    },
+
+    onFiltersChanged: function(board, filters) {
+      var href = window.location.href.replace(/#.*/, ""); /* Trim of # */
+
+      /* If the board is set, add it to the URL */
+      if (board) {
+         href += "#" + board;
+      }
+
+      /* If the filters are set, add them to the URL */
+      if (board && filters && filters.length) {
+        href += "/" + this.filters.join();
+      }
+
+      /* If the URL is changing, push it to the window history */
+      if (href != window.location.href) {
+        /* Add an entry to the window.history to update the URL with the list
+         * of active filters */
+        window.history.pushState({
+          board: board,
+          filters: filters ? filters.slice() : [] /* Copy of filters array */
+        }, board, href);
+      }
+
+      if (filters.length) {
+        this.$.boardViewer.addFilter("selected", {
+          type: "LIST",
+          set: filters
+        }, {
+          color: "#ffff00",
+          interactive: false,
+          alwaysVisible: true
+        });
+      } else {
+        this.$.boardViewer.removeFilter("selected");
+      }
+    },
+
+    itemOver: function(event) {
+      var type = event.model.item.type,
+        data = event.model.item.refdes;
+
+      event.preventDefault();
+
+      switch (type) {
+      case "keyword":
+        /* For keywords, refdes is the array of refdes that have this keyword */
+        data = event.model.item.keyword;
+        this.$.boardViewer.addFilter("Keyword hover " + data, data, {
+          color: "#00ff00", /* color for highlight border */
+          interactive: false /* Since this is shown/hidden based on the user
+                              * hovering over this Anchor, the actual GUI
+                              * is set as non-interactive */
+        });
+        this.highlightItemsWithKeyword(data, true)
+        this.highlightKeywords([data], true);
+        break;
+
+      case "component":
+        this.$.boardViewer.addFilter("Component hover " + data, data, {
+          color: "#00ffff", /* color for highlight border */
+          interactive: false /* Since this is shown/hidden based on the user
+                              * hovering over this Anchor, the actual GUI
+                              * is set as non-interactive */
+        });
+        this.highlightItem(event.model.item, true);
+        this.highlightKeywords(event.model.item.keywords, true);
+        /* If no item has been selected via tapping, hover will show info */
+        if (!this.selected) {
+          this.hover = event.model.item;
+        }
+        break;
+
+      case "pin":
+        this.$.boardViewer.addFilter("Pin hover " + data, data, {
+          color: "#00ffff", /* color for highlight border */
+          interactive: false /* Since this is shown/hidden based on the user
+                              * hovering over this Anchor, the actual GUI
+                              * is set as non-interactive */
+        });
+        this.highlightItem(event.model.item, true);
+        this.highlightKeywords(event.model.item.keywords, true);
+        /* If no item has been selected via tapping, hover will show info */
+        if (!this.selected) {
+          this.hover = event.model.item;
+        }
+      }
+      /* Adding all connected refdes to the filter list */
+      if(event.model.item.connected) {
+        this.$.boardViewer.addFilter("connected", {type: "LIST", set: event.model.item.connected}, {
+          color: "#ff8000",
+          alwaysVisible: true,
+          interactive: false
+        });
+      }
+      /* Adding all related refdes to the filter list */
+      if(event.model.item.related) {
+         this.$.boardViewer.addFilter("related", {type: "LIST", set: event.model.item.related}, {
+          color: "#00ff00",
+          alwaysVisible: true,
+          interactive: false
+        });
+      }
+
+    },
+
+    itemOut: function(event) {
+      var type = event.model.item.type,
+        data = event.model.item.refdes;
+
+      if (event.model.item == this.hover) {
+        /* If no item has been selected via tapping, hover will show info */
+        if (!this.selected) {
+          this.hover = this.boardInfo;
+        }
+      }
+
+      event.preventDefault();
+      switch (type) {
+      case "component":
+        this.$.boardViewer.removeFilter("Component hover " + data);
+        this.highlightItem(event.model.item, false);
+        this.highlightKeywords(event.model.item.keywords, false);
+        break;
+      case "pin":
+        this.$.boardViewer.removeFilter("Pin hover " + data);
+        this.highlightItem(event.model.item, false);
+        this.highlightKeywords(event.model.item.keywords, false);
+        break;
+      case "keyword":
+        /* For keywords, refdes is the array of refdes that have this keyword */
+        data = event.model.item.keyword;
+        this.$.boardViewer.removeFilter("Keyword hover " + data);
+        this.highlightItemsWithKeyword(data, false)
+        this.highlightKeywords([data], false);
+        break;
+      }
+      /* Remove filters for related and/or connected components */
+      this.$.boardViewer.removeFilter("related");
+      this.$.boardViewer.removeFilter("connected");
+
+    },
+
+    pinClicked: function(event) {
+      console.log(JSON.stringify(event.model.item, null, 2));
+    },
+
+    onResize: function(event) {
+    },
+
+    highlightKeywords: function(keywords, show) {
+      if (!keywords || !Array.isArray(keywords)) {
+        return;
+      }
+
+      keywords.forEach(function(keyword) {
+        Array.prototype.forEach.call(
+          this.$.keywords.querySelectorAll("a[match='"+keyword+"']"),
+          function(el) {
+            el.classList.toggle("selected", show);
+        });
+      }, this);
+    },
+
+    highlightItemsWithKeyword: function(keyword, show) {
+
+      this.components.forEach(function(component) {
+        if (!component.keywords || component.keywords.indexOf(keyword) == -1) {
+          return;
+        }
+
+        this.highlightItem(component, show);
+
+        if (component.pins) {
+          component.pins.forEach(function(pin) {
+            if (!pin.keywords || pin.keywords.indexOf(keyword) == -1) {
+              return;
+            }
+
+            this.highlightItem(pin, show);
+          }, this);
+        }
+      }, this);
+    },
+
+    highlightItem: function(item, show) {
+      var match, container = null;
+
+      switch (item.type) {
+      case "keyword":
+        match = item.keyword;
+        container = this.$.keywords;
+        break;
+
+      case "pin":
+        /* For a pin, highlight the parent component as well */
+        this.highlightItem({type: "component", refdes: item.component }, show);
+
+        match = item.refdes;
+        container = this.$.pins;
+        break;
+
+      case "component":
+        match = item.refdes;
+        container = this.$.components;
+      }
+
+      if (!container) {
+        return;
+      }
+
+      var el = container.querySelector('a[match="' + match + '"');
+      if (el) {
+        el.classList.toggle("selected", show);
+      }
+    },
+
+    onHashChange: function(event) {
+      if (window.location.hash) {
+        this.hash = window.location.hash;
+      }
+    },
+
+    onPopState: function(event) {
+      if (!event.state || !event.state.board) {
+        this.hash = window.location.hash;
+        return;
+      }
+
+      this.board = event.state.board;
+      this.filters = event.state.filters;
+      this.$.boardViewer.setBoard(this.board);
+      this.onFiltersChanged(this.board, this.filters);
+    },
+
+    setBoardAndFiltersFromHash: function(boards, hash) {
+      var uri = hash.split("/"),
+        boardToLoad = null,
+        hash = uri[0].substr(1); /* Prune the # */
+
+      for (var i = 0; i < this.boards.length; i++) {
+        if (this.boards[i].directory == hash) {
+          boardToLoad = this.boards[i].directory;
+          break;
+        }
+      }
+
+      if (!boardToLoad) {
+        this.filters = [];
+        this.board = "";
+        /* If the boards.json has loaded, and no board is going to be loaded,
+         * the app is initialized; show the board selector */
+         if (!this.isEmpty(this.boards)) {
+           this.initialized = true;
+           console.log("Initialized to board-selector");
+         }
+      } else {
+        // Get filters from the url if there are some.
+        if (uri[1]) {
+          this.filters = uri[1].split(",");
+        } else {
+          this.filters = [];
+        }
+        console.log("Loading " + boardToLoad);
+        this.$.boardViewer.setBoard(boardToLoad);
+      }
+
+      this.onFiltersChanged(boardToLoad, this.filters);
+    },
+
+    attached: function() {
+      window.addEventListener("resize", this.onResize.bind(this));
+      this.onResize();
+
+      window.addEventListener("popstate", this.onPopState.bind(this));
+      window.addEventListener("hashchange", this.onHashChange.bind(this));
+
+      (function() {
+        var oldHash = null;
+        function check() {
+          if (oldHash != window.location.hash) {
+            oldHash = window.location.hash;
+            this.onHashChange(oldHash);
+          }
+          setTimeout(check.bind(this), 100);
+        }
+
+        check.call(this);
+      }.bind(this))();
+
+      this.$.boardViewer.getBoards(function(boards) {
+        if (!boards) {
+          window.location.hash = "";
+          boards.textContent = "No boards available to list."
+          this.boards = [];
+          return;
+        }
+
+        this.boards = boards;
+        this.hash = window.location.hash;
+      }.bind(this));
+    }
+  });
+});
+</script>
+</dom-module>
+
+<board-explorer class="fit"></board-explorer>
+
+</body>
+</html>

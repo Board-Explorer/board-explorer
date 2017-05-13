@@ -1,0 +1,1161 @@
+<!doctype html>
+<html>
+<head>
+  <link rel="import" href="bower_components/polymer/polymer.html">
+  <script src="bower_components/es6-shim/es6-shim.min.js"></script>
+  <script src="svg-injector.js"></script>
+  <script src="fetch.js"></script>
+  <script src="polyfill/array.includes.js"></script>
+  <script src="bower_components/markdown-it/dist/markdown-it.js"></script>
+</head>
+
+<dom-module id='board-viewer'>
+  <template>
+  <style>
+    /* The board-viewer only uses div and img; reset those elements
+     * to their initial settings within the .board-viewer namespace */
+    :host {
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #23ccfc;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    :host div {
+      overflow: visible;
+      box-sizing: content-box;
+    }
+
+    #viewer {
+      cursor: move;
+      cursor: -webkit-grab;
+      cursor: -moz-grab;
+      cursor: grab;
+    }
+
+    :host[disable-drag] #viewer {
+      cursor: default;
+    }
+
+    .drag {
+      cursor: move !important;
+      cursor: -webkit-grabbing !important;
+      cursor: -moz-grabbing !important;
+      cursor: grabbing !important;
+    }
+
+    #svg,
+    #filters {
+      display: inline-block;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      -ms-transform-origin: 50% 50%; /* IE 9 */
+      -webkit-transform-origin: 50% 50%; /* Chrome, Safari, Opera */
+      transform-origin: 50% 50%;
+    }
+
+    #svg {
+      pointer-events: none;
+    }
+
+    #filters {
+      z-index: 100;
+    }
+
+    #filters > div {
+      position: absolute;
+      opacity: 1;
+      border-width: 2px;
+      border-style: solid;
+      padding: 0.1em;
+      box-sizing: content-box;
+      transition: opacity 0.25s linear;
+      border-radius: 0.25rem;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      pointer-events: none;
+    }
+
+    #filters > div[pin] {
+      z-index: 200;
+    }
+
+    /* Interactive, if not alwaysVisible, are transparent when not hovered */
+    #filters > div.interactive {
+      pointer-events: all;
+      opacity: 0;
+    }
+
+    /* Hovering over interactive elements makes them full bright */
+    #filters > div.interactive:hover,
+    #filters > div.interactive.alwaysVisible:hover {
+      opacity: 1;
+    }
+
+    /* alwaysVisible are half dim when not highlighted */
+    #filters > div.alwaysVisible,
+    #filters > div.interactive.alwaysVisible {
+      opacity: 0.5;
+    }
+
+    /* Non-interactive and alwaysVisible are always bright */
+    #filters > div.alwaysVisible:not(.interactive) {
+      opacity: 1;
+    }
+
+    #board {
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    #viewer {
+      position: relative;
+      box-sizing: border-box;
+      height: 100%;
+      width: 100%;
+    }
+
+    #container {
+      position: absolute;
+      display: inline-block;
+      box-sizing: border-box;
+      top: 0px;
+      left: 0px;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <div id="viewer" class="board-viewer">
+    <div id="container">
+      <div id="svg"><!-- holds the created IMG that SVGInjector() uses--></div>
+      <div id="filters"></div>
+    </div>
+  </div>
+</template>
+
+<script>
+"use strict";
+
+Polymer({
+  is: "board-viewer",
+  properties: {
+    disableZoom: {
+      type: Boolean,
+      value: true,
+      reflectToAttribute: true
+    },
+    disableDrag: {
+      type: Boolean,
+      value: false,
+      reflectToAttribute: true
+    },
+    board: {
+      type: String,
+      notify: true
+    },
+    /* Internal name of board that is actively loading */
+    _board: {
+      type: String,
+      notify: false
+    },
+    boardData: {
+      type: Array,
+      value: []
+    },
+    boardElements: {
+      type: Array,
+      value: []
+    },
+    svg: {
+      type: Object
+    },
+    zoom: {
+      type: Number,
+      value: 0
+    },
+    defaultScale: {
+      type: Number,
+      value: 0.8
+    },
+    translation: {
+      type: Object,
+      value: {
+        x: 0,
+        y: 0
+      }
+    },
+    filters: {
+      type: Array,
+      value: []
+    },
+    origin: { /* Used for drag operations */
+      type: Object,
+      value: { x: 0, y: 0 }
+    }
+  },
+
+  observers: [
+    "onDisableDrag(disableDrag)",
+    "onBoardChanged(_board)",
+    "onBoardZoom(svg, zoom)",
+    "mapSvgToBoardData(svg, boardData)",
+    "onBoardLoaded(svg, _board, boardData)"
+  ],
+
+  onZoomChanged: function(event) {
+    this.zoom = event.detail.value;
+  },
+
+  onBoardMove: function(x, y) {
+    /* Can get called during initialization before DOM stamped */
+    var container = this.$.container;
+    if (!container) {
+      return;
+    }
+    container.style.top = y + 'px';
+    container.style.left = x + 'px';
+
+    Polymer.dom.flush();
+  },
+
+  onBoardZoom: function(svg, zoom) {
+    if (!svg) {
+      return;
+    }
+
+    zoom = this.scale + this.scale * zoom;
+
+    var transform = '', style = '', bb;
+
+    /* Work around Firefox issue #612118; getBBox() throws an exception if
+     * the SVG is not being rendered */
+    try {
+      bb = svg.getBBox();
+    } catch (___) {
+      return;
+    }
+
+    transform = "translate("
+      + -bb.width * zoom * 0.5 + "px,"
+      + -bb.height * zoom * 0.5 + "px)";
+    style += '-webkit-transform:' + transform + ';';
+    style += '-ms-transform:' + transform + ';';
+    style += '-moz-transform:' + transform + ';';
+    style += 'transform:' + transform + ';';
+    style += 'width: ' + bb.width * zoom + 'px;';
+    style += 'height: ' + bb.height * zoom + 'px;';
+
+    this.$.svg.style.cssText = style;
+    Polymer.dom.flush();
+
+    /* Unhide the SVG itself; we hide it when the board is being loaded. We
+    * don't show it until now because the style for the parent (this.$.svg)
+    * would have it in the wrong spot */
+    this.svg.style.width = "100%";
+    this.svg.style.height = "100%";
+    this.svg.style.visibility = 'visible';
+
+    this.calculateSVGElements();
+    this.filters.forEach(this.populateFilter, this);
+  },
+
+  calculateSVGElements: function() {
+    var offset = this.getBoundingClientRect();
+
+    this.svgElements.forEach(function(svgItem) {
+      var rect = svgItem.el.getBoundingClientRect();
+      svgItem.rect = {
+        top: rect.top + rect.height * 0.5 - this.translation.y - offset.top + 'px',
+        left: rect.left + rect.width * 0.5 - this.translation.x - offset.left + 'px',
+        width: rect.width + 'px',
+        height: rect.height + 'px'
+      }
+    }, this);
+  },
+
+  onDisableDrag: function(disabled) {
+    if (disabled) {
+      this.unlisten(this, 'track', 'onTrack');
+    } else {
+      this.listen(this, 'track', 'onTrack');
+    }
+  },
+
+  onTrack: function(event) {
+    this.tapTarget = null;
+    event.preventDefault();
+
+    if (event.detail.state == 'start') {
+      event.target.classList.add('drag');
+      this.$.viewer.classList.add('drag');
+      this.origin = {
+        x: this.translation.x,
+        y: this.translation.y
+      }
+    }
+
+    this.translation.x = this.origin.x + event.detail.dx;
+    this.translation.y = this.origin.y + event.detail.dy;
+    this.onBoardMove(this.translation.x, this.translation.y);
+
+    if (event.detail.state == 'end') {
+      Array.prototype.forEach.call(this.querySelectorAll('.drag'),
+        function(el) {
+        el.classList.remove('drag');
+      });
+      this.origin.x = this.translation.x;
+      this.origin.y = this.translation.y;
+    }
+  },
+
+  /* Look up the boardData item corresponding to the provided
+   * refdes */
+  findComponent: function(refdes) {
+    if (!refdes) {
+      return null;
+    }
+
+    var parts = refdes.split("Pin"),
+      isPin = parts.length == 2,
+      component = null;
+
+    /* Look up the component first */
+    for (var i = 0; i < this.boardData.length; i++) {
+      if (this.boardData[i].refdes == parts[0]) {
+        component = this.boardData[i];
+        break;
+      }
+    }
+
+    /* If the inbound refdes isn't a pin, return the component */
+    if (!isPin) {
+      return component;
+    }
+
+    /* If no pins are on this component, we can't find the requested pin,
+     * so return null */
+    if (!component.pins) {
+      return null;
+    }
+
+    /* Look for the pin in this component */
+    for (var i = 0; i < component.pins.length; i++) {
+      if (component.pins[i].refdes == refdes) {
+        return component.pins[i];
+      }
+    }
+
+    /* No matches anywhere... return null */
+    return null;
+  },
+
+  onBoardLoaded: function(svg, board, boardData) {
+    if (!svg || !board || !boardData) {
+      return;
+    }
+
+    this.board = board;
+  },
+
+  onBoardChanged: function(board) {
+    this.svg = null;
+    this.boardData = [];
+    this.board = null;
+
+    /* Remove all the filters for the current board */
+    this.removeFilter();
+
+    /* Delete any children of the "svg" */
+    var element = this.$.svg;
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+
+    if (!board || board == '') {
+      return;
+    }
+
+    console.log('Loading ' + board + ' into board-viewer.');
+
+    /* Load pin info from the board.json file */
+    fetch("boards/" + board + "/board.json", function(headers, response) {
+      if (response instanceof Error) {
+        console.log("Unable to load boards/" + board + ".json");
+        return;
+      }
+
+      var image = document.createElement('img');
+      image.style.visibility = 'hidden';
+
+      /* SVGInjector replaces 'image' with the svg it constructs
+       *
+       * Add the image to the document body; if we add it to the board-viewer,
+       * and the board-viewer is currently 'display: none', the SVG does not
+       * get setup correctly. */
+      document.body.appendChild(image);
+
+      /* Do not inject the SVG until after the SVG has completed
+       * loading into the main image, otherwise there is a race
+       * condition which can result in the SVG never showing up */
+      image.onload = function() {
+        SVGInjector(image, {
+          evalScripts: 'once',
+          each: function(svg) {
+            if (typeof svg == 'string') {
+              console.log('ERROR: ' + svg);
+              return;
+            }
+
+            Polymer.dom.flush();
+
+            svg.setAttribute('board', board);
+            /* Trim off any whitespace/viewbox padding from the SVG
+             * asset */
+            var bb = svg.getBBox();
+            svg.setAttribute('viewBox', bb.x + ' ' + bb.y + ' ' + bb.width + ' ' + bb.height);
+            svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+            this.zoom = 0;
+            this.scale = 1;
+            this.translation.x = this.offsetWidth * 0.5;
+            this.translation.y = this.offsetHeight * 0.5;
+
+            /* Caches the original (unscaled or translated) bounding rectangle
+            * for use when constructing new highlight rectangles */
+            this.svgElements = [];
+
+            Array.prototype.forEach.call(svg.querySelectorAll('[id^="BV_"]'),
+              function(el) {
+              this.svgElements.push({
+                refdes: el.id.replace(/^BV_/, ''),
+                el: el
+              });
+            }, this);
+
+            this.$.svg.appendChild(svg);
+            Polymer.dom.flush();
+            this.updateStyles();
+
+            /* Set this.svg at the end so mapSvgToBoardData doesn't trigger
+             * until the DOM is populated with the SVG */
+            this.svg = svg;
+          }.bind(this)
+        });
+      }.bind(this);
+
+      var data;
+
+      try {
+        data = JSON.parse(response);
+      } catch (___) {
+        console.log('Error parsing board!');
+        console.log(___);
+        return;
+      }
+
+      /* For now we only support one side of the board -- front. */
+      image.src = "boards/" + board + "/" + data.views.front.image;
+
+      data = data.views.front.components;
+
+      console.log("Parsing " + board);
+      var components = [];
+
+      for (var key in data) {
+        if (typeof data[key] != 'object') {
+          console.log("Skipping non object '" + key + ".'");
+          continue;
+        }
+
+        /* Create "smart" defaults based on normal structures */
+        var component = Object.assign({
+          refdes: key,
+          readable: key,
+          name: key
+        }, data[key]);
+
+        /* Do not let the JSON override the type */
+        component.type = "component";
+
+        if (component.keywords) {
+          for (var i = 0; i < component.keywords.length; i++) {
+            component.keywords[i] = component.keywords[i].toUpperCase();
+          }
+        }
+
+        components.push(component);
+
+        if ("pins" in data[key]) {
+          component.pins = [];
+          for (var id in data[key].pins) {
+            var isJumper = component.keywords && component.keywords.includes("JUMPER"),
+              readable;
+
+            if (isJumper) {
+              readable = component.refdes + " Pins " + id.substr(0, 1) + "-" + id.substr(1, 1);
+            } else {
+              readable = component.refdes + " Pin " + id;
+            }
+
+            /* Create "smart" defaults based on normal structures */
+            var item = Object.assign({
+              refdes: component.refdes + "Pin" + id,
+              readable: readable,
+              name: readable,
+              component: component.refdes
+            }, data[key].pins[id]);
+
+            /* Do not let the JSON override the type */
+            item.type = "pin";
+
+            if (item.keywords) {
+              for (var i = 0; i < item.keywords.length; i++) {
+                item.keywords[i] = item.keywords[i].toUpperCase();
+
+                /* Ensure that the parent component is the superset of all
+                 * keywords of all contained pins */
+                if (!component.keywords) {
+                  component.keywords = [];
+                }
+                if (component.keywords.indexOf(item.keywords[i]) == -1) {
+                  component.keywords.push(item.keywords[i]);
+                }
+              }
+
+              item.keywords = item.keywords.sort();
+            }
+
+            if (component.keywords) {
+              component.keywords = component.keywords.sort();
+            }
+
+            component.pins.push(item);
+          }
+        }
+      }
+
+      this.boardData = components;
+    }.bind(this));
+  },
+
+  addFilter: function(name, match, options) {
+    for (var i = 0; i < this.filters.length; i++) {
+      if (this.filters[i].name == name) {
+        this.removeFilter(name);
+        break;
+      }
+    }
+
+    /* Assign default values to the options */
+    options = Object.assign({
+      color: "#00ff00",
+      alwaysVisible: false,
+      interactive: true
+    }, options || {});
+
+    if (!this.filterIndex) {
+      this.filterIndex = 1;
+    }
+
+    if (typeof match === "string") {
+      match = {
+        type: "ALL",
+        pattern: match
+      }
+    }
+
+    var filter = {
+      name: name,
+      match: match,
+      options: options,
+      index: this.filterIndex++
+    };
+
+    this.filters.push(filter);
+    this.populateFilter(filter);
+  },
+
+  removeFilter: function(name) {
+    var filters = Polymer.dom(this.$.filters);
+
+    if (!name) {
+      /* Remove all filters */
+      while (filters.firstChild) {
+        filters.removeChild(filters.firstChild);
+      }
+      this.filters = [];
+      return;
+    }
+
+    /* Look for the filter in the list of filters and remove from the
+     * list of filters if found. */
+    var filter = null;
+    for (var i = 0; !filter && i < this.filters.length; i++) {
+      if (this.filters[i].name != name) {
+        continue;
+      }
+
+      filter = this.filters.splice(i, 1)[0];
+    }
+
+    if (!filter) {
+      return;
+    }
+
+     /* If the name matches, delete all items in the #filter container
+      * that were added for this filter */
+    var matches = filters.querySelectorAll('[pattern="' + filter.index + '"]');
+    Array.prototype.forEach.call(matches, function(el) {
+      filters.removeChild(el);
+    });
+  },
+
+  onFilterUp: function(event) {
+    if (this.tapTarget) {
+      this.fire('item-tap', { refdes: this.tapTarget, event: event });
+    }
+    event.preventDefault();
+  },
+
+  onFilterDown: function(event) {
+    this.tapTarget = event.currentTarget.getAttribute('refdes');
+    event.preventDefault();
+  },
+
+  /* Create all of the DIV elements that match the declared filter */
+  populateFilter: function(filter) {
+    /* Delete all elements in the filter */
+    var filters = Polymer.dom(this.$.filters),
+      matches = filters.querySelectorAll('[pattern="' + filter.index + '"]');
+    Array.prototype.forEach.call(matches, function(el) {
+      filters.removeChild(el);
+    }, this);
+
+    if (!this.svg) {
+      return;
+    }
+
+    var potentials = [];
+
+    /* Walk the list of items in the SVG that match the BV_ prefix
+     * and compare them to the filter pattern; if it is a match,
+     * create a <DIV> in the filter layer */
+    this.svgElements.forEach(function(svgItem) {
+      /* Lookup the refdes in the boardData */
+      var item = this.findComponent(svgItem.refdes),
+        match = false,
+        isPin = item && item.type == "pin";
+
+      /* If the match type is not ALL then only match items of the
+       * appropriate type.
+       *
+       * An item that doesn't exist in the board.json is excluded from
+       * type specific filters.
+       */
+      if ((filter.match.type != "ALL") &&
+        (!item ||
+         (filter.match.type == "PIN" && !isPin) ||
+         (filter.match.type == "COMPONENT" && isPin))) {
+        return;
+      }
+
+      switch (filter.match.type) {
+      case "ALL":
+      case "PIN":
+      case "COMPONENT":
+        /* If the pattern is *, then this is a match */
+        match |= filter.match.pattern == '*';
+
+        /* Check the REFDES against the pattern */
+        match |= svgItem.refdes == filter.match.pattern;
+
+        /* Check the KEYWORDS agsint the pattern */
+        if (item && item.keywords) {
+          for (var i = 0; !match && i < item.keywords.length; i++) {
+            match |= item.keywords[i] == filter.match.pattern;
+          }
+        }
+        break;
+
+      case "LIST":
+        /* With LIST, filter.set is an array of REFDES or KEYWORDs to
+         * match against */
+
+        for (var i = 0; i < filter.match.set.length; i++) {
+          /* Check the REFDES against the set entry */
+          match |= svgItem.refdes == filter.match.set[i];
+
+          /* Check the KEYWORDS agsint the set entry */
+          if (item && item.keywords) {
+            for (var j = 0; !match && j < item.keywords.length; j++) {
+              match |= item.keywords[j] == filter.match.set[i];
+            }
+          }
+          if (match) {
+            break;
+          }
+        }
+        break;
+      }
+
+      if (!match) {
+        return;
+      }
+
+      potentials.push({ svgItem: svgItem, item: item});
+    }, this);
+
+    potentials.forEach(function(potential) {
+      var item = potential.item,
+          svgItem = potential.svgItem,
+          isPin = item.type == "pin";
+      /* If this is a COMPONENT, check if any of it's pins are
+       * potential matches; if so, don't include the COMPONENT */
+      if (!isPin) {
+        if (item.pins) {
+          for (var i = 0; i < item.pins.length; i++) {
+            for (var j = 0; j < potentials.length; j++) {
+              if (potentials[j].item == item.pins[i]) {
+                /* Skip this COMPONENT; one of its PINs is in the list */
+                return;
+              }
+            }
+          }
+        }
+      }
+
+      /* Create a DIV for this item */
+      var div = document.createElement('div');
+      div.setAttribute('refdes', item.refdes);
+
+      /* Add related list of items to an aattibute within the div */
+      if (item.related) {
+        div.setAttribute('related', item.related.join());
+      }
+      /* Add connected list of items to an aattibute within the div */
+      if (item.connected) {
+        div.setAttribute('connected', item.connected.join());
+      }
+
+      /* The over class sets opacity to 100% when :hover is
+       * active on the element and it is set as `interactive`
+       * otherwise set to 'bright' for full opacity */
+      if (filter.options.interactive) {
+        div.classList.add('interactive');
+      }
+
+      div.setAttribute("pattern", filter.index);
+
+      /* If this is a pin, set the 'pin' attribute so the z-index
+       * goes above components */
+      if (isPin) {
+        div.setAttribute("pin", true);
+      }
+
+      /* If alwaysVisible is set, the opacity is set to 50%
+      * when the item is not active */
+      if (filter.options.alwaysVisible) {
+        div.classList.add('alwaysVisible');
+      }
+
+      var rect = svgItem.rect;
+
+      div.style.color = filter.options.color;
+      div.style.top = rect.top;
+      div.style.left = rect.left;
+      div.style.width = rect.width;
+      div.style.height = rect.height;
+      div.addEventListener('mouseover', this.onFilterOver.bind(this));
+      div.addEventListener('mouseout', this.onFilterOut.bind(this));
+      div.addEventListener('mousedown', this.onFilterDown.bind(this));
+      div.addEventListener('mouseup', this.onFilterUp.bind(this));
+
+      Polymer.dom(this.$.filters).appendChild(div);
+    }, this);
+
+    Polymer.dom.flush();
+    this.updateStyles();
+  },
+
+  getFilteredItems: function(filterName) {
+    var filter = null, fiteredItems = [];
+    for (var i = 0; !filter && i < this.filters.length; i++) {
+      if (this.filters[i].name != filterName) {
+        continue;
+      }
+      filter = this.filters[i];
+    }
+    if (filter == null) {
+      return new Error('Filter with name: "' + filterName + '" was not found.')
+    }
+    var filters = Polymer.dom(this.$.filters),
+    matches = filters.querySelectorAll('[pattern="' + filter.index + '"]');
+    matches.forEach(function(item) {
+      fiteredItems.push(item.getAttribute('refdes'));
+    });
+    return fiteredItems;
+  },
+
+  findFilterForItem: function(item) {
+    var filterIndex = event.currentTarget.getAttribute("pattern");
+    if (!filterIndex) {
+      return null;
+    }
+
+    for (var i = 0; i < this.filters.length; i++) {
+      if (this.filters[i].index == filterIndex) {
+        return this.filters[i].name;
+      }
+    }
+    return null;
+  },
+
+  onFilterOver: function(event) {
+    // Highlighting related and connected items bound to the hovered item.
+    var connected, related;
+    if (connected = event.currentTarget.getAttribute('connected')) {
+      this.addFilter('connected', {type: 'LIST', set: connected.split(',')}, {
+        color: "#ff8000",
+        alwaysVisible: true,
+        interactive: false
+      });
+    }
+    if (related = event.currentTarget.getAttribute('related')) {
+      this.addFilter('related', {type: 'LIST', set: related.split(',')}, {
+        color: "#00ff00",
+        alwaysVisible: true,
+        interactive: false
+      });
+    }
+    // Fire the hover action.
+    this.fire('item-hover', {
+      in: true,
+      refdes: event.currentTarget.getAttribute('refdes')
+    });
+  },
+
+  onFilterOut: function(event) {
+    // Removing items related to the hovered item.
+    this.removeFilter('connected');
+    this.removeFilter('related');
+    // Fire the unhover action.
+    this.fire('item-hover', {
+      in: false,
+      refdes: event.currentTarget.getAttribute('refdes')
+    });
+  },
+
+  onResize: function() {
+    this.debounce("resize", function() {
+      if (!this.svg) {
+        return;
+      }
+      var bb = this.svg.getBBox();
+
+      Polymer.dom.flush();
+      this.updateStyles();
+      /* Compare aspect ratio of the board with the aspect ratio of the
+       * viewport and set the scale based on the best-fit */
+      if (bb.width / bb.height > this.offsetWidth / this.offsetHeight) {
+        /* Board is wider-angle than the viewport, so use width as best-fit */
+        this.scale = this.defaultScale * this.offsetWidth / bb.width;
+      } else {
+        /* Board is narrower-angle than the viewport, so use height as best-fit */
+        this.scale = this.defaultScale * this.offsetHeight / bb.height;
+      }
+
+      this.translation.x = this.offsetWidth * 0.5;
+      this.translation.y = this.offsetHeight * 0.5;
+      /* Translate before zoom; zoom will recaluclate the filter div dimensions
+       * from the transformed SVG, including the translation */
+      this.onBoardMove(this.translation.x, this.translation.y);
+      this.onBoardZoom(this.svg, this.zoom);
+    }, 100);
+  },
+
+  mapSvgToBoardData: function(svg, boardData) {
+    if (!boardData || !svg || svg.tagName.toLowerCase() != 'svg') {
+      console.log('SVG or boardData not set. Not mapping.')
+      return;
+    }
+
+    console.log('Mapping SVG to boardData.');
+
+    /* Delete any 'title' elements to keep hover tooltips from showing up */
+    Array.prototype.forEach.call(svg.querySelectorAll('title'), function(el) {
+      el.parentNode.removeChild(el);
+    });
+
+    var missing = [];
+    /* Scan boardData for all of the items named in the SVG --
+     * reporting to console for any missing elements. */
+    this.svgElements.forEach(function(svgItem) {
+      var parts = svgItem.refdes.split("Pin"),
+        isPin = parts.length == 2,
+        component = this.findComponent(parts[0]),
+        pin = isPin ? this.findComponent(svgItem.refdes) : false;
+
+      if (!component) {
+        /* Add the component to the boardData */
+        console.log('Component ' + parts[0] + ' not found in '
+          + this._board + '/board.json');
+        component = {
+          type: "component",
+          refdes: parts[0],
+          name: parts[0],
+          description: 'No description provided.'
+        };
+
+        this.boardData.push(component);
+        missing.push(component);
+      }
+
+      if (isPin && !pin) {
+        console.log('Pin ' + parts[1] + ' not found under ' + parts[0]
+            + ' for ' + this._board + '/board.json');
+        pin = {
+          type: "pin",
+          refdes: svgItem.refdes,
+          name: svgItem.refdes,
+          component: component.refdes,
+          description: 'No description provided.'
+        };
+
+        if (!component.pins) {
+          component.pins = [];
+        }
+        component.pins.push(pin);
+      }
+    }, this);
+
+    /* Fire off a resize */
+    this.onResize();
+
+    if (missing.length) {
+      console.log("Missing items: " + JSON.stringify(missing, null, 2));
+    }
+
+    this.calculateSVGElements();
+    this.filters.forEach(this.populateFilter, this);
+  },
+
+  isBoardLoaded: function(callback) {
+    var results = this.boardData != null ? this.board : null
+
+    if (callback) {
+      callback(results);
+    }
+  },
+
+  getDocumentation: function(refdes, type, callback) {
+    /* Adjust for optional parameters */
+
+    /* If type is not set, and refdes is set to HTML or MD,
+     * set type to refdes and clear refdes. */
+    if (!type) {
+      if (refdes == "HTML" || refdes == "MD") {
+        type = refdes;
+        refdes = undefined;
+      } else {
+        type = "MD"; /* Default to Markdown */
+      }
+    }
+
+    if (!callback) {
+      return;
+    }
+
+    var url = "boards/" + this.board + "/";
+    if (refdes) {
+      var item = this.findComponent(refdes);
+      if (item && item.markdown) {
+        url += "docs/" + item.markdown;
+      } else {
+        url += "docs/" + refdes + ".md";
+      }
+    } else {
+      url += "index.md";
+    }
+    fetch(url, function(headers, response) {
+      var content;
+
+      if (response instanceof Error) {
+        callback({
+          error: "Unable to load documentation for " + refdes,
+          status: 400
+        });
+        return;
+      }
+
+      if (type && type == 'HTML') {
+        try {
+          content = this.md.render(response);
+        } catch (___) {
+          callback({
+            error: "Unable to parse returned content.",
+            status: 500
+          });
+          return;
+        }
+      } else {
+        content = response;
+      }
+
+      callback({
+        status: 200,
+        content: content
+      });
+    }.bind(this));
+  },
+
+  getInfo: function(refdes) {
+    var item = this.findComponent(refdes);
+    if (item) {
+      return item;
+    }
+
+    /* No item found in the boardData -- see if it exists in the
+     * svgElements cache and return just a refdes if so, otherwise
+     * return null */
+    for (var i = 0; i < this.svgElements.length; i++) {
+      if (this.svgElements[i].refdes == refdes) {
+        return { refdes: refdes };
+      }
+    }
+
+    return null;
+  },
+
+  getBoards: function(callback) {
+    if (!callback) {
+      return;
+    }
+
+    fetch("boards.json", function(headers, response) {
+      if (response instanceof Error) {
+        console.log("Unable to load boards.json");
+        callback(response);
+        return;
+      }
+
+      var boards;
+      try {
+        boards = JSON.parse(response);
+      } catch (___) {
+        console.log(___);
+        callback(new Error("Unable to parse boards.json"));
+        return;
+      }
+
+      var results = [];
+      boards.forEach(function(board) {
+        results.push({
+          name: board.title,
+          directory: board.board,
+          image: board.board + '/' + board.image
+        });
+      })
+
+      results = results.sort(function(a, b) {
+        return a.name.localeCompare(b.name);
+      });
+
+      callback(results);
+    });
+  },
+
+  getKeywords: function(callback) {
+    if (!callback) {
+      return;
+    }
+
+    var keywords = [];
+
+    function buildKeywords(item) {
+      if ("keywords" in item) {
+        item.keywords.forEach(function(keyword) {
+          if (keywords.indexOf(keyword) == -1) {
+            keywords.push(keyword);
+          }
+        });
+      }
+
+      return keywords;
+    }
+
+    this.boardData.forEach(function(component) {
+      if (component.pins) {
+        component.pins.forEach(buildKeywords);
+      }
+      buildKeywords(component);
+    });
+
+    callback(keywords.sort());
+  },
+
+  getComponents: function(callback) {
+    var components = [];
+    if (!callback) {
+      return;
+    }
+
+    this.boardData.forEach(function(component) {
+      components.push(component.refdes);
+    });
+
+    /* Sort the components, supporting numerical sorting in names */
+    components = components.sort(function(a, b) {
+      var partsA = a.match(/([^0-9]*)([0-9]*)(.*)/),
+        partsB = b.match(/([^0-9]*)([0-9]*)(.*)/),
+        results = partsA[1].localeCompare(partsB[1]);
+      if (results != 0) {
+        return results;
+      }
+      results = partsA[2] - partsB[2];
+      if (results != 0) {
+        return results;
+      }
+      return partsA[3].localeCompare(partsB[3]);
+    });
+
+    callback(components);
+  },
+
+  setBoard: function(board) {
+    if (this._board != board) {
+      this._board = board || "";
+      this.removeFilter();
+    }
+  },
+
+  attached: function() {
+    this.md = window.markdownit({
+      html: false,
+      xhtmlout: false,
+      breaks: false
+    });
+
+    /* Element needs to process resize events to rescale if necessary */
+    window.addEventListener('resize', this.onResize.bind(this));
+
+    /* Async re-size */
+    this.async(this.onResize);
+  }
+});
+</script>

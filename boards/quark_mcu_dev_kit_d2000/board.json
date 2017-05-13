@@ -1,0 +1,482 @@
+{
+  "title": "Intel Quark Microcontroller Developmer Kit D2000",
+  "version": "April 17 2017",
+  "views": {
+    "front": {
+      "image": "front.svg",
+      "components": {
+        "SW1": {
+          "name": "Board reset button",
+          "description": "Switch 1"
+        },
+        "J1": {
+          "name": "I2C Address Select",
+          "name": "Address Select Accel/Gyro",
+          "keywords": ["jumper"]
+        },
+        "J2": {
+          "name": "JTAG|GPIO|UART_B",
+          "keywords": ["jtag", "uart"],
+          "pins": {
+            "1": {
+              "name": "GND",
+              "keywords": [ "gnd" ]
+            },
+            "2": {
+              "name": "JTAG_TMS|GPIO_22|UART_B_RTS",
+              "keywords": ["gpio","jtag","uart"]
+            },
+            "3": {
+              "name": "N/C"
+            },
+            "4": {
+              "name": "JTAG_TCK|GPIO_21|UART_B_RXD",
+              "keywords": ["gpio","jtag","uart"]
+            },
+            "5": {
+              "name": "JTAG_TRS_T_N|GPIO_20|UART_B_TXD",
+              "keywords": ["gpio","jtag","uart"]
+            },
+            "6": {
+              "name": "JTAG_TDI|GPIO_23|UART_B_CTS",
+              "keywords": ["gpio","jtag","uart"]
+            }
+          }
+        },
+        "J3": {
+          "name": "Shield interface",
+          "description": "\"Arduino-Uno\"-like hardware shield interface",
+          "markdown": "arduino-shield.md",
+          "keywords": [ "arduino" ],
+          "pins": {
+            "10": {
+              "description": "Arduino Pin SCL",
+              "name": "SCL/AIN_05/DIO_19|GPIO_6|ADC/COMP6|I2C_SCL",
+              "keywords": [ "i2c", "dio", "gpio", "adc" ]
+            },
+            "9": {
+              "description": "Arduino Pin SDA",
+              "name": "SDA/AIN_04/DIO_18|GPIO_7|ADC/COMP7|I2C_SDA",
+              "keywords": [ "i2c", "dio", "gpio", "adc" ]
+            },
+            "8": {
+              "description": "Arduino Pin ARF",
+              "name": "Analog Reference",
+              "keywords": [ "adc" ]
+            },
+            "7": {
+              "description": "GND",
+              "keywords": [ "GND" ]
+            },
+            "6": {
+              "description": "Arduino Pin 13 SCK",
+              "name": "SPI_M_SCLK/DIO_13",
+              "functions": {
+                "0": "GPIO_16",
+                "1": "ADC/COMP16",
+                "2": "SPI_M_SCLK"
+              },
+              "keywords": [ "spi", "dio", "gpio", "adc" ]
+            },
+            "5": {
+              "name": "SPI_M_MISO/DIO_12|GPIO_18|ADC/COMP18|SPI_M_MISO",
+              "description": "Arduino Pin 12 MISO",
+              "keywords": [ "spi", "dio", "gpio", "adc" ]
+            },
+            "4": {
+              "name": "SPI_M_MOSI/DIO_11|GPIO_17|ADC/COMP17|SPI_M_MOSI",
+              "description": "Arduino Pin 11 MOSI",
+              "keywords": [ "spi", "dio", "gpio", "adc" ]
+            },
+            "3": {
+              "name": "SPI_M_SSO/DIO_10|GPIO_0|ADC/COMP0|SPI_M_SSO",
+              "description": "Arduino Pin 10 SSO",
+              "keywords": [ "spi", "dio", "gpio", "adc" ]
+            },
+            "2": {
+              "name": "DIO_9|GPIO_24|LPD_SIG_OUT|PWM1",
+              "description": "Arduino Pin 9 PWM1",
+              "keywords": [ "dio", "gpio", "pwm", "lpd" ]
+            },
+            "1": {
+              "name": "DIO_8|GPIO_9|ADC/COMP9|SPI_S_MOSI",
+              "description": "Arduino Pin 8",
+              "keywords": [ "dio", "gpio", "adc", "spi" ]
+            }
+          }
+        },
+        "J4": {
+          "name": "Shield interface",
+          "description": "\"Arduino-Uno\"-like hardware shield interface",
+          "markdown": "arduino-shield.md",
+          "keywords": [ "arduino" ],
+          "pins": {
+            "8": {
+              "name": "DIO_7|GPIO_8|ADC/COMP8|SPI_S_SCLK",
+              "description": "Arduino Pin 7",
+              "keywords": [ "dio", "gpio", "adc", "spi" ]
+            },
+            "7": {
+              "name": "USB port/DIO_6|JTAG_TDO|GPIO_19|PWM0",
+              "description": "Arduino Pin 6 PWM0",
+              "keywords": [ "usb", "dio", "gpio", "jtag", "pwm" ]
+            },
+            "6": {
+              "name": "DIO_5|GPIO_2|ADC/COMP2|SPI_M_SS2",
+              "description": "Arduino Pin 5",
+              "keywords": [ "dio", "gpio", "adc", "spi" ]
+            },
+            "5": {
+              "name": "DIO_4|GPIO_5|ADC/COMP5|SYS_CLK_OUT",
+              "description": "Arduino Pin 4",
+              "keywords": [ "dio", "gpio", "adc", "spi", "clock" ]
+            },
+            "4": {
+              "name": "DIO_3|GPIO_10|ADC/COMP10|SPI_S_MISO",
+              "description": "Arduino Pin 3",
+              "keywords": [ "dio", "gpio", "adc", "spi" ]
+            },
+            "3": {
+              "name": "DIO_2|GPIO_11|ADC/COMP11|SPI_S_SCS",
+              "description": "Arduino Pin 2",
+              "keywords": [ "dio", "gpio", "adc", "spi" ]
+            },
+            "2": {
+              "name": "UART_TXD/DIO_1|GPIO_12|ADC/COMP12|UART_A_TXD",
+              "description": "Arduino Pin 1 TX [UART_A]",
+              "keywords": ["uart", "dio", "gpio", "adc" ]
+            },
+            "1": {
+              "name": "UART_RXD/DIO_0|GPIO_13|ADC/COMP13|UART_A_RXD",
+              "description": "Arduino Pin 0 RX [UART_A]",
+              "keywords": ["uart", "dio", "gpio", "adc" ]
+            }
+          }
+        },
+        "J5": {
+          "description": "Jumper for User LED",
+          "name": "USR/SCK Select",
+          "keywords": ["jumper", "led" ],
+          "pins": {
+            "12": {
+              "description": "USR (default)",
+              "name": "USR"
+            },
+            "23": {
+              "description": "SCK",
+              "name": "SCK"
+            }
+          }
+        },
+        "J7": {
+          "description": "USB for programming and debugging (JTAG)",
+          "name": "microUSB",
+          "keywords": ["usb" ],
+          "related": [ "J26", "J27" ]
+        },
+        "J26": {
+          "name": "Power select",
+          "description": "Power from USB or DC",
+          "keywords": ["jumper", "usb", "power" ],
+          "pins": {
+            "12": {
+              "description": "1-2 External power taken from 5V USB host (default)",
+              "name": "USB"
+            },
+            "23": {
+              "description": "2-3 External power taken from 2.5V-5V DC source",
+              "name": "VSEXT"
+            }
+          }
+        },
+        "J27": {
+          "description": "Jumper to enable/disable internal power regulator",
+          "keywords": ["jumper", "power", "battery" ],
+          "pins": {
+            "12": {
+              "description": "Internal regulator active when connected to external power (default)",
+              "name": "3V3"
+            },
+            "23": {
+              "description": "Power is provided by coin cell battery",
+              "name": "BAT"
+            }
+          }
+        },
+        "J13": {
+          "name": "Boosterpack",
+          "description": "\"Boosterpack\" hardware interface prototyping",
+          "keywords": [ "boosterpack" ],
+          "pins": {
+            "1": {
+              "connected": [ "J4Pin4" ]
+            },
+            "2": {
+              "connected": [ "J3Pin3" ]
+            },
+            "3": {
+              "connected": [ "J3Pin1" ]
+            },
+            "4": {
+              "connected": [ "J3Pin5" ]
+            },
+            "5": {
+              "connected": [ "J3Pin4" ]
+            },
+            "6": {
+              "connected": [ "J22Pin3" ]
+            },
+            "7": {
+              "connected": [ "J4Pin3" ]
+            },
+            "8": {
+              "connected": [ "J23Pin1" ]
+            },
+            "9": {
+              "connected": [ "J3Pin2" ]
+            },
+            "10": {
+              "connected": [ "J2Pin1" ]
+            }
+          }
+        },
+        "J8": {
+          "name": "Boosterpack",
+          "description": "\"Boosterpack\" hardware interface prototyping",
+          "keywords": [ "boosterpack" ],
+          "pins": {
+            "1": {
+              "connected": [ "J22Pin4" ]
+            },
+            "2": {
+              "connected": [ "J23Pin3" ]
+            },
+            "3": {
+              "connected": [ "J4Pin1" ]
+            },
+            "4": {
+              "connected": [ "J4Pin2" ]
+            },
+            "5": {
+              "connected": [ "J4Pin6" ]
+            },
+            "6": {
+              "connected": [ "J23Pin2" ]
+            },
+            "7": {
+              "connected": [ "J3Pin6" ]
+            },
+            "8": {
+              "connected": [ "J4Pin5" ]
+            },
+            "9": {
+              "connected": [ "J3Pin10" ]
+            },
+            "10": {
+              "connected": [ "J3Pin9" ]
+            }
+          }
+        },
+        "J21": {
+          "name": "Booster Pack",
+          "keywords": [ "booster pack" ],
+          "pins": {
+            "1": {
+              "connected": [ "J22Pin4" ]
+            },
+            "2": {
+              "connected": [ "J2Pin1" ]
+            },
+            "3": {
+              "connected": [ "J2Pin1" ]
+            }
+          }
+        },
+        "J20": {
+          "name": "Ground pad",
+          "keywords": [ "gnd" ],
+          "markdown": "board-ground.md"
+        },
+        "J6": {
+          "name": "Ground pad",
+          "keywords": [ "gnd" ],
+          "markdown": "board-ground.md"
+        },
+        "J25": {
+          "name": "Ground pad",
+          "keywords": [ "gnd" ],
+          "markdown": "board-ground.md"
+        },
+        "J9": {
+          "keywords": [ "jumper" ],
+          "pins": {
+            "12": {
+              "keywords": [ "uart" ]
+            },
+            "23": {
+              "keywords": [ "jtag" ]
+            }
+          }
+        },
+        "J10": {
+          "keywords": [ "jumper" ],
+          "pins": {
+            "12": {
+              "keywords": [ "uart" ]
+            },
+            "23": {
+              "keywords": [ "jtag" ]
+            }
+          }
+        },
+        "J11": {
+          "keywords": [ "jumper" ],
+          "pins": {
+            "12": {
+              "keywords": [ "uart" ]
+            },
+            "23": {
+              "keywords": [ "jtag" ]
+            }
+          }
+        },
+        "J15": {
+          "keywords": [ "jumper", "jtag" ]
+        },
+        "J17": {
+          "keywords": [ "jumper", "jtag" ]
+        },
+        "J24": {
+          "name": "J24",
+          "description": "SoC power supply connected (default).",
+          "keywords": [ "jumper" ]
+        },
+        "J28": {
+          "name": "J28",
+          "description": "No description provided."
+        },
+        "SW2": {
+          "name": "User defined push button",
+          "related": [ "J4Pin5" ],
+          "description": "User defined push buttion (DIO_5)"
+        },
+        "J22": {
+          "name": "Shield interface",
+          "description": "\"Arduino-Uno\"-like hardware shield interface",
+          "markdown": "arduino-shield.md",
+          "keywords": [ "arduino" ],
+          "pins": {
+            "1": {
+              "name": "NC|||",
+              "description": "Arduino Pin NC"
+            },
+            "2": {
+              "name": "IOREF|||",
+              "description": "Arduino Pin IOREF"
+            },
+            "3": {
+              "name": "RESET_N|RESET_N||",
+              "description": "Arduino Pin RESET",
+              "keywords": [ "reset" ]
+            },
+            "4": {
+              "name": "3.3V|3.3V||",
+              "description": "Arduino Pin 3.3V",
+              "keywords": [ "power" ]
+            },
+            "5": {
+              "name": "5V|5V||",
+              "description": "Arduino Pin 5V",
+              "keywords": [ "power" ]
+            },
+            "6": {
+              "name": "GND|GND||",
+              "description": "Arduino Pin GND",
+              "keywords": [ "power", "gnd" ]
+            },
+            "7": {
+              "name": "GND|GND||",
+              "description": "Arduino Pin GND",
+              "keywords": [ "power", "gnd" ]
+            },
+            "8": {
+              "name": "NC|||",
+              "description": "Arduino Pin NC"
+            }
+          }
+        },
+        "J23": {
+          "name": "Shield interface",
+          "description": "\"Arduino-Uno\"-like hardware shield interface",
+          "markdown": "arduino-shield.md",
+          "keywords": [ "arduino" ],
+          "pins": {
+            "1": {
+              "name": "AIN_0|GPIO_3|ADC/COMP3|SPI_M_SS3",
+              "description": "Arduino Pin A0",
+              "keywords": [ "aio", "gpio", "adc", "spi" ]
+            },
+            "2": {
+              "name": "AIN_1|GPIO_4|ADC/COMP4|RTC_CLK_OUT",
+              "description": "Arduino Pin A1",
+              "keywords": [ "aio", "gpio", "adc", "spi", "clock" ]
+            },
+            "3": {
+              "name": "AIN_2|GPIO_14|ADC/COMP14|UART_A_RTS/UART_A_DE",
+              "description": "Arduino Pin A2",
+              "keywords": [ "aio", "gpio", "adc", "uart" ]
+            },
+            "4": {
+              "name": "AIN_3|GPIO_15|ADC/COMP15|UART_A_CTS/UART_A_RE",
+              "description": "Arduino Pin A3",
+              "keywords": [ "aio", "gpio", "adc", "uart" ]
+            },
+            "5": {
+              "name": "AIN_4|||",
+              "description": "Arduino Pin A4 SDA",
+              "keywords": [ "aio", "spi" ]
+            },
+            "6": {
+              "name": "AIN_5|||",
+              "description": "Arduino Pin A5 SCL",
+              "keywords": [ "aio", "spi" ]
+            }
+          }
+        },
+        "VBAT": {
+          "name": "BAT",
+          "keywords": [ "battery", "power" ],
+          "related": [ "J26", "J27" ],
+          "description": "On board coin cell CR2032 battery (not included)"
+        },
+        "J19": {
+          "keywords": [ "power" ],
+          "related": [ "J26", "J27" ],
+          "description": "External 2.5V-5V DC power source"
+        },
+        "DS1": {
+          "name": "USR/SCK",
+          "keywords": [ "led" ]
+        },
+        "DS2": {
+          "name": "Power indicator",
+          "keywords": [ "led" ]
+        },
+        "JTAGSEL": {
+          "name": "UART/JTAG mode select"
+        },
+        "FTDI": {
+          "name": "FTDI chip"
+        },
+        "CPU": {
+          "name": "Intel Quark microcontroller D2000"
+        },
+        "ACCEL": {
+          "name": "Sensor pack",
+          "description": "6-axis accelerometer / magnetometer with temperature sensor",
+          "keywords": [ "i2c" ]
+        }
+      }
+    }
+  }
+}
