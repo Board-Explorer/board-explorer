@@ -19,6 +19,7 @@
   <link rel="import" href="bower_components/paper-button/paper-button.html">
   <link rel="import" href="bower_components/paper-material/paper-material.html">
   <link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
+  <link rel="import" href="bower_components/vaadin-split-layout/vaadin-split-layout.html">
 
   <link rel="import" href="board-viewer.html">
 
@@ -210,6 +211,16 @@
       border-right: 1px none black;
     }
 
+    #panel-left {
+      min-width: 0%;
+      max-width: 35%;
+    }
+
+    #panel-right {
+      min-width: 35%;
+      max-width: 100%;
+    }
+
     /* Fix IE not wrapping correctly in flex wrap layouts */
     .wrap {
       width: 100%;
@@ -247,85 +258,88 @@
     </div>
   </paper-material>
 
-  <div hidden$="[[isEmpty(board)]]" class="horizontal layout justified">
-    <div class="vertical layout flex">
-      <paper-material class="vertical layout start">
-        <div hidden$="[[isEmpty(board)]]">Showing:</div>
-        <a is-button on-click="unloadBoard" hidden$="[[isEmpty(board)]]">
-          [[getBoardBoxTitle(board)]]
-          <iron-icon hidden$="[[isEmpty(board)]]" icon="close"></iron-icon>
-        </a>
-      </paper-material>
+  <vaadin-split-layout hidden$="[[isEmpty(board)]]" class="horizontal layout justified">
+    <div id="panel-left">
+      <div class="vertical layout flex">
+        <paper-material class="vertical layout start">
+          <div hidden$="[[isEmpty(board)]]">Showing:</div>
+          <a is-button on-click="unloadBoard" hidden$="[[isEmpty(board)]]">
+            [[getBoardBoxTitle(board)]]
+            <iron-icon hidden$="[[isEmpty(board)]]" icon="close"></iron-icon>
+          </a>
+        </paper-material>
 
-      <paper-material id="keywords" hidden$="[[isEmpty(keywords)]]" class="vertical layout start">
-        <div hidden$="[[!isEmpty(keyword)]]">
-          <div hidden$="[[isEmpty(component)]]">Keywords for [[component.refdes]]</div>
-          <div hidden$="[[!isEmpty(component)]]">Filter by keyword</div>
-        </div>
-        <div hidden$="[[isEmpty(keyword)]]"><b>Filtering by</b>:</div>
-        <a is-button on-click="clearKeyword" hidden$="[[isEmpty(keyword)]]">
-          [[keyword.keyword]]
-          <iron-icon hidden$="[[isEmpty(keyword)]]" icon="close"></iron-icon>
-        </a>
-        <div hidden$="[[!isEmpty(keyword)]]" class="horizontal layout wrap">
-          <template is="dom-repeat" items="[[keywords]]">
-            <a is-button on-click="itemClicked" match$="[[item.keyword]]" on-mouseover="itemOver" on-mouseout="itemOut">[[item.keyword]]</a>
-          </template>
-        </div>
-      </paper-material>
+        <paper-material id="keywords" hidden$="[[isEmpty(keywords)]]" class="vertical layout start">
+          <div hidden$="[[!isEmpty(keyword)]]">
+            <div hidden$="[[isEmpty(component)]]">Keywords for [[component.refdes]]</div>
+            <div hidden$="[[!isEmpty(component)]]">Filter by keyword</div>
+          </div>
+          <div hidden$="[[isEmpty(keyword)]]"><b>Filtering by</b>:</div>
+          <a is-button on-click="clearKeyword" hidden$="[[isEmpty(keyword)]]">
+            [[keyword.keyword]]
+            <iron-icon hidden$="[[isEmpty(keyword)]]" icon="close"></iron-icon>
+          </a>
+          <div hidden$="[[!isEmpty(keyword)]]" class="horizontal layout wrap">
+            <template is="dom-repeat" items="[[keywords]]">
+              <a is-button on-click="itemClicked" match$="[[item.keyword]]" on-mouseover="itemOver" on-mouseout="itemOut">[[item.keyword]]</a>
+            </template>
+          </div>
+        </paper-material>
 
-      <paper-material id="components" hidden$="[[isEmpty(components)]]" class="vertical layout start">
-        <div hidden$="[[!isEmpty(component)]]">Filter by component</div>
-        <div hidden$="[[isEmpty(component)]]"><b>Filtering by</b>:</div>
-        <a is-button on-click="clearComponent" hidden$="[[isEmpty(component)]]">
-          [[component.refdes]]: [[component.name]]
-          <iron-icon hidden$="[[isEmpty(component)]]" icon="close"></iron-icon>
-        </a>
-        <div hidden$="[[!isEmpty(component)]]" class="layout horizontal wrap">
-          <template is="dom-repeat" items="[[components]]">
-            <a is-button on-click="itemClicked" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="itemOver" on-mouseout="itemOut">
-              <div>[[itemRefDes(item)]]</div>
-              <div>[[itemName(item)]]</div>
-            </a>
-          </template>
-        </div>
-      </paper-material>
+        <paper-material id="components" hidden$="[[isEmpty(components)]]" class="vertical layout start">
+          <div hidden$="[[!isEmpty(component)]]">Filter by component</div>
+          <div hidden$="[[isEmpty(component)]]"><b>Filtering by</b>:</div>
+          <a is-button on-click="clearComponent" hidden$="[[isEmpty(component)]]">
+            [[component.refdes]]: [[component.name]]
+            <iron-icon hidden$="[[isEmpty(component)]]" icon="close"></iron-icon>
+          </a>
+          <div hidden$="[[!isEmpty(component)]]" class="layout horizontal wrap">
+            <template is="dom-repeat" items="[[components]]">
+              <a is-button on-click="itemClicked" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="itemOver" on-mouseout="itemOut">
+                <div>[[itemRefDes(item)]]</div>
+                <div>[[itemName(item)]]</div>
+              </a>
+            </template>
+          </div>
+        </paper-material>
 
-      <paper-material id="pins" hidden$="[[isEmpty(pins)]]" class="vertical layout start">
-        <div hidden$="[[!isEmpty(pin)]]">Select a pin</div>
-        <div hidden$="[[isEmpty(pin)]]"><b>Filtering by</b>:</div>
-        <a is-button on-click="clearPin" hidden$="[[isEmpty(pin)]]">
-          [[pin.refdes]]: [[pin.name]]
-          <iron-icon hidden$="[[isEmpty(pin)]]" icon="close"></iron-icon>
-        </a>
-        <div hidden$="[[!isEmpty(pin)]]" class="layout horizontal wrap">
-          <template is="dom-repeat" items="[[pins]]">
-            <a is-button on-click="itemClicked" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="itemOver" on-mouseout="itemOut">
-              <div>[[itemRefDes(item)]]</div>
-              <div>[[itemName(item)]]</div>
-            </a>
-          </template>
-        </div>
-      </paper-material>
+        <paper-material id="pins" hidden$="[[isEmpty(pins)]]" class="vertical layout start">
+          <div hidden$="[[!isEmpty(pin)]]">Select a pin</div>
+          <div hidden$="[[isEmpty(pin)]]"><b>Filtering by</b>:</div>
+          <a is-button on-click="clearPin" hidden$="[[isEmpty(pin)]]">
+            [[pin.refdes]]: [[pin.name]]
+            <iron-icon hidden$="[[isEmpty(pin)]]" icon="close"></iron-icon>
+          </a>
+          <div hidden$="[[!isEmpty(pin)]]" class="layout horizontal wrap">
+            <template is="dom-repeat" items="[[pins]]">
+              <a is-button on-click="itemClicked" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="itemOver" on-mouseout="itemOut">
+                <div>[[itemRefDes(item)]]</div>
+                <div>[[itemName(item)]]</div>
+              </a>
+            </template>
+          </div>
+        </paper-material>
+      </div>
     </div>
 
-    <div class="vertical layout flex">
-      <board-viewer class="flex-grow" hidden$="[[isEmpty(board)]]" id="boardViewer" disable-zoom disable-drag></board-viewer>
+    <vaadin-split-layout vertical id="panel-right">
+       <board-viewer class="flex-grow" hidden$="[[isEmpty(board)]]" id="boardViewer" disable-zoom disable-drag></board-viewer>
+        <paper-material id="info" hidden$="[[isEmpty(hover)]]" class$="[[itemClassList(hover)]] vertical layout">
+          <paper-toolbar><div hidden$="[[hideReadable(hover)]]">[[hover.readable]]: </div><div>[[hover.name]]</div></paper-toolbar>
+          <div hidden$="[[isEmpty(hover.component)]]">Component: [[hover.component]]</div>
+          <div hidden$="[[isEmpty(hover.pins)]]">Pins: [[hover.pins.length]]</div>
+          <div hidden$="[[isEmpty(hover.keywords)]]">Keywords:
+            <template is="dom-repeat" items="[[hover.keywords]]" as="keyword">
+              <a href="#[[board]]/[[keyword]]">[[keyword]]</a>
+            </template>
+          </div>
+          <div hidden$="[[isEmpty(hover.description)]]">Description: [[hover.description]]</div>
+          <div><div id="documentation"></div></div>
+        </paper-material>
+    </vaadin-split-layout>
 
-      <paper-material id="info" hidden$="[[isEmpty(hover)]]" class$="[[itemClassList(hover)]] vertical layout">
-        <paper-toolbar><div hidden$="[[hideReadable(hover)]]">[[hover.readable]]: </div><div>[[hover.name]]</div></paper-toolbar>
-        <div hidden$="[[isEmpty(hover.component)]]">Component: [[hover.component]]</div>
-        <div hidden$="[[isEmpty(hover.pins)]]">Pins: [[hover.pins.length]]</div>
-        <div hidden$="[[isEmpty(hover.keywords)]]">Keywords:
-          <template is="dom-repeat" items="[[hover.keywords]]" as="keyword">
-            <a href="#[[board]]/[[keyword]]">[[keyword]]</a>
-          </template>
-        </div>
-        <div hidden$="[[isEmpty(hover.description)]]">Description: [[hover.description]]</div>
-        <div><div id="documentation"></div></div>
-      </paper-material>
-    </div>
-  </div>
+  </vaadin-split-layout>
+
 </template>
 <script>
 "use strict";
