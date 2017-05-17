@@ -78,7 +78,6 @@
       border-radius: 3px;
       border: 1px solid rgba(0, 0, 0, 0.5);
       min-width: 8em;
-      white-space: nowrap;
       text-align: center;
       text-decoration: none;
       background-color: #f0f0f0;
@@ -210,15 +209,25 @@
       border-right: 1px none black;
     }
 
+    #layout {
+      height: 100%;
+      max-height: 100%;
+    }
+
     #panel-left {
       min-width: 0%;
-      max-width: 35%;
+      max-width: 33.3%;
       overflow-: auto;
     }
 
     #panel-right {
-      min-width: 35%;
+      min-width: 33.3%;
       max-width: 100%;
+    }
+
+    #panel-bottom {
+      height: 33.3%;
+      max-height: 33.3%;
     }
 
     /* Fix IE not wrapping correctly in flex wrap layouts */
@@ -258,7 +267,7 @@
     </div>
   </paper-material>
 
-  <vaadin-split-layout hidden$="[[isEmpty(board)]]" class="horizontal layout justified">
+  <vaadin-split-layout hidden$="[[isEmpty(board)]]" class="horizontal layout justified" id="layout">
     <div id="panel-left">
       <div class="vertical layout flex">
         <paper-material class="vertical layout start">
@@ -324,7 +333,7 @@
 
     <vaadin-split-layout vertical id="panel-right">
         <board-viewer class="flex-grow" hidden$="[[isEmpty(board)]]" id="boardViewer" disable-zoom disable-drag></board-viewer>
-        <paper-material id="info" hidden$="[[isEmpty(hover)]]" class$="[[itemClassList(hover)]] vertical layout">
+        <div id="panel-bottom"><paper-material id="info" hidden$="[[isEmpty(hover)]]" class$="[[itemClassList(hover)]] vertical layout">
           <paper-toolbar><div hidden$="[[hideReadable(hover)]]">[[hover.readable]]: </div><div>[[hover.name]]</div></paper-toolbar>
           <div hidden$="[[isEmpty(hover.component)]]">Component: [[hover.component]]</div>
           <div hidden$="[[isEmpty(hover.pins)]]">Pins: [[hover.pins.length]]</div>
@@ -335,7 +344,7 @@
           </div>
           <div hidden$="[[isEmpty(hover.description)]]">Description: [[hover.description]]</div>
           <div><div id="documentation"></div></div>
-        </paper-material>
+        </paper-material></div>
     </vaadin-split-layout>
 
   </vaadin-split-layout>
