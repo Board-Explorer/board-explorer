@@ -412,19 +412,10 @@ document.addEventListener("WebComponentsReady", function() {
       "setBoardAndFiltersFromHash(boards, hash)"
     ],
 
-     behaviors: [
-      Polymer.IronResizableBehavior
-    ],
-
     listeners: {
       "boardViewer.board-changed": "onBoardChanged",
       "boardViewer.item-hover": "onItemHover",
-      "boardViewer.item-tap": "onItemTap",
-      "iron-resize": "_onIronResize"
-    },
-
-    _onIronResize: function() {
-      this.$.boardViewer.onResize();
+      "boardViewer.item-tap": "onItemTap"
     },
 
     hideSelector: function(board, initialized) {

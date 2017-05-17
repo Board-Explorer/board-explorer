@@ -218,6 +218,14 @@ Polymer({
     "onBoardLoaded(svg, _board, boardData)"
   ],
 
+  behaviors: [
+    Polymer.IronResizableBehavior
+  ],
+
+  listeners: {
+    "iron-resize" : "resize"
+  },
+
   onZoomChanged: function(event) {
     this.zoom = event.detail.value;
   },
@@ -861,7 +869,7 @@ Polymer({
     });
   },
 
-  onResize: function() {
+  resize: function() {
     this.debounce("resize", function() {
       if (!this.svg) {
         return;
@@ -945,7 +953,7 @@ Polymer({
     }, this);
 
     /* Fire off a resize */
-    this.onResize();
+    this.resize();
 
     if (missing.length) {
       console.log("Missing items: " + JSON.stringify(missing, null, 2));
@@ -1152,10 +1160,10 @@ Polymer({
     });
 
     /* Element needs to process resize events to rescale if necessary */
-    window.addEventListener('resize', this.onResize.bind(this));
+    window.addEventListener('resize', this.resize.bind(this));
 
     /* Async re-size */
-    this.async(this.onResize);
+    this.async(this.resize);
   }
 });
 </script>
