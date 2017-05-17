@@ -2,6 +2,7 @@
 <html>
 <head>
   <link rel="import" href="bower_components/polymer/polymer.html">
+  <link rel="import" href="bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
   <script src="bower_components/es6-shim/es6-shim.min.js"></script>
   <script src="svg-injector.js"></script>
   <script src="fetch.js"></script>
@@ -217,6 +218,14 @@ Polymer({
     "mapSvgToBoardData(svg, boardData)",
     "onBoardLoaded(svg, _board, boardData)"
   ],
+
+  behaviors: [
+    Polymer.IronResizableBehavior
+  ],
+
+  listeners: {
+    "iron-resize" : "resize"
+  },
 
   onZoomChanged: function(event) {
     this.zoom = event.detail.value;
@@ -861,7 +870,7 @@ Polymer({
     });
   },
 
-  onResize: function() {
+  resize: function() {
     this.debounce("resize", function() {
       if (!this.svg) {
         return;
@@ -945,7 +954,7 @@ Polymer({
     }, this);
 
     /* Fire off a resize */
-    this.onResize();
+    this.resize();
 
     if (missing.length) {
       console.log("Missing items: " + JSON.stringify(missing, null, 2));
@@ -1152,10 +1161,10 @@ Polymer({
     });
 
     /* Element needs to process resize events to rescale if necessary */
-    window.addEventListener('resize', this.onResize.bind(this));
+    window.addEventListener('resize', this.resize.bind(this));
 
     /* Async re-size */
-    this.async(this.onResize);
+    this.async(this.resize);
   }
 });
 </script>
