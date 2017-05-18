@@ -441,7 +441,7 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     unloadBoard: function() {
-      this.$.boardViewer.setBoard();
+      this.$.boardViewer.board = "";
       /* Remove all filters */
       this.$.boardViewer.removeFilter();
       this.filters = [];
@@ -697,7 +697,7 @@ document.addEventListener("WebComponentsReady", function() {
       /* Remove all filters */
       this.$.boardViewer.removeFilter();
       this.filters = [];
-      this.$.boardViewer.setBoard(board);
+      this.$.boardViewer.board = board;
       this.onFiltersChanged(board, this.filters);
     },
 
@@ -1224,7 +1224,7 @@ document.addEventListener("WebComponentsReady", function() {
 
       this.board = event.state.board;
       this.filters = event.state.filters;
-      this.$.boardViewer.setBoard(this.board);
+      this.$.boardViewer.board = this.board;
       this.onFiltersChanged(this.board, this.filters);
     },
 
@@ -1257,7 +1257,7 @@ document.addEventListener("WebComponentsReady", function() {
           this.filters = [];
         }
         console.log("Loading " + boardToLoad);
-        this.$.boardViewer.setBoard(boardToLoad);
+        this.$.boardViewer.board = boardToLoad;
       }
 
       this.onFiltersChanged(boardToLoad, this.filters);
