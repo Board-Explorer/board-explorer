@@ -214,14 +214,19 @@
       max-height: 100%;
     }
 
+    #sidebar-left {
+      width: 100%;
+      max-width: 100%;
+    }
+
     #panel-left {
-      min-width: 0%;
+      width: 33.3%;
       max-width: 33.3%;
-      overflow-: auto;
+      overflow: auto;
     }
 
     #panel-right {
-      min-width: 33.3%;
+      width: 66.7%;
       max-width: 100%;
     }
 
@@ -269,7 +274,7 @@
 
   <vaadin-split-layout hidden$="[[isEmpty(board)]]" class="horizontal layout justified" id="layout">
     <div id="panel-left">
-      <div class="vertical layout flex">
+      <div class="vertical layout flex" id="sidebar-left">
         <paper-material class="vertical layout start">
           <div hidden$="[[isEmpty(board)]]">Showing:</div>
           <a is-button on-click="unloadBoard" hidden$="[[isEmpty(board)]]">
