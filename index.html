@@ -20,7 +20,7 @@
   <link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
   <link rel="import" href="bower_components/vaadin-split-layout/vaadin-split-layout.html">
 
-  <link rel="import" href="board-viewer.html">
+  <link rel="import" href="bower_components/board-viewer/board-viewer.html">
 
   <script src="bower_components/highlightjs/highlight.pack.min.js"></script>
 
@@ -428,7 +428,8 @@ document.addEventListener("WebComponentsReady", function() {
     listeners: {
       "boardViewer.board-changed": "onBoardChanged",
       "boardViewer.item-hover": "onItemHover",
-      "boardViewer.item-tap": "onItemTap"
+      "boardViewer.item-tap": "onItemTap",
+      "boardViewer.loading-changed": "boardLoaded"
     },
 
     hideSelector: function(board, initialized) {
@@ -713,10 +714,18 @@ document.addEventListener("WebComponentsReady", function() {
       this.availableComponents = [];
       this.components = [];
 
-      if (!board) {
+      if (!board || this.$.boardViewer.loading) {
         console.log("Board Explorer unloaded board.");
         /* Remove all filters */
         this.$.boardViewer.removeFilter();
+        return;
+      }
+
+      this.boardLoaded();
+    },
+
+    boardLoaded: function(event) {
+      if (!this.$.boardViewer.board || this.$.boardViewer.loading) {
         return;
       }
 
