@@ -1,6 +1,19 @@
 {
   "title": "Intel Quark Microcontroller Developmer Kit D2000",
   "version": "April 17 2017",
+  "categories": [ {
+    "name": "Main expansion options",
+    "list": [ "J13", "J8", "J3", "J4", "J22", "J23" ]
+  }, {
+    "name": "On board components",
+    "list": [ "ACCEL", "J7" ]
+  }, {
+    "name": "Other connectors",
+    "list": [ "J19", "J7", "VBAT" ]
+  }, {
+    "name": "Power sources",
+    "list": [ "J19", "VBAT", "J7"]
+  } ],
   "views": {
     "front": {
       "image": "front.svg",
