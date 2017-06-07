@@ -8,6 +8,7 @@
 
   <script src="bower_components/es6-shim/es6-shim.min.js"></script>
 
+
   <link rel="import" href="bower_components/app-route/app-route.html">
   <link rel="import" href="bower_components/app-route/app-location.html">
 
@@ -15,6 +16,14 @@
   <link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
   <link rel="import" href="bower_components/iron-icon/iron-icon.html">
+
+  <link rel="import" href="bower_components/paper-radio-group/paper-radio-group.html">
+  <link rel="import" href="bower_components/paper-radio-button/paper-radio-button.html">
+
+  <link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+  <link rel="import" href="bower_components/paper-listbox/paper-listbox.html">
+  <link rel="import" href="bower_components/paper-item/paper-item.html">
+
   <link rel="import" href="bower_components/paper-button/paper-button.html">
   <link rel="import" href="bower_components/paper-material/paper-material.html">
   <link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
@@ -122,6 +131,9 @@
       transition: 0.15s all ease;
     }
 
+    paper-dropdown-menu {
+      width: 100%;
+    }
 
     #info div:not(.item-with-name) #name {
       display: none;
@@ -273,6 +285,7 @@
   <vaadin-split-layout hidden$="[[isEmpty(board)]]" class="horizontal layout justified" id="layout">
     <div id="panel-left">
       <div class="vertical layout flex" id="sidebar-left">
+
         <paper-material class="vertical layout start">
           <div hidden$="[[isEmpty(board)]]">Showing:</div>
           <a is-button on-click="unloadBoard" hidden$="[[isEmpty(board)]]">
@@ -281,7 +294,25 @@
           </a>
         </paper-material>
 
-        <paper-material id="keywords" hidden$="[[isEmpty(keywords)]]" class="vertical layout start">
+        <paper-material class="vertical layout start">
+          <paper-radio-group id="filterControls" on-selected-changed="onfilterControlChanged">
+            <paper-radio-button name="all">All filters</paper-radio-button>
+            <paper-radio-button name="categories">Categories</paper-radio-button>
+            <paper-radio-button name="know-the-board" disabled>Get to know the board</paper-radio-button>
+          </paper-radio-group>
+        </paper-material>
+
+        <paper-material hidden class="vertical layout start" control="categories">
+          <paper-dropdown-menu label="Category" no-animations>
+          <paper-listbox slot="dropdown-content" id="categories" class="dropdown-content" on-selected-item-changed="categoryChanged" selected="-1">
+            <template is="dom-repeat" items="[[categories]]">
+              <paper-item index$="[[index]]">[[item.name]]</paper-item>
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+        </paper-material>
+
+        <paper-material id="keywords" hidden$="[[isEmpty(keywords)]]" class="vertical layout start" control="all">
           <div hidden$="[[!isEmpty(keyword)]]">
             <div hidden$="[[isEmpty(component)]]">Keywords for [[component.refdes]]</div>
             <div hidden$="[[!isEmpty(component)]]">Filter by keyword</div>
@@ -331,6 +362,7 @@
             </template>
           </div>
         </paper-material>
+
       </div>
     </div>
 
@@ -368,6 +400,12 @@ document.addEventListener("WebComponentsReady", function() {
         type: String,
         value: null
       },
+
+      categories: {
+        type: Array,
+        value: []
+      },
+
       keywords: {
         type: Array,
         value: []
@@ -413,6 +451,7 @@ document.addEventListener("WebComponentsReady", function() {
         type: Boolean,
         value: false
       }
+
     },
 
     observers: [
@@ -428,6 +467,42 @@ document.addEventListener("WebComponentsReady", function() {
       "boardViewer.item-hover": "onItemHover",
       "boardViewer.item-tap": "onItemTap",
       "boardViewer.loading-changed": "boardLoaded"
+    },
+
+    categoryChanged: function(event) {
+      if (event.detail.value == null) {
+        return;
+      }
+      this.clearComponent();
+      this.clearPin();
+      var index = event.detail.value.getAttribute('index');
+      var filterList = this.categories[index].list;
+      this.components = this.availableComponents.filter(function(component) {
+        return (filterList.indexOf(component.refdes) != -1) ? true : false;
+      });
+      this.$.boardViewer.addFilter("selected", { type: "LIST", set: filterList }, {
+        color: "#ffff00",
+        interactive: true,
+        alwaysVisible: true
+      });
+    },
+
+    onfilterControlChanged: function(event) {
+      this.clearKeyword();
+      this.clearComponent();
+      this.clearPin();
+      var filterControls = Polymer.dom(this.root).querySelectorAll('[control]');
+      this.components = this.availableComponents;
+      for (var i = 0; i < filterControls.length; i++) {
+        var attr = filterControls[i].getAttribute('control');
+        filterControls[i].hidden = (attr == event.detail.value) ? false : true;
+      }
+      if (event.detail.value == 'categories') {
+        this.$.categories.select(0);
+      }
+      else {
+        this.$.categories.select(-1);
+      }
     },
 
     hideSelector: function(board, initialized) {
@@ -458,6 +533,7 @@ document.addEventListener("WebComponentsReady", function() {
       this.infoTitle = "";
       this.hover = this.boardInfo;
       this.selected = null;
+      this.$.boardViewer.removeFilter("selected");
     },
 
     clearPin: function() {
@@ -465,6 +541,7 @@ document.addEventListener("WebComponentsReady", function() {
       this.infoTitle = "";
       this.hover = this.boardInfo;
       this.selected = null;
+      this.$.boardViewer.removeFilter("selected");
     },
 
     itemClassList: function(item) {
@@ -711,6 +788,7 @@ document.addEventListener("WebComponentsReady", function() {
       this.pins = [];
       this.availableComponents = [];
       this.components = [];
+      this.categories = [];
 
       if (!board || this.$.boardViewer.loading) {
         console.log("Board Explorer unloaded board.");
@@ -742,7 +820,6 @@ document.addEventListener("WebComponentsReady", function() {
           break;
         }
       }
-
       /* Turn on the 'Everything' interactive filters;
        * Pins will be Green
        * Components will be Cyan */
@@ -795,6 +872,18 @@ document.addEventListener("WebComponentsReady", function() {
           if (this.filters.length) {
             this.selected = this.$.boardViewer.findComponent(this.filters[0]);
             this.hover = this.selected;
+          }
+
+          this.set("categories", this.$.boardViewer.getCategories());
+          if (this.categories.length) {
+            this.$.filterControls.querySelector('[name="categories"]').disabled = false;
+            this.$.filterControls.select("categories");
+            this.$.categories.select(0);
+          }
+          else {
+            this.$.filterControls.select("all");
+            this.$.filterControls.querySelector('[name="categories"]').disabled = true;
+            this.$.categories.select(-1);
           }
 
           /* Load the board top-level documentation */
@@ -913,23 +1002,24 @@ document.addEventListener("WebComponentsReady", function() {
         this.component = item;
         this.pins = this.component.pins;
 
-        this.keywords = this.availableKeywords.filter(function(keyword) {
-          keyword = keyword.keyword;
-          var match = item.keywords ? (item.keywords.indexOf(keyword) != -1) : false;
-          if (match) {
-            return true;
-          }
-          if (!item.pins) {
-            return false;
-          }
-          for (var i = 0; i < item.pins.length; i++) {
-            if (item.pins[i].keywords && (item.pins[i].keywords.indexOf(keyword) != -1)) {
+        if (this.$.filterControls.selected == 'all') {
+          this.keywords = this.availableKeywords.filter(function(keyword) {
+            keyword = keyword.keyword;
+            var match = item.keywords ? (item.keywords.indexOf(keyword) != -1) : false;
+            if (match) {
               return true;
             }
-          }
-          return false;
-        });
-
+            if (!item.pins) {
+              return false;
+            }
+            for (var i = 0; i < item.pins.length; i++) {
+              if (item.pins[i].keywords && (item.pins[i].keywords.indexOf(keyword) != -1)) {
+                return true;
+              }
+            }
+            return false;
+          });
+        }
         break;
 
       case "pin":
@@ -943,10 +1033,11 @@ document.addEventListener("WebComponentsReady", function() {
 
         this.pin = item;
 
-        this.keywords = this.availableKeywords.filter(function(keyword) {
-          return item.keywords ? (item.keywords.indexOf(keyword.keyword) != -1) : false;
-        });
-
+        if (this.$.filterControls.selected == 'all') {
+           this.keywords = this.availableKeywords.filter(function(keyword) {
+            return item.keywords ? (item.keywords.indexOf(keyword.keyword) != -1) : false;
+          });
+        }
         break;
       }
 
