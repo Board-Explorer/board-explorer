@@ -837,14 +837,6 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       this.set("categories", this.$.boardViewer.getCategories());
-      /*for( var i = 0; i < this.categories.length; i++) {
-        var list = this.categories[i].list;
-        if (list.length) {
-           for( var j = 0; j < list.length; j++) {
-            this.set('categories.' + i + '.list.' + j, this.$.boardViewer.findComponent(this.categories[i].list[j]))
-          }
-        }
-      }*/
 
       console.log("Asking for keywords...");
       this.$.boardViewer.getKeywords(function(object) {
@@ -1003,23 +995,24 @@ document.addEventListener("WebComponentsReady", function() {
         this.component = item;
         this.pins = this.component.pins;
 
-        /*this.keywords = this.availableKeywords.filter(function(keyword) {
-          keyword = keyword.keyword;
-          var match = item.keywords ? (item.keywords.indexOf(keyword) != -1) : false;
-          if (match) {
-            return true;
-          }
-          if (!item.pins) {
-            return false;
-          }
-          for (var i = 0; i < item.pins.length; i++) {
-            if (item.pins[i].keywords && (item.pins[i].keywords.indexOf(keyword) != -1)) {
+        if (this.$.filterControls.selected == 'all') {
+          this.keywords = this.availableKeywords.filter(function(keyword) {
+            keyword = keyword.keyword;
+            var match = item.keywords ? (item.keywords.indexOf(keyword) != -1) : false;
+            if (match) {
               return true;
             }
-          }
-          return false;
-        });*/
-
+            if (!item.pins) {
+              return false;
+            }
+            for (var i = 0; i < item.pins.length; i++) {
+              if (item.pins[i].keywords && (item.pins[i].keywords.indexOf(keyword) != -1)) {
+                return true;
+              }
+            }
+            return false;
+          });
+        }
         break;
 
       case "pin":
@@ -1033,10 +1026,11 @@ document.addEventListener("WebComponentsReady", function() {
 
         this.pin = item;
 
-        /*this.keywords = this.availableKeywords.filter(function(keyword) {
-          return item.keywords ? (item.keywords.indexOf(keyword.keyword) != -1) : false;
-        });*/
-
+        if (this.$.filterControls.selected == 'all') {
+           this.keywords = this.availableKeywords.filter(function(keyword) {
+            return item.keywords ? (item.keywords.indexOf(keyword.keyword) != -1) : false;
+          });
+        }
         break;
       }
 
