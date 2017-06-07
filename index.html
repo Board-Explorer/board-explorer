@@ -131,6 +131,9 @@
       transition: 0.15s all ease;
     }
 
+    paper-dropdown-menu {
+      width: 100%;
+    }
 
     #info div:not(.item-with-name) #name {
       display: none;
@@ -292,7 +295,7 @@
         </paper-material>
 
         <paper-material class="vertical layout start">
-          <paper-radio-group selected="all" id="filterControls" on-selected-changed="onfilterControlChanged">
+          <paper-radio-group id="filterControls" on-selected-changed="onfilterControlChanged">
             <paper-radio-button name="all">All filters</paper-radio-button>
             <paper-radio-button name="categories">Categories</paper-radio-button>
             <paper-radio-button name="know-the-board" disabled>Get to know the board</paper-radio-button>
@@ -474,29 +477,31 @@ document.addEventListener("WebComponentsReady", function() {
       this.clearPin();
       var index = event.detail.value.getAttribute('index');
       var filterList = this.categories[index].list;
-      var components = this.$.components.querySelectorAll('[match]');
-      for (var i = 0; i < components.length; i++) {
-        if (filterList.indexOf(components[i].getAttribute('match')) != -1) {
-          components[i].hidden = false;
-        }
-        else {
-          components[i].hidden = true;
-        }
-      }
+      this.components = this.availableComponents.filter(function(component) {
+        return (filterList.indexOf(component.refdes) != -1) ? true : false;
+      });
+      this.$.boardViewer.addFilter("selected", { type: "LIST", set: filterList }, {
+        color: "#ffff00",
+        interactive: true,
+        alwaysVisible: true
+      });
     },
 
     onfilterControlChanged: function(event) {
+      this.clearKeyword();
       this.clearComponent();
       this.clearPin();
-      this.$.categories.select(-1);
       var filterControls = Polymer.dom(this.root).querySelectorAll('[control]');
-      var components = this.$.components.querySelectorAll('a[match]');
-      for (var i = 0; i < components.length; i++) {
-        components[i].hidden = false;
-      }
-      for (var i=0; i < filterControls.length; i++) {
+      this.components = this.availableComponents;
+      for (var i = 0; i < filterControls.length; i++) {
         var attr = filterControls[i].getAttribute('control');
         filterControls[i].hidden = (attr == event.detail.value) ? false : true;
+      }
+      if (event.detail.value == 'categories') {
+        this.$.categories.select(0);
+      }
+      else {
+        this.$.categories.select(-1);
       }
     },
 
@@ -783,6 +788,7 @@ document.addEventListener("WebComponentsReady", function() {
       this.pins = [];
       this.availableComponents = [];
       this.components = [];
+      this.categories = [];
 
       if (!board || this.$.boardViewer.loading) {
         console.log("Board Explorer unloaded board.");
@@ -836,8 +842,6 @@ document.addEventListener("WebComponentsReady", function() {
         });
       }
 
-      this.set("categories", this.$.boardViewer.getCategories());
-
       console.log("Asking for keywords...");
       this.$.boardViewer.getKeywords(function(object) {
         var keywords = [];
@@ -868,6 +872,18 @@ document.addEventListener("WebComponentsReady", function() {
           if (this.filters.length) {
             this.selected = this.$.boardViewer.findComponent(this.filters[0]);
             this.hover = this.selected;
+          }
+
+          this.set("categories", this.$.boardViewer.getCategories());
+          if (this.categories.length) {
+            this.$.filterControls.querySelector('[name="categories"]').disabled = false;
+            this.$.filterControls.select("categories");
+            this.$.categories.select(0);
+          }
+          else {
+            this.$.filterControls.select("all");
+            this.$.filterControls.querySelector('[name="categories"]').disabled = true;
+            this.$.categories.select(-1);
           }
 
           /* Load the board top-level documentation */
