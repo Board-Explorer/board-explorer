@@ -528,7 +528,7 @@ document.addEventListener("WebComponentsReady", function() {
       this.infoTitle = "";
       this.hover = this.boardInfo;
       this.selected = null;
-      this.$.boardViewer.removeFilter();
+      this.$.boardViewer.removeFilter("selected");
     },
 
     clearPin: function() {
@@ -536,7 +536,7 @@ document.addEventListener("WebComponentsReady", function() {
       this.infoTitle = "";
       this.hover = this.boardInfo;
       this.selected = null;
-      this.$.boardViewer.removeFilter();
+      this.$.boardViewer.removeFilter("selected");
     },
 
     itemClassList: function(item) {
