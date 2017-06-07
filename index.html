@@ -859,16 +859,7 @@ document.addEventListener("WebComponentsReady", function() {
         this.$.boardViewer.getComponents(function(results) {
           var components = [];
           results.forEach(function(refdes) {
-            var component = this.$.boardViewer.getInfo(refdes);
-            var categories = [];
-            for (var i = 0; i < this.categories.length; i++) {
-              var index = this.categories[i].list.indexOf(refdes)
-              if (index > 0) {
-                categories.push(index);
-              }
-            }
-            component.categories = categories.join();
-            components.push(component);
+            components.push(this.$.boardViewer.getInfo(refdes));
           }, this);
           console.log("Components received: " + components.length);
           this.availableComponents = components;
