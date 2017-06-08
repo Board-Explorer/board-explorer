@@ -1,37 +1,35 @@
 {
   "title": "Intel Quark Microcontroller Developmer Kit C1000",
+  "categories": [ {
+    "name": "Power supply inputs and main power switch provision",
+    "list": [ "J2", "J1", "J4", "J20", "J21" ]
+  }, {
+    "name": "System configuration and user controls and indicators",
+    "list": [ "S1", "D1", "SW1", "SW2", "J3", "D3", "D4", "J6", "D2", "J3", "J5" ]
+  }, {
+    "name": "Radio systems, processor module, and memory",
+    "list": [ "TI_CC2520", "SMD_ANTENNA", "C1000", "BLE", "FLASH", "EEPROM" ]
+  }, {
+    "name": "JTAG support, sensors, and functional system blocks",
+    "list": [
+      "FTDI1", "FTDI2", "FTDIEEPROM", "TEMP", "USBTOSERIAL",
+      "FTDIBUS", "ACCEL", "ALS", "REGULATORS", "SOCSWITCHING", "SIGSELMUX",
+      "SIGSELMUXSEL", "BUCKBOOST" ]
+  }, {
+    "name": "Development signal headers, BLE, and Arduino shield sockets",
+    "list": [ "J14", "J15", "J8", "J9", "J11", "J12" ]
+  } ],
   "views": {
     "front": {
       "image": "front.svg",
-      "categories": [ {
-        "name": "Power supply inputs and main power switch provision",
-        "list": [ "J2", "J1", "J4", "J20", "J21" ]
-      }, {
-        "name": "System configuration and user controls and indicators",
-        "list": [ "S1", "D1", "SW1", "SW2", "J3", "D3", "D4", "J6", "D2", "J3", "J5" ]
-      }, {
-        "name": "Radio systems, processor module, and memory",
-        "list": [ "TI_CC2520", "SMD_ANTENNA", "C1000", "BLE", "FLASH", "EEPROM" ]
-      }, {
-        "name": "JTAG support, sensors, and functional system blocks",
-        "list": [
-          "FTDI1", "FTDI2", "FTDIEEPROM", "TEMP", "USBTOSERIAL",
-          "FTDIBUS", "ACCEL", "ALS", "REGULATORS", "SOCSWITCHING", "SIGSELMUX",
-          "SIGSELMUXSEL", "BUCKBOOST" ]
-      }, {
-        "name": "Development signal headers, BLE, and Arduino shield sockets",
-        "list": [ "J14", "J8", "J9", "J11", "J12" ]
-      } ],
       "components": {
         "SW1": {
           "name": "User switch",
-          "description": "User Push Button 0",
-          "categories": [ "user_controls" ]
+          "description": "User Push Button 0"
         },
         "SW2": {
           "name": "User switch",
-          "description": "User Push Button 1",
-          "categories": [ "user_controls" ]
+          "description": "User Push Button 1"
         },
         "J10": {
           "name": "Programming Header",
@@ -361,58 +359,48 @@
         "J1": {
           "name": "ATP_USB",
           "description": "ATP/USB Input",
-          "keywords": [ "ftdi", "atp" ],
-          "categories": [ "power_supply" ]
+          "keywords": [ "ftdi", "atp" ]
         },
         "J2": {
           "name": "FTD_USB",
           "description": "FTDI/USB Input",
-          "keywords": [ "ftdi", "usb" ],
-          "categories": [ "power_supply" ]
+          "keywords": [ "ftdi", "usb" ]
         },
         "D1": {
           "name": "Voltage Indicator",
           "description": "FTDI/USB VBUS Voltage Indicator",
-          "keywords": [ "led" ],
-          "categories": [ "indicators" ]
+          "keywords": [ "led" ]
         },
         "D2": {
           "name": "Voltage Indicator",
           "description": "ATP/USB VBUS Voltage Indicator",
-          "keywords": [ "led" ],
-          "categories": [ "indicators" ]
+          "keywords": [ "led" ]
         },
         "D3": {
           "name": "User LED: Yellow",
           "description": "User LED Indicators 0",
-          "keywords": [ "led" ],
-          "categories": [ "indicators" ]
+          "keywords": [ "led" ]
         },
         "D4": {
           "name": "User LED: Green",
           "description": "User LED Indicators 0",
-          "keywords": [ "led" ],
-          "categories": [ "indicators" ]
+          "keywords": [ "led" ]
         },
         "J20": {
           "name": "Ground",
-          "description": "User GND reference point",
-          "categories": [ "power_supply" ]
+          "description": "User GND reference point"
         },
         "J21": {
           "name": "Ground",
-          "description": "User GND reference point",
-          "categories": [ "power_supply" ]
+          "description": "User GND reference point"
         },
         "S1": {
           "name": "Master Reset",
-          "description": "Master Reset",
-          "categories": [ "user_controls" ]
+          "description": "Master Reset"
         },
         "J4": {
           "name": "DC & Battery",
-          "description": "DC & Battery Connector (+5V DC)",
-          "categories": [ "power_supply" ]
+          "description": "DC & Battery Connector (+5V DC)"
         },
         "J3": {
           "name": "VSYS Voltage Selection",
@@ -443,7 +431,12 @@
         },
         "ASEL": {
           "description": "ARDUINO Shield Signal Selection Mux Selects"
-        }
+        },
+        "U23": {},
+        "U28": {},
+        "U25": {},
+        "U19": {},
+        "U20": {}
       }
     }
   }
