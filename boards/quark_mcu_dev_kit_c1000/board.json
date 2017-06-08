@@ -3,6 +3,25 @@
   "views": {
     "front": {
       "image": "front.svg",
+      "categories": [ {
+        "name": "Power supply inputs and main power switch provision",
+        "list": [ "J2", "J1", "J4", "J20", "J21" ]
+      }, {
+        "name": "System configuration and user controls and indicators",
+        "list": [ "S1", "D1", "SW1", "SW2", "J3", "D3", "D4", "J6", "D2", "J3", "J5" ]
+      }, {
+        "name": "Radio systems, processor module, and memory",
+        "list": [ "TI_CC2520", "SMD_ANTENNA", "C1000", "BLE", "FLASH", "EEPROM" ]
+      }, {
+        "name": "JTAG support, sensors, and functional system blocks",
+        "list": [
+          "FTDI1", "FTDI2", "FTDIEEPROM", "TEMP", "USBTOSERIAL",
+          "FTDIBUS", "ACCEL", "ALS", "REGULATORS", "SOCSWITCHING", "SIGSELMUX",
+          "SIGSELMUXSEL", "BUCKBOOST" ]
+      }, {
+        "name": "Development signal headers, BLE, and Arduino shield sockets",
+        "list": [ "J14", "J8", "J9", "J11", "J12" ]
+      } ],
       "components": {
         "SW1": {
           "name": "User switch",
