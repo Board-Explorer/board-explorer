@@ -306,12 +306,12 @@
         "J1": {
           "name": "ATP_USB",
           "description": "ATP/USB Input",
-          "keywords": [ "ftdi", "atp" ]
+          "keywords": [ "ftdi", "atp", "power" ]
         },
         "J2": {
           "name": "FTD_USB",
           "description": "FTDI/USB Input",
-          "keywords": [ "ftdi", "usb" ]
+          "keywords": [ "ftdi", "usb", "power" ]
         },
         "J3": {
           "name": "VSYS Voltage Selection",
@@ -328,7 +328,8 @@
         },
         "J4": {
           "name": "DC & Battery",
-          "description": "External Power Connector +5V DC Max"
+          "description": "External Power Connector +5V DC Max",
+          "keywords": [ "power" ]
         },
         "J5": {
           "name": "Main Voltage Selection",
@@ -359,12 +360,12 @@
         "D1": {
           "name": "Voltage Indicator",
           "description": "FTDI/USB VBUS Voltage Indicator",
-          "keywords": [ "led" ]
+          "keywords": [ "led", "power" ]
         },
         "D2": {
           "name": "Voltage Indicator",
           "description": "ATP/USB VBUS Voltage Indicator",
-          "keywords": [ "led" ]
+          "keywords": [ "led", "power" ]
         },
         "D3": {
           "name": "User LED: Yellow",
