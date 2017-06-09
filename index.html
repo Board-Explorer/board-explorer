@@ -73,6 +73,10 @@
       --bg-l: #f8f8f1;
     }
 
+    #boardTitle {
+      cursor: pointer;
+    }
+
     board-viewer {
       position: relative;
       height: 480px;
@@ -286,12 +290,8 @@
     <div id="panel-left">
       <div class="vertical layout flex" id="sidebar-left">
 
-        <paper-material class="vertical layout start">
-          <div hidden$="[[isEmpty(board)]]">Showing:</div>
-          <a is-button on-click="unloadBoard" hidden$="[[isEmpty(board)]]">
-            [[getBoardBoxTitle(board)]]
-            <iron-icon hidden$="[[isEmpty(board)]]" icon="close"></iron-icon>
-          </a>
+        <paper-material id="boardTitle" on-click="unloadBoard" class="vertical layout start">
+          [[getBoardBoxTitle(board)]]
         </paper-material>
 
         <paper-material class="vertical layout start">
