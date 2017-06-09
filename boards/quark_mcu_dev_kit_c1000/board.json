@@ -17,7 +17,7 @@
       "SIGSELMUXSEL", "BUCKBOOST", "U19", "U25", "U20", "U23", "U28" ]
   }, {
     "name": "Development signal headers, BLE, and Arduino shield sockets",
-    "list": [ "J14", "J15", "J8", "J9", "J11", "J12" ]
+    "list": [ "J8", "J9", "J10", "J11", "J12", "J14", "J15" ]
   } ],
   "views": {
     "front": {
@@ -316,7 +316,15 @@
         "J3": {
           "name": "VSYS Voltage Selection",
           "description": "Default settings shown",
-          "keywords": ["jumper"]
+          "keywords": ["jumper", "power"],
+          "pins": {
+            "12": {
+              "name": "Internal regulator (default)"
+            },
+            "23": {
+              "name": "External DC input"
+            }
+          }
         },
         "J4": {
           "name": "DC & Battery",
@@ -325,12 +333,28 @@
         "J5": {
           "name": "Main Voltage Selection",
           "description": "Default settings shown",
-          "keywords": ["jumper"]
+          "keywords": ["jumper", "power"],
+          "pins": {
+            "12": {
+              "name": "USB (default)"
+            },
+            "23": {
+              "name": "External DC input"
+            }
+          }
         },
         "J6": {
           "name": "I/O Voltage Selection",
           "description": "Default settings shown",
-          "keywords": ["jumper"]
+          "keywords": ["jumper", "power"],
+          "pins": {
+            "12": {
+              "name": "3.3V (default)"
+            },
+            "23": {
+              "name": "1.8V"
+            }
+          }
         },
         "D1": {
           "name": "Voltage Indicator",
@@ -362,7 +386,8 @@
         },
         "S1": {
           "name": "Master Reset",
-          "description": "Master Reset"
+          "description": "Master Reset",
+          "keywords": [ "switch" ]
         },
         "TI_CC2520": {
           "description": "TI CC2520 802.15.4 Radio Module"
@@ -376,7 +401,7 @@
         "BLE": {
           "description": "Bluetooth Low Energy Radio Module"
         },
-        "ASEL": {
+        "SW4": {
           "description": "ARDUINO Shield Signal Selection Mux Selects"
         },
         "U19": {
