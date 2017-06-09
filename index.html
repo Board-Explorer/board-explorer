@@ -421,7 +421,7 @@ document.addEventListener("WebComponentsReady", function() {
       },
 
       filters: {
-        type: Object
+        type: Array
       },
 
       components: {
@@ -478,13 +478,20 @@ document.addEventListener("WebComponentsReady", function() {
       if (event.detail.value == null) {
         return;
       }
+      /* When a category changes, reset the filters and clear the component
+       * and pin boxes */
+      this.filters = [];
       this.clearComponent();
       this.clearPin();
+
       var index = event.detail.value.getAttribute('index');
       var filterList = this.categories[index].list;
+
+      /* Only add items to the filter if they exist on the board */
       this.components = this.availableComponents.filter(function(component) {
         return (filterList.indexOf(component.refdes) != -1) ? true : false;
       });
+
       this.$.boardViewer.addFilter("selected", { type: "LIST", set: filterList }, {
         color: "#ffff00",
         interactive: true,
@@ -493,6 +500,12 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     onfilterControlChanged: function(event) {
+      /* If the filter control changes to something other than to 'All',
+       * clear the filters. */
+      if (event.detail.value != 'all') {
+        this.filters = [];
+      }
+
       this.clearKeyword();
       this.clearComponent();
       this.clearPin();
@@ -880,14 +893,16 @@ document.addEventListener("WebComponentsReady", function() {
           }
 
           this.set("categories", this.$.boardViewer.getCategories());
-          if (this.categories.length) {
-            this.$.filterControls.querySelector('[name="categories"]').disabled = false;
+          /* Enable/Disable 'Categories' based on whether there are categories */
+          this.$.filterControls.querySelector('[name="categories"]').disabled = (this.categories.length == 0);
+
+          /* If there are categories for this board, and no filter is set,
+           * select the 'Categories' radio box */
+          if (this.categories.length && this.isEmpty(this.filters)) {
             this.$.filterControls.select("categories");
             this.$.categories.select(0);
-          }
-          else {
+          } else {
             this.$.filterControls.select("all");
-            this.$.filterControls.querySelector('[name="categories"]').disabled = true;
             this.$.categories.select(-1);
           }
 
