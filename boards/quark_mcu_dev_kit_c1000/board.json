@@ -13,8 +13,8 @@
     "name": "JTAG support, sensors, and functional system blocks",
     "list": [
       "FTDI1", "FTDI2", "FTDIEEPROM", "TEMP", "USBTOSERIAL",
-      "FTDIBUS", "ACCEL", "ALS", "REGULATORS", "SOCSWITCHING", "SIGSELMUX",
-      "SIGSELMUXSEL", "BUCKBOOST" ]
+      "FTDIBUS", "ACCEL", "ALS", "regulator", "SOCSWITCHING", "SIGSELMUX",
+      "SIGSELMUXSEL", "BUCKBOOST", "U19", "U25", "U20", "U23", "U28" ]
   }, {
     "name": "Development signal headers, BLE, and Arduino shield sockets",
     "list": [ "J14", "J15", "J8", "J9", "J11", "J12" ]
@@ -304,59 +304,6 @@
           }
         },
         "J1": {
-          "description": "J1",
-          "keywords": ["jumper"],
-          "pins": {
-            "1": {
-              "description": "",
-              "name": "",
-              "type": ""
-            },
-            "2": {
-              "description": "",
-              "name": "",
-              "type": ""
-            }
-          }
-        },
-        "J2": {
-          "description": "J2",
-          "name": "UART_B",
-          "keywords": ["uart"],
-          "pins": {
-            "1": {
-              "description": "CTS",
-              "name": "",
-              "type": ""
-            },
-            "2": {
-              "description": "TXD",
-              "name": "",
-              "type": ""
-            },
-            "3": {
-              "description": "RXD",
-              "name": "",
-              "type": ""
-            },
-            "4": {
-              "description": "",
-              "name": "",
-              "type": ""
-            },
-            "5": {
-              "description": "RTS",
-              "name": "",
-              "type": ""
-            },
-            "6": {
-              "description": "GND",
-              "name": "",
-              "type": ""
-            }
-          }
-        },
-        "J1": {
           "name": "ATP_USB",
           "description": "ATP/USB Input",
           "keywords": [ "ftdi", "atp" ]
@@ -365,6 +312,25 @@
           "name": "FTD_USB",
           "description": "FTDI/USB Input",
           "keywords": [ "ftdi", "usb" ]
+        },
+        "J3": {
+          "name": "VSYS Voltage Selection",
+          "description": "Default settings shown",
+          "keywords": ["jumper"]
+        },
+        "J4": {
+          "name": "DC & Battery",
+          "description": "External Power Connector +5V DC Max"
+        },
+        "J5": {
+          "name": "Main Voltage Selection",
+          "description": "Default settings shown",
+          "keywords": ["jumper"]
+        },
+        "J6": {
+          "name": "I/O Voltage Selection",
+          "description": "Default settings shown",
+          "keywords": ["jumper"]
         },
         "D1": {
           "name": "Voltage Indicator",
@@ -398,25 +364,6 @@
           "name": "Master Reset",
           "description": "Master Reset"
         },
-        "J4": {
-          "name": "DC & Battery",
-          "description": "DC & Battery Connector (+5V DC)"
-        },
-        "J3": {
-          "name": "VSYS Voltage Selection",
-          "description": "Default settings shown",
-          "keywords": ["jumper"]
-        },
-        "J5": {
-          "name": "Main Voltage Selection",
-          "description": "Default settings shown",
-          "keywords": ["jumper"]
-        },
-        "J6": {
-          "name": "I/O Voltage Selection",
-          "description": "Default settings shown",
-          "keywords": ["jumper"]
-        },
         "TI_CC2520": {
           "description": "TI CC2520 802.15.4 Radio Module"
         },
@@ -432,11 +379,26 @@
         "ASEL": {
           "description": "ARDUINO Shield Signal Selection Mux Selects"
         },
-        "U23": {},
-        "U28": {},
-        "U25": {},
-        "U19": {},
-        "U20": {}
+        "U19": {
+          "description": "ARDUINO Shield Signal Selection Muxes",
+          "keywords": [ "regulator" ]
+        },
+        "U20": {
+          "description": "ARDUINO Shield Signal Selection Muxes",
+          "keywords": [ "regulator" ]
+        },
+        "U23": {
+          "description": "ARDUINO Shield Signal Selection Muxes",
+          "keywords": [ "regulator" ]
+        },
+        "U28": {
+          "description": "ARDUINO Shield Signal Selection Muxes",
+          "keywords": [ "regulator" ]
+        },
+        "U25": {
+          "description": "ARDUINO Shield Signal Selection Muxes",
+          "keywords": [ "regulator" ]
+        }
       }
     }
   }
