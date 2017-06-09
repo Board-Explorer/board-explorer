@@ -743,8 +743,8 @@ document.addEventListener("WebComponentsReady", function() {
 
       var item = null;
       for (var i = 0; i < this.components.length; i++) {
-        item = this.components[i];
-        if (item.refdes == parts[0]) {
+        if (this.components[i].refdes == parts[0]) {
+          item = this.components[i];
           break;
         }
       }
