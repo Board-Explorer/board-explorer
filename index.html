@@ -664,9 +664,9 @@ document.addEventListener("WebComponentsReady", function() {
         if (this.hover == item) {
           Polymer.dom(this.$.documentation).innerHTML = html;
         }
-      }.bind(this, item)).catch(function(error) {
-        console.log(error);
-      }).then(function(item) {
+      }.bind(this, item)).catch(function(item, error) {
+        return "<p>No additional documentation for " + item.refdes;
+      }.bind(this, item)).then(function(item) {
         /* Fire off the most recent load request if it changed while the above
          * was resolving */
         if (this.loading != item) {
