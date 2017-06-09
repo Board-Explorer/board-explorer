@@ -367,7 +367,12 @@
     </div>
 
     <vaadin-split-layout vertical id="panel-right">
-        <board-viewer class="flex-grow" hidden$="[[isEmpty(board)]]" id="boardViewer" disable-zoom disable-drag></board-viewer>
+        <board-viewer
+          class="flex-grow"
+          hidden$="[[isEmpty(board)]]"
+          id="boardViewer"
+          enable-zoom
+          enable-drag></board-viewer>
         <div id="panel-bottom"><paper-material id="info" hidden$="[[isEmpty(hover)]]" class$="[[itemClassList(hover)]] vertical layout">
           <paper-toolbar><div hidden$="[[hideReadable(hover)]]">[[hover.readable]]: </div><div>[[hover.name]]</div></paper-toolbar>
           <div hidden$="[[isEmpty(hover.component)]]">Component: [[hover.component]]</div>
