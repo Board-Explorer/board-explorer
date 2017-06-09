@@ -36,13 +36,13 @@
      inkscape:window-height="1028"
      id="namedview6307"
      showgrid="false"
-     inkscape:zoom="18.864076"
-     inkscape:cx="37.500284"
+     inkscape:zoom="8.3911979"
+     inkscape:cx="35.020006"
      inkscape:cy="153.49199"
      inkscape:window-x="280"
-     inkscape:window-y="56"
+     inkscape:window-y="24"
      inkscape:window-maximized="0"
-     inkscape:current-layer="Layer_1" /><style
+     inkscape:current-layer="BV_SW4" /><style
      type="text/css"
      id="style3338">
 	.st0{fill:#0F7391;}
@@ -7721,7 +7721,8 @@
        id="BV_SW4"
        class="component"><g
          class="component"
-         id="BV_ASELPin1"><rect
+         id="BV_SW4Pin1"
+         inkscape:label="#BV_ASELPin1"><rect
            style="fill:#333333"
            id="rect5554"
            height="9"
@@ -7772,7 +7773,8 @@
            y="48.299999"
            x="52" /></g><g
          class="component"
-         id="BV_ASELPin2"><rect
+         id="BV_SW4Pin2"
+         inkscape:label="#BV_ASELPin2"><rect
            style="fill:#333333"
            id="rect5570"
            height="9"
@@ -7823,7 +7825,8 @@
            y="48.299999"
            x="44.400002" /></g><g
          class="component"
-         id="BV_ASELPin3"><rect
+         id="BV_SW4Pin3"
+         inkscape:label="#BV_ASELPin3"><rect
            style="fill:#333333"
            id="rect5586"
            height="9"
@@ -7874,7 +7877,8 @@
            y="48.299999"
            x="36.900002" /></g><g
          class="component"
-         id="BV_ASELPin4"><rect
+         id="BV_SW4Pin4"
+         inkscape:label="#BV_ASELPin4"><rect
            style="fill:#333333"
            id="rect5602"
            height="9"
