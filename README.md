@@ -28,9 +28,6 @@ independent of the Board Explorer application.
 
 ## Adding a new board
 
-
-
-
 ### Prerequisites
 
 ```bash
@@ -55,7 +52,7 @@ You then need to install the web components used by the project and node
 dependencies:
 
 ```bash
-cd ${DOCROOT}/board-viewer
+cd ${DOCROOT}/board-explorer
 bower install
 npm install
 ```
@@ -69,3 +66,4 @@ node app.js
 
 The NodeJS application can be placed behind an nginx proxy if you want. By
 default the application will listen on port 11211.
+
