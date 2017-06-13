@@ -4,10 +4,11 @@
   <title>Board Explorer</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script>'<base href="">';</script>
+
   <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-
   <script src="bower_components/es6-shim/es6-shim.min.js"></script>
-
 
   <link rel="import" href="bower_components/app-route/app-route.html">
   <link rel="import" href="bower_components/app-route/app-location.html">
@@ -268,7 +269,7 @@
   <paper-material id="board-selector" hidden$="[[hideSelector(board,initialized)]]" class="layout vertical start">
     <div class="vertical layout wrap">
       <div class="heading">Select a board to explore</div>
-      <div class="layout horizontal start-justified wrap">
+      <div id="board-list" class="layout horizontal start-justified wrap">
         <template is="dom-repeat" items="[[boards]]">
           <paper-button raised noink class="board-card layout vertical" tabindex$="[[index]]" on-tap="boardClicked">
             <div class="image" style$="background-image: url('boards/[[item.board]]/[[item.image]]');">
@@ -1393,13 +1394,13 @@ document.addEventListener("WebComponentsReady", function() {
       }.bind(this))();
 
       this.$.boardViewer.getBoards(function(boards) {
-        if (!boards) {
+        if (!boards || boards instanceof Error) {
+          this.initialized = true;
+          console.log("Initialized to board-selector with no boards.");
+          this.$['board-list'].innerHTML = "<div>No boards available to list.</div>";
           window.location.hash = "";
-          boards.textContent = "No boards available to list."
-          this.boards = [];
-          return;
+          boards = [];
         }
-
         this.boards = boards;
         this.hash = window.location.hash;
       }.bind(this));
