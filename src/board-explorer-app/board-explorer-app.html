@@ -422,8 +422,7 @@ document.addEventListener("WebComponentsReady", function() {
     listeners: {
       "boardViewer.board-changed": "onBoardChanged",
       "boardViewer.item-hover": "onItemHover",
-      "boardViewer.item-tap": "onItemTap",
-      "boardViewer.loading-changed": "boardLoaded"
+      "boardViewer.item-tap": "onItemTap"
     },
 
     categoryChanged: function(event) {
@@ -484,7 +483,7 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     unloadBoard: function() {
-      this.$.boardViewer.board = "";
+      this.$.boardViewer.loadBoard();
       /* Remove all filters */
       this.$.boardViewer.removeFilter();
       this.filters = [];
@@ -494,14 +493,14 @@ document.addEventListener("WebComponentsReady", function() {
 
     clearKeyword: function() {
       this.keyword = null;
-      this.hover = this.boardInfo;
+      this.hover = null;
       this.selected = null;
     },
 
     clearComponent: function() {
       this.component = null;
       this.infoTitle = "";
-      this.hover = this.boardInfo;
+      this.hover = null;
       this.selected = null;
       this.$.boardViewer.removeFilter("selected");
     },
@@ -509,7 +508,7 @@ document.addEventListener("WebComponentsReady", function() {
     clearPin: function() {
       this.pin = null;
       this.infoTitle = "";
-      this.hover = this.boardInfo;
+      this.hover = null;
       this.selected = null;
       this.$.boardViewer.removeFilter("selected");
     },
@@ -668,6 +667,7 @@ document.addEventListener("WebComponentsReady", function() {
         if (this.hover == info) {
           /* If no item has been selected via tapping, hover will show info */
           if (!this.selected) {
+            this.hover = null; /* Force DOM update */
             this.hover = this.boardInfo;
           }
         }
@@ -689,6 +689,7 @@ document.addEventListener("WebComponentsReady", function() {
       this.pendingHover = info;
       /* If no item has been selected via tapping, hover will show info */
       if (!this.selected) {
+        this.hover = null; /* Force DOM update */
         this.hover = info;
       }
 
@@ -742,7 +743,9 @@ document.addEventListener("WebComponentsReady", function() {
       /* Remove all filters */
       this.$.boardViewer.removeFilter();
       this.filters = [];
-      this.$.boardViewer.board = board;
+      if (this.$.boardViewer.board != board) {
+        this.$.boardViewer.loadBoard(board);
+      }
       this.onFiltersChanged(board, this.filters);
     },
 
@@ -760,21 +763,15 @@ document.addEventListener("WebComponentsReady", function() {
       this.components = [];
       this.categories = [];
 
-      if (!board || this.$.boardViewer.loading) {
+      if (!board) {
         console.log("Board Explorer unloaded board.");
-        /* Remove all filters */
-        this.$.boardViewer.removeFilter();
         return;
       }
 
       this.boardLoaded();
     },
 
-    boardLoaded: function(event) {
-      if (!this.$.boardViewer.board || this.$.boardViewer.loading) {
-        return;
-      }
-
+    boardLoaded: function() {
       console.log("Board Explorer has a board loaded and ready.");
       /* If a board has been set, the app is initialized */
       this.initialized = true;
@@ -841,6 +838,7 @@ document.addEventListener("WebComponentsReady", function() {
 
           if (this.filters.length) {
             this.selected = this.$.boardViewer.findComponent(this.filters[0]);
+            this.hover = null; /* Force DOM update */
             this.hover = this.selected;
           }
 
@@ -862,12 +860,14 @@ document.addEventListener("WebComponentsReady", function() {
           this.$.boardViewer.getDocumentation(null, "HTML", function(results) {
             if (!results || results.error) {
               console.log(results.error);
+              this.hover = null; /* Force DOM update */
               this.hover = this.boardInfo;
               return;
             }
 
             this.boardInfo.html = results.content;
             if (!this.selected) {
+              this.hover = null; /* Force DOM update */
               this.hover = this.boardInfo;
             }
           }.bind(this));
@@ -1014,6 +1014,7 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       this.selected = item;
+      this.hover = null; /* Force DOM update */
       this.hover = item;
 
       /* Behavior with control pressed:
@@ -1123,6 +1124,7 @@ document.addEventListener("WebComponentsReady", function() {
         this.highlightKeywords(event.model.item.keywords, true);
         /* If no item has been selected via tapping, hover will show info */
         if (!this.selected) {
+          this.hover = null; /* Force DOM update */
           this.hover = event.model.item;
         }
         break;
@@ -1138,6 +1140,7 @@ document.addEventListener("WebComponentsReady", function() {
         this.highlightKeywords(event.model.item.keywords, true);
         /* If no item has been selected via tapping, hover will show info */
         if (!this.selected) {
+          this.hover = null; /* Force DOM update */
           this.hover = event.model.item;
         }
       }
@@ -1167,6 +1170,7 @@ document.addEventListener("WebComponentsReady", function() {
       if (event.model.item == this.hover) {
         /* If no item has been selected via tapping, hover will show info */
         if (!this.selected) {
+          this.hover = null; /* Force DOM update */
           this.hover = this.boardInfo;
         }
       }
@@ -1285,7 +1289,9 @@ document.addEventListener("WebComponentsReady", function() {
 
       this.board = event.state.board;
       this.filters = event.state.filters;
-      this.$.boardViewer.board = this.board;
+      if (this.board != this.$.boardViewer.board) {
+        this.$.boardViewer.loadBoard(this.board);
+      }
       this.onFiltersChanged(this.board, this.filters);
     },
 
@@ -1318,7 +1324,9 @@ document.addEventListener("WebComponentsReady", function() {
           this.filters = [];
         }
         console.log("Loading " + boardToLoad);
-        this.$.boardViewer.board = boardToLoad;
+        if (boardToLoad != this.$.boardViewer.board) {
+          this.$.boardViewer.loadBoard(boardToLoad);
+        }
       }
 
       this.onFiltersChanged(boardToLoad, this.filters);
