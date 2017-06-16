@@ -170,13 +170,16 @@
           "description": "Jumper for User LED",
           "name": "USR/SCK Select",
           "keywords": ["jumper", "led" ],
+          "related": [ "J3Pin2", "J3Pin6", "DS1" ],
           "pins": {
             "12": {
               "description": "USR (default)",
+              "related": [ "J3Pin2", "DS1" ],
               "name": "USR"
             },
             "23": {
               "description": "SCK",
+              "related": [ "J3Pin6", "DS1" ],
               "name": "SCK"
             }
           }
