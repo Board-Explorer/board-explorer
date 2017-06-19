@@ -67,3 +67,11 @@ node app.js
 The NodeJS application can be placed behind an nginx proxy if you want. By
 default the application will listen on port 11211.
 
+## Deploy to board-explorer.github.io/board-explorer
+
+```bash
+BASE=/$(basename $(pwd))/ ./build.sh
+./publish.sh
+```
+
+
