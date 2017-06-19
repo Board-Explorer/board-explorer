@@ -443,7 +443,7 @@ document.addEventListener("WebComponentsReady", function() {
         return (filterList.indexOf(component.refdes) != -1) ? true : false;
       });
 
-      this.$.boardViewer.addFilter("selected", { type: "LIST", set: filterList }, {
+      this.$.boardViewer.addFilter("selected", filterList, {
         color: "#ffff00",
         interactive: true,
         alwaysVisible: true
@@ -801,8 +801,7 @@ document.addEventListener("WebComponentsReady", function() {
 
       // Draw current filters in the url if they are properly set in the var.
       if (this.filters.length) {
-        this.$.boardViewer.addFilter("selected", { type: "LIST", set: this.filters
-        }, {
+        this.$.boardViewer.addFilter("selected", this.filters, {
           color: "#ffff00",
           interactive: false,
           alwaysVisible: true
@@ -843,6 +842,8 @@ document.addEventListener("WebComponentsReady", function() {
           }
 
           this.set("categories", this.$.boardViewer.getCategories());
+          console.log(this.filters);
+
           /* Enable/Disable 'Categories' based on whether there are categories */
           this.$.filterControls.querySelector('[name="categories"]').disabled = (this.categories.length == 0);
 
@@ -1043,10 +1044,7 @@ document.addEventListener("WebComponentsReady", function() {
       if (this.filters.length == 0) {
         this.$.boardViewer.removeFilter("selected");
       } else {
-        this.$.boardViewer.addFilter("selected", {
-          type: "LIST",
-          set: this.filters
-        }, {
+        this.$.boardViewer.addFilter("selected", this.filters, {
           color: "#ffff00",   /* color for highlight border */
           interactive: false, /* Always bright */
           alwaysVisible: true
@@ -1080,10 +1078,7 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       if (filters.length) {
-        this.$.boardViewer.addFilter("selected", {
-          type: "LIST",
-          set: filters
-        }, {
+        this.$.boardViewer.addFilter("selected", filters, {
           color: "#ffff00",
           interactive: false,
           alwaysVisible: true
@@ -1146,7 +1141,7 @@ document.addEventListener("WebComponentsReady", function() {
       }
       /* Adding all connected refdes to the filter list */
       if(event.model.item.connected) {
-        this.$.boardViewer.addFilter("connected", {type: "LIST", set: event.model.item.connected}, {
+        this.$.boardViewer.addFilter("connected", event.model.item.connected, {
           color: "#ff8000",
           alwaysVisible: true,
           interactive: false
@@ -1154,7 +1149,7 @@ document.addEventListener("WebComponentsReady", function() {
       }
       /* Adding all related refdes to the filter list */
       if(event.model.item.related) {
-         this.$.boardViewer.addFilter("related", {type: "LIST", set: event.model.item.related}, {
+         this.$.boardViewer.addFilter("related", event.model.item.related, {
           color: "#00ff00",
           alwaysVisible: true,
           interactive: false
