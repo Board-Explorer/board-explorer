@@ -8,6 +8,8 @@
 
   <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 
+  <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+
   <link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
   <link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
 
@@ -324,33 +326,34 @@
     </div>
 
     <vaadin-split-layout vertical id="panel-right">
-        <board-viewer
-          class="flex-grow"
-          hidden$="[[isEmpty(board)]]"
-          id="boardViewer"
-          enable-zoom
-          enable-drag></board-viewer>
-        <div id="panel-bottom">
-          <div id="info"
-            hidden$="[[isEmpty(hover)]]"
-            class$="[[itemClassList(hover)]] vertical layout">
-            <paper-toolbar>
-              <div hidden$="[[hideReadable(hover)]]">[[hover.readable]]: </div>
-              <div>[[hover.name]]</div>
-            </paper-toolbar>
-            <div class="info-content">
-              <div hidden$="[[isEmpty(hover.component)]]">Component: [[hover.component]]</div>
-              <div hidden$="[[isEmpty(hover.pins)]]">Pins: [[hover.pins.length]]</div>
-              <div hidden$="[[isEmpty(hover.keywords)]]">Keywords:
-                <template is="dom-repeat" items="[[hover.keywords]]" as="keyword">
-                  <a href="#[[board]]/[[keyword]]">[[keyword]]</a>
-                </template>
-              </div>
-              <div hidden$="[[isEmpty(hover.description)]]">Description: [[hover.description]]</div>
-              <div><div id="documentation"></div></div>
+      <board-viewer
+        class="flex-grow"
+        hidden$="[[isEmpty(board)]]"
+        id="boardViewer"
+        disable-auto-resize
+        enable-zoom
+        enable-drag></board-viewer>
+      <div id="panel-bottom">
+        <div id="info"
+          hidden$="[[isEmpty(hover)]]"
+          class$="[[itemClassList(hover)]] vertical layout">
+          <paper-toolbar>
+            <div hidden$="[[hideReadable(hover)]]">[[hover.readable]]: </div>
+            <div>[[hover.name]]</div>
+          </paper-toolbar>
+          <div class="info-content">
+            <div hidden$="[[isEmpty(hover.component)]]">Component: [[hover.component]]</div>
+            <div hidden$="[[isEmpty(hover.pins)]]">Pins: [[hover.pins.length]]</div>
+            <div hidden$="[[isEmpty(hover.keywords)]]">Keywords:
+              <template is="dom-repeat" items="[[hover.keywords]]" as="keyword">
+                <a href="#[[board]]/[[keyword]]">[[keyword]]</a>
+              </template>
             </div>
+            <div hidden$="[[isEmpty(hover.description)]]">Description: [[hover.description]]</div>
+            <div><div id="documentation"></div></div>
           </div>
         </div>
+      </div>
     </vaadin-split-layout>
 
   </vaadin-split-layout>
@@ -1245,14 +1248,10 @@ document.addEventListener("WebComponentsReady", function() {
       /* Remove filters for related and/or connected components */
       this.$.boardViewer.removeFilter("related");
       this.$.boardViewer.removeFilter("connected");
-
     },
 
     pinClicked: function(event) {
       console.log(JSON.stringify(event.model.item, null, 2));
-    },
-
-    onResize: function(event) {
     },
 
     highlightKeywords: function(keywords, show) {
@@ -1381,9 +1380,6 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     attached: function() {
-      window.addEventListener("resize", this.onResize.bind(this));
-      this.onResize();
-
       window.addEventListener("popstate", this.onPopState.bind(this));
       window.addEventListener("hashchange", this.onHashChange.bind(this));
 
