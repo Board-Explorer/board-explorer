@@ -454,8 +454,8 @@ document.addEventListener("WebComponentsReady", function() {
          href += "#" + this.board;
       }
       /* If the filters are set, add them to the URL */
-      if (category.href) {
-        href += "/" + category.href;
+      if (category.slug) {
+        href += "/" + category.slug;
       }
       /* If the URL is changing, push it to the window history */
       if (href != window.location.href) {
@@ -884,7 +884,7 @@ document.addEventListener("WebComponentsReady", function() {
             var params = href.split('/');
             var index = 0;
             for (var i = 0; i < this.categories.length; i++) {
-              if (this.categories[i].href == params[params.length -1]) {
+              if (this.categories[i].slug == params[params.length -1]) {
                 index = i;
               }
             }
