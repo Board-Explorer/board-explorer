@@ -269,7 +269,7 @@
         </paper-dropdown-menu>
         </paper-material>
 
-        <paper-material id="keywords" hidden$="[[isEmpty(keywords)]]" class="vertical layout start" control="all">
+        <paper-material id="keywords" hidden$="[[isEmpty(keywords)]]" class="vertical layout start">
           <div hidden$="[[!isEmpty(keyword)]]">
             <div hidden$="[[isEmpty(component)]]">Keywords for [[component.refdes]]</div>
             <div hidden$="[[!isEmpty(component)]]">Filter by keyword</div>
@@ -450,14 +450,36 @@ document.addEventListener("WebComponentsReady", function() {
       this.clearPin();
 
       var index = event.detail.value.getAttribute('index');
-      var filterList = this.categories[index].list;
+      var category = this.categories[index];
 
       /* Only add items to the filter if they exist on the board */
       this.components = this.availableComponents.filter(function(component) {
-        return (filterList.indexOf(component.refdes) != -1) ? true : false;
+        return (category.list.indexOf(component.refdes) != -1) ? true : false;
       });
 
-      this.$.boardViewer.addFilter("selected", filterList, {
+       /* Only add keywords to the filter if they exist on the board */
+      this.keywords = this.availableKeywords.filter(function(keyword) {
+        return (category.list.indexOf(keyword.keyword) != -1) ? true : false;
+      });
+
+      var href = window.location.href.replace(/#.*/, ""); /* Trim of # */
+      /* If the board is set, add it to the URL */
+      if (this.board) {
+         href += "#" + this.board;
+      }
+      /* If the filters are set, add them to the URL */
+      if (category.slug) {
+        href += "/" + category.slug;
+      }
+      /* If the URL is changing, push it to the window history */
+      if (href != window.location.href) {
+         window.history.replaceState({
+          board: this.board,
+          category: category.name
+        }, category.name, href);
+      }
+
+      this.$.boardViewer.addFilter("Category", category, {
         color: "#ffff00",
         interactive: true,
         alwaysVisible: true
@@ -470,12 +492,23 @@ document.addEventListener("WebComponentsReady", function() {
       if (event.detail.value != 'all') {
         this.filters = [];
       }
+      else {
+        if ('#' + this.board != window.location.href) {
+           window.history.replaceState({
+            board: this.board,
+            category: 'all'
+          }, 'all', '#' + this.board);
+        }
+        this.$.boardViewer.removeFilter("Category");
+      }
 
       this.clearKeyword();
       this.clearComponent();
       this.clearPin();
+
       var filterControls = Polymer.dom(this.root).querySelectorAll('[control]');
       this.components = this.availableComponents;
+      this.keywords = this.availableKeywords;
       for (var i = 0; i < filterControls.length; i++) {
         var attr = filterControls[i].getAttribute('control');
         filterControls[i].hidden = (attr == event.detail.value) ? false : true;
@@ -516,7 +549,6 @@ document.addEventListener("WebComponentsReady", function() {
       this.infoTitle = "";
       this.hover = null;
       this.selected = null;
-      this.$.boardViewer.removeFilter("selected");
     },
 
     clearPin: function() {
@@ -524,7 +556,6 @@ document.addEventListener("WebComponentsReady", function() {
       this.infoTitle = "";
       this.hover = null;
       this.selected = null;
-      this.$.boardViewer.removeFilter("selected");
     },
 
     itemClassList: function(item) {
@@ -856,16 +887,23 @@ document.addEventListener("WebComponentsReady", function() {
           }
 
           this.set("categories", this.$.boardViewer.getCategories());
-          console.log(this.filters);
 
           /* Enable/Disable 'Categories' based on whether there are categories */
           this.$.filterControls.querySelector('[name="categories"]').disabled = (this.categories.length == 0);
 
-          /* If there are categories for this board, and no filter is set,
-           * select the 'Categories' radio box */
-          if (this.categories.length && this.isEmpty(this.filters)) {
+          /* If there are categories for this board, select the 'Categories' radio box */
+          if (this.categories.length) {
+            /* start to look if a category is set in the URL */
+            var href = window.location.href;
+            var params = href.split('/');
+            var index = 0;
+            for (var i = 0; i < this.categories.length; i++) {
+              if (this.categories[i].slug == params[params.length -1]) {
+                index = i;
+              }
+            }
             this.$.filterControls.select("categories");
-            this.$.categories.select(0);
+            this.$.categories.select(index);
           } else {
             this.$.filterControls.select("all");
             this.$.categories.select(-1);
