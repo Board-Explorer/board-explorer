@@ -94,11 +94,16 @@
       padding: 1em;
     }
 
+    .info-content {
+      margin: 1em;
+    }
+
     paper-toolbar {
       --paper-toolbar-background: #f0f0f0;
       --paper-toolbar-color: #444;
       --paper-toolbar-sm-height: 64px;
       padding: 0;
+      margin: 0;
       -webkit-transition: 0.15s all ease;
       transition: 0.15s all ease;
     }
@@ -325,18 +330,27 @@
           id="boardViewer"
           enable-zoom
           enable-drag></board-viewer>
-        <div id="panel-bottom"><paper-material id="info" hidden$="[[isEmpty(hover)]]" class$="[[itemClassList(hover)]] vertical layout">
-          <paper-toolbar><div hidden$="[[hideReadable(hover)]]">[[hover.readable]]: </div><div>[[hover.name]]</div></paper-toolbar>
-          <div hidden$="[[isEmpty(hover.component)]]">Component: [[hover.component]]</div>
-          <div hidden$="[[isEmpty(hover.pins)]]">Pins: [[hover.pins.length]]</div>
-          <div hidden$="[[isEmpty(hover.keywords)]]">Keywords:
-            <template is="dom-repeat" items="[[hover.keywords]]" as="keyword">
-              <a href="#[[board]]/[[keyword]]">[[keyword]]</a>
-            </template>
+        <div id="panel-bottom">
+          <div id="info"
+            hidden$="[[isEmpty(hover)]]"
+            class$="[[itemClassList(hover)]] vertical layout">
+            <paper-toolbar>
+              <div hidden$="[[hideReadable(hover)]]">[[hover.readable]]: </div>
+              <div>[[hover.name]]</div>
+            </paper-toolbar>
+            <div class="info-content">
+              <div hidden$="[[isEmpty(hover.component)]]">Component: [[hover.component]]</div>
+              <div hidden$="[[isEmpty(hover.pins)]]">Pins: [[hover.pins.length]]</div>
+              <div hidden$="[[isEmpty(hover.keywords)]]">Keywords:
+                <template is="dom-repeat" items="[[hover.keywords]]" as="keyword">
+                  <a href="#[[board]]/[[keyword]]">[[keyword]]</a>
+                </template>
+              </div>
+              <div hidden$="[[isEmpty(hover.description)]]">Description: [[hover.description]]</div>
+              <div><div id="documentation"></div></div>
+            </div>
           </div>
-          <div hidden$="[[isEmpty(hover.description)]]">Description: [[hover.description]]</div>
-          <div><div id="documentation"></div></div>
-        </paper-material></div>
+        </div>
     </vaadin-split-layout>
 
   </vaadin-split-layout>
@@ -516,7 +530,7 @@ document.addEventListener("WebComponentsReady", function() {
     itemClassList: function(item) {
       var name = item ? item.name : null;
       if (name && name != item.readable) {
-          return "item-with-name";
+        return "item-with-name";
       }
       return "";
     },
