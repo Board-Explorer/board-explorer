@@ -1,19 +1,6 @@
 {
   "title": "Intel Quark Microcontroller Developmer Kit D2000",
   "version": "April 17 2017",
-  "categories": [ {
-    "name": "Main expansion options",
-    "list": [ "J13", "J8", "J3", "J4", "J22", "J23" ]
-  }, {
-    "name": "On board components",
-    "list": [ "ACCEL", "J7" ]
-  }, {
-    "name": "Other connectors",
-    "list": [ "J19", "J7", "VBAT" ]
-  }, {
-    "name": "Power sources",
-    "list": [ "J19", "VBAT", "J7"]
-  } ],
   "views": {
     "front": {
       "image": "front.svg",
@@ -123,14 +110,18 @@
           "description": "\"Arduino-Uno\"-like hardware shield interface",
           "markdown": "arduino-shield.md",
           "keywords": [ "arduino" ],
+          "contexts": [ "Board label", "Arduino", "QMSI 1.1" ],
+          "modes": [ "Mode 0", "Mode 1", "Mode 2" ],
           "pins": {
             "8": {
-              "name": "DIO_7|GPIO_8|ADC/COMP8|SPI_S_SCLK",
+              "name": [ "DIO_07", "DIO_07", "QM_PIN_ID_8" ],
+              "function": [ "GPIO_8", "ADC/COMP8", "SPI_S_SCLK" ],
               "description": "Arduino Pin 7",
               "keywords": [ "dio", "gpio", "adc", "spi" ]
             },
             "7": {
-              "name": "USB port/DIO_6|JTAG_TDO|GPIO_19|PWM0",
+              "name": [ "USB port/DIO_06", "DIO_06" ],
+              "function": [ "JTAG_TDO", "GPIO_19", "PWM0" ],
               "description": "Arduino Pin 6 PWM0",
               "keywords": [ "usb", "dio", "gpio", "jtag", "pwm" ]
             },
@@ -335,12 +326,16 @@
           }
         },
         "J10": {
+          "description": "JTAG/UART select",
+          "name": "UART TXD|JTAG TDI",
           "keywords": [ "jumper" ],
           "pins": {
             "12": {
+              "name": "UART TXD",
               "keywords": [ "uart" ]
             },
             "23": {
+              "name": "JTAG TDI",
               "keywords": [ "jtag" ]
             }
           }
@@ -396,7 +391,7 @@
               "keywords": [ "reset" ]
             },
             "4": {
-              "name": "3.3V|3.3V||",
+              "name": "3.3V",
               "description": "Arduino Pin 3.3V",
               "keywords": [ "power" ]
             },
