@@ -2,6 +2,10 @@
 
 Copyright (C) 2016-2017 Intel Corporation
 
+![Board Explorer (June '17)](board-explorer.png)
+
+[Live demo!](https://board-explorer.github.io/board-explorer/#quark_mcu_dev_kit_d2000)
+
 # License
 
 | License    | Components                                           |
@@ -20,7 +24,7 @@ The Board Explorer is:
 
 The Board Explorer application is written using [Polymer](https://polymer-project.org).
 
-The project uses the `board-viewer` element, which is responsible for parsing
+The project uses the `[board-viewer](https://github.com/board-explorer/board-viewer)` element, which is responsible for parsing
 an SVG, JSON data file, and translating associated documentation for
 presentation. Stand alone applications can use the `board-viewer` element
 independent of the Board Explorer application.
@@ -59,19 +63,31 @@ npm install
 
 ## Running
 
+You can either host the content out of the root of the project, or you
+can optimize a version for download via the build.sh script, which
+uses the Polymer CLI build tools.
+
+NOTE: The polymer build tools required NodeJS > 6.x
+
 ```bash
-cd ${DOCROOT}/board-viewer
-node app.js
+cd ${DOCROOT}/board-explorer
+polymer build
 ```
 
-The NodeJS application can be placed behind an nginx proxy if you want. By
-default the application will listen on port 11211.
+The build defaults to assuming it will be hosted under the path:
 
-## Deploy to board-explorer.github.io/board-explorer
+  `/board-explorer/build/default`
+
+To change that, set the BASE environment variable:
 
 ```bash
+BASE=/board-explorer/ ./build.sh
+```
+
+When we push new versions to board-explorer.github.io, we run:
+
+```bash
+cd board-explorer
 BASE=/$(basename $(pwd))/ ./build.sh
 ./publish.sh
 ```
-
-
