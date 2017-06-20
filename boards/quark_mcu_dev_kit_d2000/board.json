@@ -351,6 +351,18 @@
             }
           }
         },
+        "J12": {
+          "keywords": [ "accel" ]
+        },
+        "J14": {
+          "keywords": [ "accel" ]
+        },
+        "J16": {
+          "keywords": [ "accel" ]
+        },
+        "J18": {
+          "keywords": [ "accel" ]
+        },
         "J15": {
           "keywords": [ "jumper", "jtag" ]
         },
@@ -482,10 +494,11 @@
         "CPU": {
           "name": "Intel Quark microcontroller D2000"
         },
-        "ACCEL": {
+        "BMC150": {
           "name": "Sensor pack",
           "description": "6-axis accelerometer / magnetometer with temperature sensor",
-          "keywords": [ "i2c" ]
+          "keywords": [ "i2c", "accel" ],
+          "related": [ "J12", "J14", "J16", "J18" ]
         }
       }
     }
