@@ -786,9 +786,9 @@ document.addEventListener("WebComponentsReady", function() {
       var board = event.model.item.directory;
       console.log("Loading " + board);
       /* Remove all filters */
-      this.$.boardViewer.removeFilter();
       this.filters = [];
       if (this.$.boardViewer.board != board) {
+        console.log("Loading board via boardClicked");
         this.$.boardViewer.loadBoard(board);
       }
       this.onFiltersChanged(board, this.filters);
@@ -1337,6 +1337,7 @@ document.addEventListener("WebComponentsReady", function() {
       this.board = event.state.board;
       this.filters = event.state.filters;
       if (this.board != this.$.boardViewer.board) {
+        console.log("Loading board via popstate: " + this.board);
         this.$.boardViewer.loadBoard(this.board);
       }
       this.onFiltersChanged(this.board, this.filters);
@@ -1370,8 +1371,8 @@ document.addEventListener("WebComponentsReady", function() {
         } else {
           this.filters = [];
         }
-        console.log("Loading " + boardToLoad);
         if (boardToLoad != this.$.boardViewer.board) {
+          console.log("Loading board via setBoardAndFiltersFromHash: " + boardToLoad);
           this.$.boardViewer.loadBoard(boardToLoad);
         }
       }
