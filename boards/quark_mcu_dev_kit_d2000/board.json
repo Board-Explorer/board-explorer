@@ -5,10 +5,6 @@
     "front": {
       "image": "front.svg",
       "components": {
-        "SW1": {
-          "name": "Board reset button",
-          "description": "Switch 1"
-        },
         "J1": {
           "name": "I2C Address Select",
           "name": "Address Select Accel/Gyro",
@@ -187,38 +183,88 @@
             }
           }
         },
+        "J6": {
+          "name": "Ground pad",
+          "keywords": [ "gnd" ],
+          "markdown": "board-ground.md"
+        },
         "J7": {
           "description": "USB for programming and debugging (JTAG)",
           "name": "microUSB",
           "keywords": ["usb" ],
           "related": [ "J26", "J27" ]
         },
-        "J26": {
-          "name": "Power select",
-          "description": "Power from USB or DC",
-          "keywords": ["jumper", "usb", "power" ],
+        "J8": {
+          "name": "Boosterpack",
+          "description": "\"Boosterpack\" hardware interface prototyping",
+          "keywords": [ "boosterpack" ],
           "pins": {
-            "12": {
-              "description": "1-2 External power taken from 5V USB host (default)",
-              "name": "USB"
+            "1": {
+              "connected": [ "J22Pin4" ]
             },
-            "23": {
-              "description": "2-3 External power taken from 2.5V-5V DC source",
-              "name": "VSEXT"
+            "2": {
+              "connected": [ "J23Pin3" ]
+            },
+            "3": {
+              "connected": [ "J4Pin1" ]
+            },
+            "4": {
+              "connected": [ "J4Pin2" ]
+            },
+            "5": {
+              "connected": [ "J4Pin6" ]
+            },
+            "6": {
+              "connected": [ "J23Pin2" ]
+            },
+            "7": {
+              "connected": [ "J3Pin6" ]
+            },
+            "8": {
+              "connected": [ "J4Pin5" ]
+            },
+            "9": {
+              "connected": [ "J3Pin10" ]
+            },
+            "10": {
+              "connected": [ "J3Pin9" ]
             }
           }
         },
-        "J27": {
-          "description": "Jumper to enable/disable internal power regulator",
-          "keywords": ["jumper", "power", "battery" ],
+        "J9": {
+          "keywords": [ "jumper" ],
           "pins": {
             "12": {
-              "description": "Internal regulator active when connected to external power (default)",
-              "name": "3V3"
+              "keywords": [ "uart" ]
             },
             "23": {
-              "description": "Power is provided by coin cell battery",
-              "name": "BAT"
+              "keywords": [ "jtag" ]
+            }
+          }
+        },
+        "J10": {
+          "description": "JTAG/UART select",
+          "name": "UART TXD", "JTAG TDI",
+          "keywords": [ "jumper" ],
+          "pins": {
+            "12": {
+              "name": "UART TXD",
+              "keywords": [ "uart" ]
+            },
+            "23": {
+              "name": "JTAG TDI",
+              "keywords": [ "jtag" ]
+            }
+          }
+        },
+        "J11": {
+          "keywords": [ "jumper" ],
+          "pins": {
+            "12": {
+              "keywords": [ "uart" ]
+            },
+            "23": {
+              "keywords": [ "jtag" ]
             }
           }
         },
@@ -259,42 +305,33 @@
             }
           }
         },
-        "J8": {
-          "name": "Boosterpack",
-          "description": "\"Boosterpack\" hardware interface prototyping",
-          "keywords": [ "boosterpack" ],
-          "pins": {
-            "1": {
-              "connected": [ "J22Pin4" ]
-            },
-            "2": {
-              "connected": [ "J23Pin3" ]
-            },
-            "3": {
-              "connected": [ "J4Pin1" ]
-            },
-            "4": {
-              "connected": [ "J4Pin2" ]
-            },
-            "5": {
-              "connected": [ "J4Pin6" ]
-            },
-            "6": {
-              "connected": [ "J23Pin2" ]
-            },
-            "7": {
-              "connected": [ "J3Pin6" ]
-            },
-            "8": {
-              "connected": [ "J4Pin5" ]
-            },
-            "9": {
-              "connected": [ "J3Pin10" ]
-            },
-            "10": {
-              "connected": [ "J3Pin9" ]
-            }
-          }
+        "J12": {
+          "keywords": [ "accel" ]
+        },
+        "J14": {
+          "keywords": [ "accel" ]
+        },
+        "J15": {
+          "keywords": [ "jumper", "jtag" ]
+        },
+        "J16": {
+          "keywords": [ "accel" ]
+        },
+        "J17": {
+          "keywords": [ "jumper", "jtag" ]
+        },
+        "J18": {
+          "keywords": [ "accel" ]
+        },
+        "J19": {
+          "keywords": [ "power" ],
+          "related": [ "J26", "J27" ],
+          "description": "External 2.5V-5V DC power source"
+        },
+        "J20": {
+          "name": "Ground pad",
+          "keywords": [ "gnd" ],
+          "markdown": "board-ground.md"
         },
         "J21": {
           "name": "Booster Pack",
@@ -310,90 +347,6 @@
               "connected": [ "J2Pin1" ]
             }
           }
-        },
-        "J20": {
-          "name": "Ground pad",
-          "keywords": [ "gnd" ],
-          "markdown": "board-ground.md"
-        },
-        "J6": {
-          "name": "Ground pad",
-          "keywords": [ "gnd" ],
-          "markdown": "board-ground.md"
-        },
-        "J25": {
-          "name": "Ground pad",
-          "keywords": [ "gnd" ],
-          "markdown": "board-ground.md"
-        },
-        "J9": {
-          "keywords": [ "jumper" ],
-          "pins": {
-            "12": {
-              "keywords": [ "uart" ]
-            },
-            "23": {
-              "keywords": [ "jtag" ]
-            }
-          }
-        },
-        "J10": {
-          "description": "JTAG/UART select",
-          "name": "UART TXD", "JTAG TDI",
-          "keywords": [ "jumper" ],
-          "pins": {
-            "12": {
-              "name": "UART TXD",
-              "keywords": [ "uart" ]
-            },
-            "23": {
-              "name": "JTAG TDI",
-              "keywords": [ "jtag" ]
-            }
-          }
-        },
-        "J11": {
-          "keywords": [ "jumper" ],
-          "pins": {
-            "12": {
-              "keywords": [ "uart" ]
-            },
-            "23": {
-              "keywords": [ "jtag" ]
-            }
-          }
-        },
-        "J12": {
-          "keywords": [ "accel" ]
-        },
-        "J14": {
-          "keywords": [ "accel" ]
-        },
-        "J16": {
-          "keywords": [ "accel" ]
-        },
-        "J18": {
-          "keywords": [ "accel" ]
-        },
-        "J15": {
-          "keywords": [ "jumper", "jtag" ]
-        },
-        "J17": {
-          "keywords": [ "jumper", "jtag" ]
-        },
-        "J24": {
-          "name": "J24",
-          "description": "SoC power supply connected (default).",
-          "keywords": [ "jumper" ]
-        },
-        "J28": {
-          "name": "J28",
-          "description": "No description provided."
-        },
-        "SW2": {
-          "name": "User defined push button",
-          "related": [ "J4Pin5" ],
-          "description": "User defined push buttion (DIO_5)"
         },
         "J22": {
           "name": "Shield interface",
@@ -478,16 +431,57 @@
             }
           }
         },
-        "VBAT": {
-          "name": "BAT",
-          "keywords": [ "battery", "power" ],
-          "related": [ "J26", "J27" ],
-          "description": "On board coin cell CR2032 battery (not included)"
+        "J24": {
+          "name": "J24",
+          "description": "SoC power supply connected (default).",
+          "keywords": [ "jumper" ]
         },
-        "J19": {
-          "keywords": [ "power" ],
-          "related": [ "J26", "J27" ],
-          "description": "External 2.5V-5V DC power source"
+        "J25": {
+          "name": "Ground pad",
+          "keywords": [ "gnd" ],
+          "markdown": "board-ground.md"
+        },
+        "J26": {
+          "name": "Power select",
+          "description": "Power from USB or DC",
+          "keywords": ["jumper", "usb", "power" ],
+          "pins": {
+            "12": {
+              "description": "1-2 External power taken from 5V USB host (default)",
+              "name": "USB"
+            },
+            "23": {
+              "description": "2-3 External power taken from 2.5V-5V DC source",
+              "name": "VSEXT"
+            }
+          }
+        },
+        "J27": {
+          "description": "Jumper to enable/disable internal power regulator",
+          "keywords": ["jumper", "power", "battery" ],
+          "pins": {
+            "12": {
+              "description": "Internal regulator active when connected to external power (default)",
+              "name": "3V3"
+            },
+            "23": {
+              "description": "Power is provided by coin cell battery",
+              "name": "BAT"
+            }
+          }
+        },
+        "J28": {
+          "name": "J28",
+          "description": "No description provided."
+        },
+        "BMC150": {
+          "name": "Sensor pack",
+          "description": "6-axis accelerometer / magnetometer with temperature sensor",
+          "keywords": [ "i2c", "accel" ],
+          "related": [ "J12", "J14", "J16", "J18" ]
+        },
+        "CPU": {
+          "name": "Intel Quark microcontroller D2000"
         },
         "DS1": {
           "name": "USR/SCK",
@@ -497,20 +491,26 @@
           "name": "Power indicator",
           "keywords": [ "led" ]
         },
-        "JTAGSEL": {
-          "name": "UART/JTAG mode select"
-        },
         "FTDI": {
           "name": "FTDI chip"
         },
-        "CPU": {
-          "name": "Intel Quark microcontroller D2000"
+        "JTAGSEL": {
+          "name": "UART/JTAG mode select"
         },
-        "BMC150": {
-          "name": "Sensor pack",
-          "description": "6-axis accelerometer / magnetometer with temperature sensor",
-          "keywords": [ "i2c", "accel" ],
-          "related": [ "J12", "J14", "J16", "J18" ]
+        "SW1": {
+          "name": "Board reset button",
+          "description": "Switch 1"
+        },
+        "SW2": {
+          "name": "User defined push button",
+          "related": [ "J4Pin5" ],
+          "description": "User defined push buttion (DIO_5)"
+        },
+        "VBAT": {
+          "name": "BAT",
+          "keywords": [ "battery", "power" ],
+          "related": [ "J26", "J27" ],
+          "description": "On board coin cell CR2032 battery (not included)"
         }
       }
     }
