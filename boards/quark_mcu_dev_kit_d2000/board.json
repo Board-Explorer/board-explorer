@@ -15,7 +15,8 @@
           "keywords": ["jumper"]
         },
         "J2": {
-          "name": "JTAG|GPIO|UART_B",
+          "name": "USB port / Header",
+          "contexts": [ "JTAG", "GPIO", "UART_B" ],
           "keywords": ["jtag", "uart"],
           "pins": {
             "1": {
@@ -23,22 +24,22 @@
               "keywords": [ "gnd" ]
             },
             "2": {
-              "name": "JTAG_TMS|GPIO_22|UART_B_RTS",
+              "name": [ "JTAG_TMS", "GPIO_22", "UART_B_RTS" ],
               "keywords": ["gpio","jtag","uart"]
             },
             "3": {
               "name": "N/C"
             },
             "4": {
-              "name": "JTAG_TCK|GPIO_21|UART_B_RXD",
+              "name": [ "JTAG_TCK", "GPIO_21", "UART_B_RXD" ],
               "keywords": ["gpio","jtag","uart"]
             },
             "5": {
-              "name": "JTAG_TRS_T_N|GPIO_20|UART_B_TXD",
+              "name": [ "JTAG_TRS_T_N", "GPIO_20", "UART_B_TXD" ],
               "keywords": ["gpio","jtag","uart"]
             },
             "6": {
-              "name": "JTAG_TDI|GPIO_23|UART_B_CTS",
+              "name": [ "JTAG_TDI", "GPIO_23", "UART_B_CTS" ],
               "keywords": ["gpio","jtag","uart"]
             }
           }
@@ -48,19 +49,23 @@
           "description": "\"Arduino-Uno\"-like hardware shield interface",
           "markdown": "arduino-shield.md",
           "keywords": [ "arduino" ],
+          "contexts": [ "Board label", "Arduino", "QMSI 1.1" ],
+          "modes": [ "Mode 0", "Mode 1", "Mode 2" ],
           "pins": {
             "10": {
               "description": "Arduino Pin SCL",
-              "name": "SCL/AIN_05/DIO_19|GPIO_6|ADC/COMP6|I2C_SCL",
+              "name": [ "SCL/AIN_05", "SCL/AIN_05_DIO_19", null ],
+              "function": [ "GPIO_6", "ADC/COMP6", "I2C_SCL" ],
               "keywords": [ "i2c", "dio", "gpio", "adc" ]
             },
             "9": {
               "description": "Arduino Pin SDA",
-              "name": "SDA/AIN_04/DIO_18|GPIO_7|ADC/COMP7|I2C_SDA",
+              "name": [ "SDA/AIN_04", "SDA/AIN_04/DIO_18", null ],
+              "function": [ "GPIO_7", "ADC/COMP7", "I2C_SDA" ],
               "keywords": [ "i2c", "dio", "gpio", "adc" ]
             },
             "8": {
-              "description": "Arduino Pin ARF",
+              "description": "Arduino Pin AREF",
               "name": "Analog Reference",
               "keywords": [ "adc" ]
             },
@@ -70,36 +75,37 @@
             },
             "6": {
               "description": "Arduino Pin 13 SCK",
-              "name": "SPI_M_SCLK/DIO_13",
-              "functions": {
-                "0": "GPIO_16",
-                "1": "ADC/COMP16",
-                "2": "SPI_M_SCLK"
-              },
+              "name": [ "M_SCK/DIO_13", "SCK/DIO_13", null ],
+              "function": [ "GPIO_16", "ADC/COMP16", "M_SCK/DIO_13" ],
               "keywords": [ "spi", "dio", "gpio", "adc" ]
             },
             "5": {
-              "name": "SPI_M_MISO/DIO_12|GPIO_18|ADC/COMP18|SPI_M_MISO",
+              "name": [ "M_MISO/DIO_12", "MISO/DIO_12", null ],
+              "function": [ "GPIO_18", "ADC/COMP18", "SPI_M_DIN" ],
               "description": "Arduino Pin 12 MISO",
               "keywords": [ "spi", "dio", "gpio", "adc" ]
             },
             "4": {
-              "name": "SPI_M_MOSI/DIO_11|GPIO_17|ADC/COMP17|SPI_M_MOSI",
+              "name": [ "M_MOSI/DIO_11", "MOSI/DIO_11", null ],
+              "function": [ "GPIO_17", "ADC/COMP17", "SPI_M_DOUT" ],
               "description": "Arduino Pin 11 MOSI",
               "keywords": [ "spi", "dio", "gpio", "adc" ]
             },
             "3": {
-              "name": "SPI_M_SSO/DIO_10|GPIO_0|ADC/COMP0|SPI_M_SSO",
+              "name": [ "SPI_M_SSO/DIO_10", "SPI_SS_DIO_10", null ],
+              "function": [ "GPIO_0", "ADC/COMP0", "SPI_M_SSO" ],
               "description": "Arduino Pin 10 SSO",
               "keywords": [ "spi", "dio", "gpio", "adc" ]
             },
             "2": {
-              "name": "DIO_9|GPIO_24|LPD_SIG_OUT|PWM1",
+              "name": [ "DIO_9", "DIO_9", null ],
+              "function": [ "GPIO_24", "-", "PWM1" ],
               "description": "Arduino Pin 9 PWM1",
               "keywords": [ "dio", "gpio", "pwm", "lpd" ]
             },
             "1": {
-              "name": "DIO_8|GPIO_9|ADC/COMP9|SPI_S_MOSI",
+              "name": [ "DIO_8", "DIO_8", null ],
+              "function": [ "GPIO_9", "ADC/COMP9", "SPI_S_SDIN" ],
               "description": "Arduino Pin 8",
               "keywords": [ "dio", "gpio", "adc", "spi" ]
             }
@@ -126,32 +132,32 @@
               "keywords": [ "usb", "dio", "gpio", "jtag", "pwm" ]
             },
             "6": {
-              "name": "DIO_5|GPIO_2|ADC/COMP2|SPI_M_SS2",
+              "name": "DIO_5", "GPIO_2", "ADC/COMP2", "SPI_M_SS2",
               "description": "Arduino Pin 5",
               "keywords": [ "dio", "gpio", "adc", "spi" ]
             },
             "5": {
-              "name": "DIO_4|GPIO_5|ADC/COMP5|SYS_CLK_OUT",
+              "name": "DIO_4", "GPIO_5", "ADC/COMP5", "SYS_CLK_OUT",
               "description": "Arduino Pin 4",
               "keywords": [ "dio", "gpio", "adc", "spi", "clock" ]
             },
             "4": {
-              "name": "DIO_3|GPIO_10|ADC/COMP10|SPI_S_MISO",
+              "name": "DIO_3", "GPIO_10", "ADC/COMP10", "SPI_S_MISO",
               "description": "Arduino Pin 3",
               "keywords": [ "dio", "gpio", "adc", "spi" ]
             },
             "3": {
-              "name": "DIO_2|GPIO_11|ADC/COMP11|SPI_S_SCS",
+              "name": "DIO_2", "GPIO_11", "ADC/COMP11", "SPI_S_SCS",
               "description": "Arduino Pin 2",
               "keywords": [ "dio", "gpio", "adc", "spi" ]
             },
             "2": {
-              "name": "UART_TXD/DIO_1|GPIO_12|ADC/COMP12|UART_A_TXD",
+              "name": "UART_TXD/DIO_1", "GPIO_12", "ADC/COMP12", "UART_A_TXD",
               "description": "Arduino Pin 1 TX [UART_A]",
               "keywords": ["uart", "dio", "gpio", "adc" ]
             },
             "1": {
-              "name": "UART_RXD/DIO_0|GPIO_13|ADC/COMP13|UART_A_RXD",
+              "name": "UART_RXD/DIO_0", "GPIO_13", "ADC/COMP13", "UART_A_RXD",
               "description": "Arduino Pin 0 RX [UART_A]",
               "keywords": ["uart", "dio", "gpio", "adc" ]
             }
@@ -327,7 +333,7 @@
         },
         "J10": {
           "description": "JTAG/UART select",
-          "name": "UART TXD|JTAG TDI",
+          "name": "UART TXD", "JTAG TDI",
           "keywords": [ "jumper" ],
           "pins": {
             "12": {
@@ -390,15 +396,15 @@
           "keywords": [ "arduino" ],
           "pins": {
             "1": {
-              "name": "NC|||",
+              "name": "NC", "", "", "",
               "description": "Arduino Pin NC"
             },
             "2": {
-              "name": "IOREF|||",
+              "name": "IOREF", "", "", "",
               "description": "Arduino Pin IOREF"
             },
             "3": {
-              "name": "RESET_N|RESET_N||",
+              "name": "RESET_N", "RESET_N", "", "",
               "description": "Arduino Pin RESET",
               "keywords": [ "reset" ]
             },
@@ -408,22 +414,22 @@
               "keywords": [ "power" ]
             },
             "5": {
-              "name": "5V|5V||",
+              "name": "5V", "5V", "", "",
               "description": "Arduino Pin 5V",
               "keywords": [ "power" ]
             },
             "6": {
-              "name": "GND|GND||",
+              "name": "GND", "GND", "", "",
               "description": "Arduino Pin GND",
               "keywords": [ "power", "gnd" ]
             },
             "7": {
-              "name": "GND|GND||",
+              "name": "GND", "GND", "", "",
               "description": "Arduino Pin GND",
               "keywords": [ "power", "gnd" ]
             },
             "8": {
-              "name": "NC|||",
+              "name": "NC", "", "", "",
               "description": "Arduino Pin NC"
             }
           }
@@ -435,32 +441,32 @@
           "keywords": [ "arduino" ],
           "pins": {
             "1": {
-              "name": "AIN_0|GPIO_3|ADC/COMP3|SPI_M_SS3",
+              "name": "AIN_0", "GPIO_3", "ADC/COMP3", "SPI_M_SS3",
               "description": "Arduino Pin A0",
               "keywords": [ "aio", "gpio", "adc", "spi" ]
             },
             "2": {
-              "name": "AIN_1|GPIO_4|ADC/COMP4|RTC_CLK_OUT",
+              "name": "AIN_1", "GPIO_4", "ADC/COMP4", "RTC_CLK_OUT",
               "description": "Arduino Pin A1",
               "keywords": [ "aio", "gpio", "adc", "spi", "clock" ]
             },
             "3": {
-              "name": "AIN_2|GPIO_14|ADC/COMP14|UART_A_RTS/UART_A_DE",
+              "name": "AIN_2", "GPIO_14", "ADC/COMP14", "UART_A_RTS/UART_A_DE",
               "description": "Arduino Pin A2",
               "keywords": [ "aio", "gpio", "adc", "uart" ]
             },
             "4": {
-              "name": "AIN_3|GPIO_15|ADC/COMP15|UART_A_CTS/UART_A_RE",
+              "name": "AIN_3", "GPIO_15", "ADC/COMP15", "UART_A_CTS/UART_A_RE",
               "description": "Arduino Pin A3",
               "keywords": [ "aio", "gpio", "adc", "uart" ]
             },
             "5": {
-              "name": "AIN_4|||",
+              "name": "AIN_4", "", "", "",
               "description": "Arduino Pin A4 SDA",
               "keywords": [ "aio", "spi" ]
             },
             "6": {
-              "name": "AIN_5|||",
+              "name": "AIN_5", "", "", "",
               "description": "Arduino Pin A5 SCL",
               "keywords": [ "aio", "spi" ]
             }
