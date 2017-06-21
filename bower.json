@@ -35,7 +35,7 @@
     "highlightjs": "^9.10.0",
     "neon-animation": "PolymerElements/neon-animation#~2.0.0",
     "vaadin-split-layout": "vaadin/vaadin-split-layout#~1.1.0",
-    "board-viewer": "board-explorer/board-viewer#^0.0.14"
+    "board-viewer": "board-explorer/board-viewer#^0.0.15"
   },
   "resolutions": {
     "iron-resizable-behavior": "^2.0.1",
