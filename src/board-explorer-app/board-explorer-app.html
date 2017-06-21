@@ -228,6 +228,25 @@
     .wrap {
       width: 100%;
     }
+
+    .context-and-name {
+      margin-right: 0.5ex;
+    }
+
+    .context-and-name:not(:last-of-type):not(:first-of-type) {
+      padding-right: 0.5ex;
+      border-right: 1px solid #d0d0d0;
+    }
+
+    .context-and-name div:first-child {
+      font-size: 0.75em;
+      min-height: 0.75em;
+    }
+
+    .context-and-name div:last-child {
+      font-size: 1em;
+    }
+
   </style>
 
   <paper-material id="board-selector" hidden$="[[hideSelector(board,initialized)]]" class="layout vertical start">
@@ -338,8 +357,17 @@
           hidden$="[[isEmpty(hover)]]"
           class$="[[itemClassList(hover)]] vertical layout">
           <paper-toolbar>
-            <div hidden$="[[hideReadable(hover)]]">[[hover.readable]]: </div>
-            <div>[[hover.name]]</div>
+            <div hidden$="[[hideReadable(hover)]]"
+              class="context-and-name layout vertical justified start">
+              <div>&nbsp;</div>
+              <div>[[hover.readable]]: </div>
+            </div>
+            <template is="dom-repeat" items="[[_getItemNamesAndContexts(hover)]]">
+              <div class="context-and-name layout vertical justified start">
+                <div>[[item.context]]</div>
+                <div>[[item.name]]</div>
+              </div>
+            </template>
           </paper-toolbar>
           <div class="info-content">
             <div hidden$="[[isEmpty(hover.component)]]">Component: [[hover.component]]</div>
@@ -440,6 +468,45 @@ document.addEventListener("WebComponentsReady", function() {
       "boardViewer.board-changed": "onBoardChanged",
       "boardViewer.item-hover": "onItemHover",
       "boardViewer.item-tap": "onItemTap"
+    },
+
+    _getItemNamesAndContexts: function(item) {
+      /* If no item is set, there is no name */
+      if (!item) {
+        return [];
+      }
+
+      /* If this item has defined its own context, return it */
+      if ("context" in item && typeof item.context === "string") {
+        return [ { context: item.context, name: item.name } ];
+      }
+
+      /* If the item is not within a component, then
+       * there are no contexts; return just "default" */
+      if (!item.component) {
+        return [ { context: "Generic name", name: item.name } ];
+      }
+
+      var NaCs = [],
+        component = this.$.boardViewer.getInfo(item.component);
+
+      /* If there are no contexts, return just "default" */
+      if (!component || !component.contexts) {
+        return [ { context: "Generic name", name: item.name } ];
+      }
+
+      for (var i = 0; i < component.contexts.length; i++) {
+        /* `name` can either be a single entry, or an array of names for
+         * each context. If a context does not have a specific name, N/A is
+         * provided */
+        NaCs.push({
+          context: component.contexts[i],
+          name: Array.isArray(item.name) ?
+            ((typeof item.name[i] === "string") ? item.name[i] : "N/A") : /* If a context slot is missing, N/A */
+            (i == 0 ? item.name : "N/A") /* A single name is only provided for the first context */
+        });
+      }
+      return NaCs;
     },
 
     categoryChanged: function(event) {
@@ -825,6 +892,7 @@ document.addEventListener("WebComponentsReady", function() {
       this.initialized = true;
 
       this.boardInfo = {
+        context: "",
         name: this.board,
         html: "No description of " + this.board + " available."
       };
