@@ -126,38 +126,44 @@
               "keywords": [ "dio", "gpio", "adc", "spi" ]
             },
             "7": {
-              "name": [ "USB port/DIO_06", "DIO_06" ],
+              "name": [ "USB port/DIO_06", "DIO_06", null ],
               "function": [ "JTAG_TDO", "GPIO_19", "PWM0" ],
               "description": "Arduino Pin 6 PWM0",
               "keywords": [ "usb", "dio", "gpio", "jtag", "pwm" ]
             },
             "6": {
-              "name": "DIO_5", "GPIO_2", "ADC/COMP2", "SPI_M_SS2",
+              "name": [ "DIO_5", "DIO_5", null ],
+              "function": [ "GPIO_2", "ADC/COMP2", "SPI_M_SS2" ],
               "description": "Arduino Pin 5",
               "keywords": [ "dio", "gpio", "adc", "spi" ]
             },
             "5": {
-              "name": "DIO_4", "GPIO_5", "ADC/COMP5", "SYS_CLK_OUT",
+              "name": [ "DIO_4", "DIO_4", null ],
+              "function": [ "GPIO_5", "ADC/COMP5", "SYS_CLK_OUT" ],
               "description": "Arduino Pin 4",
               "keywords": [ "dio", "gpio", "adc", "spi", "clock" ]
             },
             "4": {
-              "name": "DIO_3", "GPIO_10", "ADC/COMP10", "SPI_S_MISO",
+              "name": [ "DIO_3", "DIO_3", null ],
+              "function": [ "GPIO_10", "ADC/COMP10", "SPI_S_SDOUT" ],
               "description": "Arduino Pin 3",
               "keywords": [ "dio", "gpio", "adc", "spi" ]
             },
             "3": {
-              "name": "DIO_2", "GPIO_11", "ADC/COMP11", "SPI_S_SCS",
+              "name": [ "DIO_2", "DIO_2", null ],
+              "function": [ "GPIO_11", "ADC/COMP11", "SPI_S_SCS" ],
               "description": "Arduino Pin 2",
               "keywords": [ "dio", "gpio", "adc", "spi" ]
             },
             "2": {
-              "name": "UART_TXD/DIO_1", "GPIO_12", "ADC/COMP12", "UART_A_TXD",
+              "name": [ "UART_TXD/DIO_1", "UART_TXD/DIO_1", null ],
+              "function": [ "GPIO_12", "ADC/COMP12", "UART_A_TXD" ],
               "description": "Arduino Pin 1 TX [UART_A]",
               "keywords": ["uart", "dio", "gpio", "adc" ]
             },
             "1": {
-              "name": "UART_RXD/DIO_0", "GPIO_13", "ADC/COMP13", "UART_A_RXD",
+              "name": [ "UART_RXD/DIO_0", "UART_RXD/DIO_0", null ],
+              "function": [ "GPIO_13", "ADC/COMP13", "UART_A_RXD" ],
               "description": "Arduino Pin 0 RX [UART_A]",
               "keywords": ["uart", "dio", "gpio", "adc" ]
             }
