@@ -402,12 +402,18 @@ document.addEventListener("WebComponentsReady", function() {
         type: String,
         value: null
       },
-
       categories: {
         type: Array,
         value: []
       },
-
+      category: {
+        type: Object,
+        value: null
+      },
+      slug: {
+        type: String,
+        value: null
+      },
       keywords: {
         type: Array,
         value: []
@@ -513,14 +519,16 @@ document.addEventListener("WebComponentsReady", function() {
       if (event.detail.value == null) {
         return;
       }
+
       /* When a category changes, reset the filters and clear the component
        * and pin boxes */
-      this.filters = [];
       this.clearComponent();
       this.clearPin();
+      this.clearKeyword();
 
       var index = event.detail.value.getAttribute('index');
-      var category = this.categories[index];
+      var category = this.categories[index]
+      var filters = this.filters;
 
       /* Only add items to the filter if they exist on the board */
       this.components = this.availableComponents.filter(function(component) {
@@ -532,46 +540,22 @@ document.addEventListener("WebComponentsReady", function() {
         return (category.list.indexOf(keyword.keyword) != -1) ? true : false;
       });
 
-      var href = window.location.href.replace(/#.*/, ""); /* Trim of # */
-      /* If the board is set, add it to the URL */
-      if (this.board) {
-         href += "#" + this.board;
-      }
-      /* If the filters are set, add them to the URL */
-      if (category.slug) {
-        href += "/" + category.slug;
-      }
-      /* If the URL is changing, push it to the window history */
-      if (href != window.location.href) {
-         window.history.replaceState({
-          board: this.board,
-          category: category.name
-        }, category.name, href);
-      }
-
-      this.$.boardViewer.addFilter("Category", category, {
-        color: "#ffff00",
-        interactive: true,
-        alwaysVisible: true
-      });
+      this.filters = [];
+      this.category = category ? category : null;
+      this.onFiltersChanged(this.board, filters);
     },
 
     onfilterControlChanged: function(event) {
       /* If the filter control changes to something other than to 'All',
        * clear the filters. */
-      if (event.detail.value != 'all') {
+      if (event.detail.value == 'all') {
+        var filters = this.filters;
+        this.category = null;
         this.filters = [];
-      }
-      else {
-        if ('#' + this.board != window.location.href) {
-           window.history.replaceState({
-            board: this.board,
-            category: 'all'
-          }, 'all', '#' + this.board);
-        }
-        this.$.boardViewer.removeFilter("Category");
+        this.onFiltersChanged(this.board, filters);
       }
 
+      this.$.boardViewer.removeFilter("Category");
       this.clearKeyword();
       this.clearComponent();
       this.clearPin();
@@ -605,6 +589,7 @@ document.addEventListener("WebComponentsReady", function() {
       this.$.boardViewer.removeFilter();
       this.filters = [];
       this.infoTitle = "";
+      this.category = null;
       this.onFiltersChanged(this.board, this.filters);
     },
 
@@ -963,21 +948,34 @@ document.addEventListener("WebComponentsReady", function() {
           this.$.filterControls.querySelector('[name="categories"]').disabled = (this.categories.length == 0);
 
           /* If there are categories for this board, select the 'Categories' radio box */
-          if (this.categories.length) {
-            /* start to look if a category is set in the URL */
-            var href = window.location.href;
-            var params = href.split('/');
-            var index = 0;
-            for (var i = 0; i < this.categories.length; i++) {
-              if (this.categories[i].slug == params[params.length -1]) {
-                index = i;
-              }
-            }
-            this.$.filterControls.select("categories");
-            this.$.categories.select(index);
-          } else {
+          if (!this.categories.length) {
             this.$.filterControls.select("all");
             this.$.categories.select(-1);
+          }
+          else {
+
+            var CategorySelected = false;
+            if (this.slug) {
+              for (var i = 0; i < this.categories.length; i++) {
+                if (this.categories[i].slug == this.slug) {
+                  this.$.filterControls.select("categories");
+                  this.$.categories.select(i);
+                  CategorySelected = true;
+                  break;
+                }
+              }
+            }
+
+           if (!CategorySelected && !this.filters.length) {
+              this.$.filterControls.select("categories");
+              this.$.categories.select(0);
+            }
+
+            if (!CategorySelected && this.filters.length) {
+              this.$.filterControls.select("all");
+              this.$.categories.select(-1);
+            }
+
           }
 
           /* Load the board top-level documentation */
@@ -1185,9 +1183,13 @@ document.addEventListener("WebComponentsReady", function() {
          href += "#" + board;
       }
 
+      if (this.category) {
+        href += "&" + this.category.slug;
+      }
+
       /* If the filters are set, add them to the URL */
       if (board && filters && filters.length) {
-        href += "/" + this.filters.join();
+        href += "/" + filters.join();
       }
 
       /* If the URL is changing, push it to the window history */
@@ -1208,6 +1210,17 @@ document.addEventListener("WebComponentsReady", function() {
         });
       } else {
         this.$.boardViewer.removeFilter("selected");
+      }
+
+      if (this.category) {
+        this.$.boardViewer.addFilter("category", this.category, {
+          color: "#ffff00",
+          interactive: true,
+          alwaysVisible: true
+        });
+      }
+      else {
+        this.$.boardViewer.removeFilter("category");
       }
     },
 
@@ -1413,7 +1426,14 @@ document.addEventListener("WebComponentsReady", function() {
     setBoardAndFiltersFromHash: function(boards, hash) {
       var uri = hash.split("/"),
         boardToLoad = null,
-        hash = uri[0].substr(1); /* Prune the # */
+        hash = uri[0].split("&"); /* Prune the # */
+
+        /* If we have a category we stored while are not categories loaded yet. */
+        if (hash[1]) {
+          this.slug = hash[1];
+        }
+
+        hash = hash[0].substr(1);
 
       for (var i = 0; i < this.boards.length; i++) {
         if (this.boards[i].directory == hash) {
@@ -1443,7 +1463,6 @@ document.addEventListener("WebComponentsReady", function() {
           this.$.boardViewer.loadBoard(boardToLoad);
         }
       }
-
       this.onFiltersChanged(boardToLoad, this.filters);
     },
 
