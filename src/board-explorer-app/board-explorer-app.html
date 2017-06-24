@@ -454,7 +454,10 @@ document.addEventListener("WebComponentsReady", function() {
         type: Object,
         value: null
       },
-
+      fetching: {
+        type: Boolean,
+        value: false
+      },
       initialized: {
         type: Boolean,
         value: false
@@ -528,8 +531,8 @@ document.addEventListener("WebComponentsReady", function() {
 
       var index = event.detail.value.getAttribute('index');
       var category = this.categories[index]
-      var filters = this.filters;
-
+      var filters =  this.fetching ? this.filters : [];
+      this.fetching = false;
       /* Only add items to the filter if they exist on the board */
       this.components = this.availableComponents.filter(function(component) {
         return (category.list.indexOf(component.refdes) != -1) ? true : false;
@@ -549,7 +552,7 @@ document.addEventListener("WebComponentsReady", function() {
       /* If the filter control changes to something other than to 'All',
        * clear the filters. */
       if (event.detail.value == 'all') {
-        var filters = this.filters;
+        var filters = this.fetching ? this.filters : [];
         this.category = null;
         this.filters = [];
         this.onFiltersChanged(this.board, filters);
@@ -572,6 +575,7 @@ document.addEventListener("WebComponentsReady", function() {
       }
       else {
         this.$.categories.select(-1);
+        this.fetching = false;
       }
     },
 
@@ -900,15 +904,6 @@ document.addEventListener("WebComponentsReady", function() {
         alwaysVisible: false
       });
 
-      // Draw current filters in the url if they are properly set in the var.
-      if (this.filters.length) {
-        this.$.boardViewer.addFilter("selected", this.filters, {
-          color: "#ffff00",
-          interactive: false,
-          alwaysVisible: true
-        });
-      }
-
       console.log("Asking for keywords...");
       this.$.boardViewer.getKeywords(function(object) {
         var keywords = [];
@@ -947,12 +942,23 @@ document.addEventListener("WebComponentsReady", function() {
           /* Enable/Disable 'Categories' based on whether there are categories */
           this.$.filterControls.querySelector('[name="categories"]').disabled = (this.categories.length == 0);
 
+          this.fetching = true;
           /* If there are categories for this board, select the 'Categories' radio box */
           if (!this.categories.length) {
             this.$.filterControls.select("all");
             this.$.categories.select(-1);
           }
           else {
+
+            if (!this.slug) {
+              for (var i = 0; i < this.categories.length; i++) {
+                if (this.categories[i].slug == this.filters[0]) {
+                  this.slug = this.categories[i].slug;
+                  this.filters.shift();
+                  break;
+                }
+              }
+            }
 
             var CategorySelected = false;
             if (this.slug) {
@@ -1096,24 +1102,24 @@ document.addEventListener("WebComponentsReady", function() {
         this.component = item;
         this.pins = this.component.pins;
 
-        if (this.$.filterControls.selected == 'all') {
-          this.keywords = this.availableKeywords.filter(function(keyword) {
-            keyword = keyword.keyword;
-            var match = item.keywords ? (item.keywords.indexOf(keyword) != -1) : false;
-            if (match) {
+
+        this.keywords = this.availableKeywords.filter(function(keyword) {
+          keyword = keyword.keyword;
+          var match = item.keywords ? (item.keywords.indexOf(keyword) != -1) : false;
+          if (match) {
+            return true;
+          }
+          if (!item.pins) {
+            return false;
+          }
+          for (var i = 0; i < item.pins.length; i++) {
+            if (item.pins[i].keywords && (item.pins[i].keywords.indexOf(keyword) != -1)) {
               return true;
             }
-            if (!item.pins) {
-              return false;
-            }
-            for (var i = 0; i < item.pins.length; i++) {
-              if (item.pins[i].keywords && (item.pins[i].keywords.indexOf(keyword) != -1)) {
-                return true;
-              }
-            }
-            return false;
-          });
-        }
+          }
+          return false;
+        });
+
         break;
 
       case "pin":
@@ -1127,11 +1133,11 @@ document.addEventListener("WebComponentsReady", function() {
 
         this.pin = item;
 
-        if (this.$.filterControls.selected == 'all') {
-           this.keywords = this.availableKeywords.filter(function(keyword) {
-            return item.keywords ? (item.keywords.indexOf(keyword.keyword) != -1) : false;
-          });
-        }
+
+         this.keywords = this.availableKeywords.filter(function(keyword) {
+          return item.keywords ? (item.keywords.indexOf(keyword.keyword) != -1) : false;
+        });
+
         break;
       }
 
@@ -1177,19 +1183,30 @@ document.addEventListener("WebComponentsReady", function() {
 
     onFiltersChanged: function(board, filters) {
       var href = window.location.href.replace(/#.*/, ""); /* Trim of # */
-
       /* If the board is set, add it to the URL */
+
+      this.$.boardViewer.removeFilter("category");
+
       if (board) {
          href += "#" + board;
       }
 
       if (this.category) {
-        href += "&" + this.category.slug;
+         href += "/" + this.category.slug;
       }
 
       /* If the filters are set, add them to the URL */
       if (board && filters && filters.length) {
-        href += "/" + filters.join();
+        for (var i = 0; i < this.categories.length; i++) {
+          var index = filters.indexOf(this.categories[i].slug);
+          if (index != -1) {
+            filters.splice(index, 1);
+          }
+        }
+
+        if (filters.length) {
+          href += "/" + filters.join();
+        }
       }
 
       /* If the URL is changing, push it to the window history */
@@ -1198,7 +1215,7 @@ document.addEventListener("WebComponentsReady", function() {
          * of active filters */
         window.history.pushState({
           board: board,
-          filters: filters ? filters.slice() : [] /* Copy of filters array */
+          filters: filters /* Copy of filters array */
         }, board, href);
       }
 
@@ -1218,9 +1235,6 @@ document.addEventListener("WebComponentsReady", function() {
           interactive: true,
           alwaysVisible: true
         });
-      }
-      else {
-        this.$.boardViewer.removeFilter("category");
       }
     },
 
@@ -1422,15 +1436,16 @@ document.addEventListener("WebComponentsReady", function() {
       }
       this.onFiltersChanged(this.board, this.filters);
     },
-
     setBoardAndFiltersFromHash: function(boards, hash) {
       var uri = hash.split("/"),
         boardToLoad = null,
         hash = uri[0].split("&"); /* Prune the # */
 
         /* If we have a category we stored while are not categories loaded yet. */
-        if (hash[1]) {
-          this.slug = hash[1];
+        if (uri[2]) {
+          this.slug = uri[1];
+          uri[1] = uri[2];
+          uri.splice(2,1);
         }
 
         hash = hash[0].substr(1);
