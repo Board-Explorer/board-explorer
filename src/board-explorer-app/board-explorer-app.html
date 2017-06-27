@@ -533,15 +533,6 @@ document.addEventListener("WebComponentsReady", function() {
       var category = this.categories[index]
       var filters =  this.fetching ? this.filters : [];
       this.fetching = false;
-      /* Only add items to the filter if they exist on the board */
-      this.components = this.availableComponents.filter(function(component) {
-        return (category.list.indexOf(component.refdes) != -1) ? true : false;
-      });
-
-       /* Only add keywords to the filter if they exist on the board */
-      this.keywords = this.availableKeywords.filter(function(keyword) {
-        return (category.list.indexOf(keyword.keyword) != -1) ? true : false;
-      });
 
       this.filters = [];
       this.category = category ? category : null;
@@ -604,6 +595,12 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     clearComponent: function() {
+
+      /* Deactivate component is is currently set */
+      if (this.component) {
+        this.activateItem(this.component, false);
+      }
+
       this.component = null;
       this.infoTitle = "";
       this.hover = null;
@@ -611,6 +608,11 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     clearPin: function() {
+      /* Deactivate component is is currently set */
+      if (this.pin) {
+        this.activateItem(this.pin, false);
+      }
+
       this.pin = null;
       this.infoTitle = "";
       this.hover = null;
@@ -931,25 +933,28 @@ document.addEventListener("WebComponentsReady", function() {
           this.availableComponents = components;
           this.set("components", components);
 
-          if (this.filters.length) {
-            this.selected = this.$.boardViewer.findComponent(this.filters[0]);
-            this.hover = null; /* Force DOM update */
-            this.hover = this.selected;
-          }
-
           this.set("categories", this.$.boardViewer.getCategories());
-
           /* Enable/Disable 'Categories' based on whether there are categories */
           this.$.filterControls.querySelector('[name="categories"]').disabled = (this.categories.length == 0);
 
           this.fetching = true;
           /* If there are categories for this board, select the 'Categories' radio box */
+
+          /* Get component tnat will be activated */
+          var categorySelected = false;
+          var components = [];
+          for (var i = 0; i < this.filters.length; i++) {
+            var component = this.$.boardViewer.findComponent(this.filters[i]);
+            if (component) {
+              components.push(component);
+            }
+          }
+
           if (!this.categories.length) {
             this.$.filterControls.select("all");
             this.$.categories.select(-1);
           }
           else {
-
             if (!this.slug) {
               for (var i = 0; i < this.categories.length; i++) {
                 if (this.categories[i].slug == this.filters[0]) {
@@ -960,28 +965,34 @@ document.addEventListener("WebComponentsReady", function() {
               }
             }
 
-            var CategorySelected = false;
             if (this.slug) {
               for (var i = 0; i < this.categories.length; i++) {
                 if (this.categories[i].slug == this.slug) {
                   this.$.filterControls.select("categories");
                   this.$.categories.select(i);
-                  CategorySelected = true;
+                  categorySelected = true;
                   break;
                 }
               }
             }
 
-           if (!CategorySelected && !this.filters.length) {
+           if (!categorySelected && !this.filters.length) {
               this.$.filterControls.select("categories");
               this.$.categories.select(0);
             }
 
-            if (!CategorySelected && this.filters.length) {
+            if (!categorySelected && this.filters.length) {
               this.$.filterControls.select("all");
               this.$.categories.select(-1);
             }
+          }
 
+          if (components) {
+            if (!categorySelected) {
+              for (var i = 0; i < components.length; i++) {
+                this.activateItem(components[i], true);
+              }
+            }
           }
 
           /* Load the board top-level documentation */
@@ -1062,7 +1073,6 @@ document.addEventListener("WebComponentsReady", function() {
           this.$.boardViewer.removeFilter("keyword");
           this.keyword = null;
           this.set("components", this.availableComponents);
-          return;
         }
 
         this.keyword = item;
@@ -1096,12 +1106,10 @@ document.addEventListener("WebComponentsReady", function() {
           this.$.boardViewer.removeFilter("component");
           this.component = null;
           this.set("keywords", this.availableKeywords);
-          return;
         }
 
         this.component = item;
         this.pins = this.component.pins;
-
 
         this.keywords = this.availableKeywords.filter(function(keyword) {
           keyword = keyword.keyword;
@@ -1128,11 +1136,11 @@ document.addEventListener("WebComponentsReady", function() {
           this.$.boardViewer.removeFilter("pin");
           this.pin = null;
           this.set("keywords", this.availableKeywords);
-          return;
         }
 
         this.pin = item;
-
+        this.component = this.$.boardViewer.findComponent(item.component);
+        this.pins = this.component.pins;
 
          this.keywords = this.availableKeywords.filter(function(keyword) {
           return item.keywords ? (item.keywords.indexOf(keyword.keyword) != -1) : false;
@@ -1154,45 +1162,76 @@ document.addEventListener("WebComponentsReady", function() {
        * Otherwise set the filter list to the item.
        */
       var index = this.filters.indexOf(item.refdes);
+
       if (isControlPressed) {
-        if (index != -1) {
-          this.filters.splice(index, 1);
-        } else {
-          this.filters.push(item.refdes);
+        if (index != -1)
+        {
+          switch (item.type) {
+            case 'pin':
+             this.filters.splice(index, 1);
+            break;
+            case 'component':
+             for (var i = 0; i < item.pins.length; i++) {
+               var x = this.filters.indexOf(item.pins[i].refdes);
+               if (x != -1) {
+                 this.filters.splice(x, 1);
+               }
+             }
+             this.filters.splice(index, 1);
+            break;
+          }
         }
-      } else {
-        if (this.filters.length == 1 && this.filters[0] == item.refdes) {
-          this.filters = [];
-        } else {
-          this.filters = [ item.refdes ];
+        else {
+          switch (item.type) {
+            case 'pin':
+              var x  = this.filters.indexOf(item.component);
+              if (x == -1) {
+                this.filters.push(item.component);
+              }
+              this.filters.push(item.refdes);
+            break;
+            case 'component':
+             this.filters.push(item.refdes);
+            break;
+          }
         }
       }
-
-      if (this.filters.length == 0) {
-        this.$.boardViewer.removeFilter("selected");
-      } else {
-        this.$.boardViewer.addFilter("selected", this.filters, {
-          color: "#ffff00",   /* color for highlight border */
-          interactive: false, /* Always bright */
-          alwaysVisible: true
-        });
+      else
+      {
+        if (index != -1) {
+          switch (item.type) {
+            case 'pin':
+              this.filters = [ item.component ];
+            break;
+            case 'component':
+             this.filters = [];
+            break;
+          }
+        }
+        else {
+          switch (item.type) {
+            case 'pin':
+              this.filters = [ item.component, item.refdes ];
+            break;
+            case 'component':
+             this.filters = [ item.refdes ];
+            break;
+          }
+        }
       }
 
       this.onFiltersChanged(this.board, this.filters);
+
     },
 
     onFiltersChanged: function(board, filters) {
       var href = window.location.href.replace(/#.*/, ""); /* Trim of # */
-      /* If the board is set, add it to the URL */
+      var category = this.category;
 
       this.$.boardViewer.removeFilter("category");
-
+      /* If the board is set, add it to the URL */
       if (board) {
          href += "#" + board;
-      }
-
-      if (this.category) {
-         href += "/" + this.category.slug;
       }
 
       /* If the filters are set, add them to the URL */
@@ -1203,10 +1242,42 @@ document.addEventListener("WebComponentsReady", function() {
             filters.splice(index, 1);
           }
         }
+      }
 
-        if (filters.length) {
-          href += "/" + filters.join();
+      if (category) {
+        href += "/" + category.slug;
+        /* Only add items to the filter if they exist on the board */
+        this.components = this.availableComponents.filter(function(component) {
+          return (category.list.indexOf(component.refdes) != -1) ? true : false;
+        });
+
+        /* Only add keywords to the filter if they exist on the board */
+        if(!filters.length) {
+          this.keywords = this.availableKeywords.filter(function(keyword) {
+            return (category.list.indexOf(keyword.keyword) != -1) ? true : false;
+          });
         }
+
+        this.$.boardViewer.addFilter("category", this.category, {
+          color: "#ffff00",
+          interactive: true,
+          alwaysVisible: true
+        });
+      }
+
+      if (filters.length) {
+        href += "/" + filters.join();
+        this.$.boardViewer.addFilter("selected", filters, {
+          color: "#ffff00",
+          interactive: false,
+          alwaysVisible: true
+        });
+      }
+      else {
+        this.clearKeyword();
+        this.clearComponent();
+        this.clearPin();
+        this.$.boardViewer.removeFilter("selected");
       }
 
       /* If the URL is changing, push it to the window history */
@@ -1215,26 +1286,9 @@ document.addEventListener("WebComponentsReady", function() {
          * of active filters */
         window.history.pushState({
           board: board,
-          filters: filters /* Copy of filters array */
+          category: category,
+          filters: filters ? filters.slice() : [] /* Copy of filters array */
         }, board, href);
-      }
-
-      if (filters.length) {
-        this.$.boardViewer.addFilter("selected", filters, {
-          color: "#ffff00",
-          interactive: false,
-          alwaysVisible: true
-        });
-      } else {
-        this.$.boardViewer.removeFilter("selected");
-      }
-
-      if (this.category) {
-        this.$.boardViewer.addFilter("category", this.category, {
-          color: "#ffff00",
-          interactive: true,
-          alwaysVisible: true
-        });
       }
     },
 
@@ -1439,7 +1493,7 @@ document.addEventListener("WebComponentsReady", function() {
     setBoardAndFiltersFromHash: function(boards, hash) {
       var uri = hash.split("/"),
         boardToLoad = null,
-        hash = uri[0].split("&"); /* Prune the # */
+        hash = uri[0].substr(1); /* Prune the # */
 
         /* If we have a category we stored while are not categories loaded yet. */
         if (uri[2]) {
@@ -1447,8 +1501,6 @@ document.addEventListener("WebComponentsReady", function() {
           uri[1] = uri[2];
           uri.splice(2,1);
         }
-
-        hash = hash[0].substr(1);
 
       for (var i = 0; i < this.boards.length; i++) {
         if (this.boards[i].directory == hash) {
