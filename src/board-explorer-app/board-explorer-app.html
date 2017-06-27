@@ -72,7 +72,7 @@
       background-color: #e0e0e0;
     }
 
-    a[is-button].selected {
+    a[is-button].active {
       background-color: #404040;
       color: #f0f0f0;
     }
@@ -273,8 +273,8 @@
         </paper-material>
 
         <paper-material class="vertical layout start">
-          <paper-radio-group id="filterControls" on-selected-changed="onfilterControlChanged">
-            <paper-radio-button name="all">All filters</paper-radio-button>
+          <paper-radio-group id="filterControls" on-selected-changed="onFilterControlChanged">
+            <paper-radio-button name="all">All items</paper-radio-button>
             <paper-radio-button name="categories">Categories</paper-radio-button>
             <paper-radio-button name="know-the-board" disabled>Get to know the board</paper-radio-button>
           </paper-radio-group>
@@ -349,6 +349,7 @@
         class="flex-grow"
         hidden$="[[isEmpty(board)]]"
         id="boardViewer"
+        selected="{{selected}}"
         disable-auto-resize
         enable-zoom
         enable-drag></board-viewer>
@@ -423,8 +424,9 @@ document.addEventListener("WebComponentsReady", function() {
         value: null
       },
 
-      filters: {
-        type: Array
+      selected: {
+        type: Array,
+        value: []
       },
 
       components: {
@@ -470,7 +472,7 @@ document.addEventListener("WebComponentsReady", function() {
       "onKeywordChanged(keyword)",
       "onPinChanged(pin)",
       "onHoverChanged(hover)",
-      "setBoardAndFiltersFromHash(boards, hash)"
+      "setBoardAndSelectedFromHash(boards, hash)"
     ],
 
     listeners: {
@@ -523,7 +525,7 @@ document.addEventListener("WebComponentsReady", function() {
         return;
       }
 
-      /* When a category changes, reset the filters and clear the component
+      /* When a category changes, reset the selected and clear the component
        * and pin boxes */
       this.clearComponent();
       this.clearPin();
@@ -531,25 +533,24 @@ document.addEventListener("WebComponentsReady", function() {
 
       var index = event.detail.value.getAttribute('index');
       var category = this.categories[index]
-      var filters =  this.fetching ? this.filters : [];
+      var filters =  this.fetching ? this.selected : [];
       this.fetching = false;
 
-      this.filters = [];
+      this.selected = [];
       this.category = category ? category : null;
-      this.onFiltersChanged(this.board, filters);
+      this.onSelectedChanged(this.board, filters);
     },
 
-    onfilterControlChanged: function(event) {
+    onFilterControlChanged: function(event) {
       /* If the filter control changes to something other than to 'All',
        * clear the filters. */
       if (event.detail.value == 'all') {
-        var filters = this.fetching ? this.filters : [];
+        var filters = this.fetching ? this.selected : [];
         this.category = null;
-        this.filters = [];
-        this.onFiltersChanged(this.board, filters);
+        this.selected = [];
+        this.onSelectedChanged(this.board, filters);
       }
 
-      this.$.boardViewer.removeFilter("Category");
       this.clearKeyword();
       this.clearComponent();
       this.clearPin();
@@ -580,22 +581,21 @@ document.addEventListener("WebComponentsReady", function() {
 
     unloadBoard: function() {
       this.$.boardViewer.loadBoard();
-      /* Remove all filters */
+      /* Remove all selected */
       this.$.boardViewer.removeFilter();
-      this.filters = [];
+      this.selected = [];
       this.infoTitle = "";
       this.category = null;
-      this.onFiltersChanged(this.board, this.filters);
+      this.onSelectedChanged(this.board, this.selected);
     },
 
     clearKeyword: function() {
       this.keyword = null;
       this.hover = null;
-      this.selected = null;
+      this.active = null;
     },
 
     clearComponent: function() {
-
       /* Deactivate component is is currently set */
       if (this.component) {
         this.activateItem(this.component, false);
@@ -604,7 +604,7 @@ document.addEventListener("WebComponentsReady", function() {
       this.component = null;
       this.infoTitle = "";
       this.hover = null;
-      this.selected = null;
+      this.active = null;
     },
 
     clearPin: function() {
@@ -616,7 +616,7 @@ document.addEventListener("WebComponentsReady", function() {
       this.pin = null;
       this.infoTitle = "";
       this.hover = null;
-      this.selected = null;
+      this.active = null;
     },
 
     itemClassList: function(item) {
@@ -846,19 +846,19 @@ document.addEventListener("WebComponentsReady", function() {
     boardClicked: function(event) {
       var board = event.model.item.directory;
       console.log("Loading " + board);
-      /* Remove all filters */
-      this.filters = [];
+      /* Remove all selected */
+      this.selected = [];
       if (this.$.boardViewer.board != board) {
         console.log("Loading board via boardClicked");
         this.$.boardViewer.loadBoard(board);
       }
-      this.onFiltersChanged(board, this.filters);
+      this.onSelectedChanged(board, this.selected);
     },
 
     onBoardChanged: function(event) {
       var board = event.detail.value || "";
 
-      this.selected = null;
+      this.active = null;
       this.hover = null;
 
       this.board = board;
@@ -894,6 +894,7 @@ document.addEventListener("WebComponentsReady", function() {
           break;
         }
       }
+
       /* Turn on the 'Everything' interactive filters;
        * Pins will be Green
        * Components will be Cyan */
@@ -933,20 +934,22 @@ document.addEventListener("WebComponentsReady", function() {
           this.availableComponents = components;
           this.set("components", components);
 
+          /* If there are categories for this board, select the 'Categories' radio box */
           this.set("categories", this.$.boardViewer.getCategories());
           /* Enable/Disable 'Categories' based on whether there are categories */
           this.$.filterControls.querySelector('[name="categories"]').disabled = (this.categories.length == 0);
 
           this.fetching = true;
-          /* If there are categories for this board, select the 'Categories' radio box */
 
           /* Get component tnat will be activated */
           var categorySelected = false;
           var components = [];
-          for (var i = 0; i < this.filters.length; i++) {
-            var component = this.$.boardViewer.findComponent(this.filters[i]);
+          var countComponens = 0;
+          for (var i = 0; i < this.selected.length; i++) {
+            var component = this.$.boardViewer.findComponent(this.selected[i]);
             if (component) {
               components.push(component);
+              countComponens += (component.type == 'component') ? 1 : 0;
             }
           }
 
@@ -957,9 +960,9 @@ document.addEventListener("WebComponentsReady", function() {
           else {
             if (!this.slug) {
               for (var i = 0; i < this.categories.length; i++) {
-                if (this.categories[i].slug == this.filters[0]) {
+                if (this.categories[i].slug == this.selected[0]) {
                   this.slug = this.categories[i].slug;
-                  this.filters.shift();
+                  this.selected.shift();
                   break;
                 }
               }
@@ -976,12 +979,12 @@ document.addEventListener("WebComponentsReady", function() {
               }
             }
 
-           if (!categorySelected && !this.filters.length) {
+           if (!categorySelected && !this.selected.length) {
               this.$.filterControls.select("categories");
               this.$.categories.select(0);
             }
 
-            if (!categorySelected && this.filters.length) {
+            if (!categorySelected && this.selected.length) {
               this.$.filterControls.select("all");
               this.$.categories.select(-1);
             }
@@ -990,7 +993,7 @@ document.addEventListener("WebComponentsReady", function() {
           if (components) {
             if (!categorySelected) {
               for (var i = 0; i < components.length; i++) {
-                this.activateItem(components[i], true);
+                this.activateItem(components[i], countComponens > 1);
               }
             }
           }
@@ -1005,7 +1008,7 @@ document.addEventListener("WebComponentsReady", function() {
             }
 
             this.boardInfo.html = results.content;
-            if (!this.selected) {
+            if (!this.active) {
               this.hover = null; /* Force DOM update */
               this.hover = this.boardInfo;
             }
@@ -1015,9 +1018,9 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     toggleSelected: function(container, match) {
-      var items = container.querySelectorAll("a.selected");
+      var items = container.querySelectorAll("a.active");
       Array.prototype.forEach.call(items, function(el) {
-        el.classList.remove("selected");
+        el.classList.remove("active");
       });
 
       if (!match) {
@@ -1026,7 +1029,7 @@ document.addEventListener("WebComponentsReady", function() {
 
       var item = container.querySelector("[match='" + match + "']");
       if (item) {
-        item.classList.add("selected");
+        item.classList.add("active");
       }
     },
 
@@ -1056,7 +1059,7 @@ document.addEventListener("WebComponentsReady", function() {
         pin ? pin.refdes : undefined);
       if (!pin) {
         this.$.boardViewer.removeFilter("pin");
-        console.log("TODO: Filter keywords on component if still selected");
+        console.log("TODO: Filter keywords on component if still active");
         this.set("keywords", this.availableKeywords);
       }
     },
@@ -1069,7 +1072,7 @@ document.addEventListener("WebComponentsReady", function() {
       switch (item.type) {
       case "keyword":
         if (this.keyword && this.keyword.keyword == item.keyword) {
-          this.selected = null;
+          this.active = null;
           this.$.boardViewer.removeFilter("keyword");
           this.keyword = null;
           this.set("components", this.availableComponents);
@@ -1102,7 +1105,7 @@ document.addEventListener("WebComponentsReady", function() {
 
       case "component":
         if (this.component && this.component.refdes == item.refdes) {
-          this.selected = null;
+          this.active = null;
           this.$.boardViewer.removeFilter("component");
           this.component = null;
           this.set("keywords", this.availableKeywords);
@@ -1132,7 +1135,7 @@ document.addEventListener("WebComponentsReady", function() {
 
       case "pin":
         if (this.pin && this.pin.refdes == item.refdes) {
-          this.selected = null;
+          this.active = null;
           this.$.boardViewer.removeFilter("pin");
           this.pin = null;
           this.set("keywords", this.availableKeywords);
@@ -1149,7 +1152,7 @@ document.addEventListener("WebComponentsReady", function() {
         break;
       }
 
-      this.selected = item;
+      this.active = item;
       this.hover = null; /* Force DOM update */
       this.hover = item;
 
@@ -1161,37 +1164,37 @@ document.addEventListener("WebComponentsReady", function() {
        * If the item is in the only item in filter list, remove it
        * Otherwise set the filter list to the item.
        */
-      var index = this.filters.indexOf(item.refdes);
+      var index = this.selected.indexOf(item.refdes);
 
       if (isControlPressed) {
         if (index != -1)
         {
           switch (item.type) {
             case 'pin':
-             this.filters.splice(index, 1);
+             this.selected.splice(index, 1);
             break;
             case 'component':
              for (var i = 0; i < item.pins.length; i++) {
-               var x = this.filters.indexOf(item.pins[i].refdes);
+               var x = this.selected.indexOf(item.pins[i].refdes);
                if (x != -1) {
-                 this.filters.splice(x, 1);
+                 this.se.splice(x, 1);
                }
              }
-             this.filters.splice(index, 1);
+             this.selected.splice(index, 1);
             break;
           }
         }
         else {
           switch (item.type) {
             case 'pin':
-              var x  = this.filters.indexOf(item.component);
+              var x  = this.selected.indexOf(item.component);
               if (x == -1) {
-                this.filters.push(item.component);
+                this.selected.push(item.component);
               }
-              this.filters.push(item.refdes);
+              this.selected.push(item.refdes);
             break;
             case 'component':
-             this.filters.push(item.refdes);
+             this.selected.push(item.refdes);
             break;
           }
         }
@@ -1201,30 +1204,30 @@ document.addEventListener("WebComponentsReady", function() {
         if (index != -1) {
           switch (item.type) {
             case 'pin':
-              this.filters = [ item.component ];
+              this.selected = [ item.component ];
             break;
             case 'component':
-             this.filters = [];
+             this.selected = [];
             break;
           }
         }
         else {
+          this.selected = [ item.refdes ];
           switch (item.type) {
             case 'pin':
-              this.filters = [ item.component, item.refdes ];
+              this.selected = [ item.component, item.refdes ];
             break;
             case 'component':
-             this.filters = [ item.refdes ];
+             this.selected = [ item.refdes ];
             break;
           }
         }
       }
 
-      this.onFiltersChanged(this.board, this.filters);
-
+      this.onSelectedChanged(this.board, this.selected);
     },
 
-    onFiltersChanged: function(board, filters) {
+    onSelectedChanged: function(board, selected) {
       var href = window.location.href.replace(/#.*/, ""); /* Trim of # */
       var category = this.category;
 
@@ -1235,11 +1238,11 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       /* If the filters are set, add them to the URL */
-      if (board && filters && filters.length) {
+      if (board && selected && selected.length) {
         for (var i = 0; i < this.categories.length; i++) {
-          var index = filters.indexOf(this.categories[i].slug);
+          var index = selected.indexOf(this.categories[i].slug);
           if (index != -1) {
-            filters.splice(index, 1);
+            selected.splice(index, 1);
           }
         }
       }
@@ -1252,24 +1255,24 @@ document.addEventListener("WebComponentsReady", function() {
         });
 
         /* Only add keywords to the filter if they exist on the board */
-        if(!filters.length) {
+        if(!selected.length) {
           this.keywords = this.availableKeywords.filter(function(keyword) {
             return (category.list.indexOf(keyword.keyword) != -1) ? true : false;
           });
         }
 
-        this.$.boardViewer.addFilter("category", this.category, {
+        this.$.boardViewer.addFilter("category", category, {
           color: "#ffff00",
           interactive: true,
           alwaysVisible: true
         });
       }
 
-      if (filters.length) {
-        href += "/" + filters.join();
-        this.$.boardViewer.addFilter("selected", filters, {
+      if (selected.length) {
+        href += "/" + selected.join();
+        this.$.boardViewer.addFilter("selected", selected, {
           color: "#ffff00",
-          interactive: false,
+          interactive: true,
           alwaysVisible: true
         });
       }
@@ -1287,7 +1290,7 @@ document.addEventListener("WebComponentsReady", function() {
         window.history.pushState({
           board: board,
           category: category,
-          filters: filters ? filters.slice() : [] /* Copy of filters array */
+          filters: selected ? selected.slice() : [] /* Copy of filters array */
         }, board, href);
       }
     },
@@ -1313,53 +1316,24 @@ document.addEventListener("WebComponentsReady", function() {
         break;
 
       case "component":
-        this.$.boardViewer.addFilter("Component hover " + data, data, {
-          color: "#00ffff", /* color for highlight border */
-          interactive: false /* Since this is shown/hidden based on the user
-                              * hovering over this Anchor, the actual GUI
-                              * is set as non-interactive */
-        });
         this.highlightItem(event.model.item, true);
         this.highlightKeywords(event.model.item.keywords, true);
-        /* If no item has been selected via tapping, hover will show info */
-        if (!this.selected) {
+        /* If no item has been active via tapping, hover will show info */
+        if (!this.active) {
           this.hover = null; /* Force DOM update */
           this.hover = event.model.item;
         }
         break;
 
       case "pin":
-        this.$.boardViewer.addFilter("Pin hover " + data, data, {
-          color: "#00ffff", /* color for highlight border */
-          interactive: false /* Since this is shown/hidden based on the user
-                              * hovering over this Anchor, the actual GUI
-                              * is set as non-interactive */
-        });
         this.highlightItem(event.model.item, true);
         this.highlightKeywords(event.model.item.keywords, true);
-        /* If no item has been selected via tapping, hover will show info */
-        if (!this.selected) {
+        /* If no item has been active via tapping, hover will show info */
+        if (!this.active) {
           this.hover = null; /* Force DOM update */
           this.hover = event.model.item;
         }
       }
-      /* Adding all connected refdes to the filter list */
-      if(event.model.item.connected) {
-        this.$.boardViewer.addFilter("connected", event.model.item.connected, {
-          color: "#ff8000",
-          alwaysVisible: true,
-          interactive: false
-        });
-      }
-      /* Adding all related refdes to the filter list */
-      if(event.model.item.related) {
-         this.$.boardViewer.addFilter("related", event.model.item.related, {
-          color: "#00ff00",
-          alwaysVisible: true,
-          interactive: false
-        });
-      }
-
     },
 
     itemOut: function(event) {
@@ -1367,8 +1341,8 @@ document.addEventListener("WebComponentsReady", function() {
         data = event.model.item.refdes;
 
       if (event.model.item == this.hover) {
-        /* If no item has been selected via tapping, hover will show info */
-        if (!this.selected) {
+        /* If no item has been active via tapping, hover will show info */
+        if (!this.active) {
           this.hover = null; /* Force DOM update */
           this.hover = this.boardInfo;
         }
@@ -1412,7 +1386,7 @@ document.addEventListener("WebComponentsReady", function() {
         Array.prototype.forEach.call(
           this.$.keywords.querySelectorAll("a[match='"+keyword+"']"),
           function(el) {
-            el.classList.toggle("selected", show);
+            el.classList.toggle("active", show);
         });
       }, this);
     },
@@ -1466,7 +1440,7 @@ document.addEventListener("WebComponentsReady", function() {
 
       var el = container.querySelector('a[match="' + match + '"');
       if (el) {
-        el.classList.toggle("selected", show);
+        el.classList.toggle("active", show);
       }
     },
 
@@ -1483,14 +1457,15 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       this.board = event.state.board;
-      this.filters = event.state.filters;
+      this.selected = event.state.selected;
       if (this.board != this.$.boardViewer.board) {
         console.log("Loading board via popstate: " + this.board);
         this.$.boardViewer.loadBoard(this.board);
       }
-      this.onFiltersChanged(this.board, this.filters);
+      this.onSelectedChanged(this.board, this.selected);
     },
-    setBoardAndFiltersFromHash: function(boards, hash) {
+
+    setBoardAndSelectedFromHash: function(boards, hash) {
       var uri = hash.split("/"),
         boardToLoad = null,
         hash = uri[0].substr(1); /* Prune the # */
@@ -1510,7 +1485,7 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       if (!boardToLoad) {
-        this.filters = [];
+        this.selected = [];
         this.board = "";
         /* If the boards.json has loaded, and no board is going to be loaded,
          * the app is initialized; show the board selector */
@@ -1519,18 +1494,19 @@ document.addEventListener("WebComponentsReady", function() {
            console.log("Initialized to board-selector");
          }
       } else {
-        // Get filters from the url if there are some.
+        // Get selected from the url if there are some.
         if (uri[1]) {
-          this.filters = uri[1].split(",");
+          this.selected = uri[1].split(",");
         } else {
-          this.filters = [];
+          this.selected = [];
         }
         if (boardToLoad != this.$.boardViewer.board) {
-          console.log("Loading board via setBoardAndFiltersFromHash: " + boardToLoad);
+          console.log("Loading board via setBoardAndSelectedFromHash: " + boardToLoad);
           this.$.boardViewer.loadBoard(boardToLoad);
         }
       }
-      this.onFiltersChanged(boardToLoad, this.filters);
+
+      this.onSelectedChanged(boardToLoad, this.selected);
     },
 
     attached: function() {

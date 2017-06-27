@@ -166,7 +166,7 @@
               "connected": [ "J8Pin8" ]
             },
             "6": {
-              "name": [ "DIO_5", "DIO_5", null ],
+              "name": [ "DIO_5", "DIO_5", "QM_PIN_ID_2" ],
               "function": [ "GPIO_2", "ADC/COMP2", "SPI_M_SS2" ],
               "description": "Arduino Pin 5",
               "keywords": [ "dio", "gpio", "adc", "spi" ],
