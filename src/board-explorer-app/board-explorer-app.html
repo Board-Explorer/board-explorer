@@ -1177,7 +1177,7 @@ document.addEventListener("WebComponentsReady", function() {
              for (var i = 0; i < item.pins.length; i++) {
                var x = this.selected.indexOf(item.pins[i].refdes);
                if (x != -1) {
-                 this.se.splice(x, 1);
+                 this.selected.splice(x, 1);
                }
              }
              this.selected.splice(index, 1);
@@ -1272,7 +1272,7 @@ document.addEventListener("WebComponentsReady", function() {
         href += "/" + selected.join();
         this.$.boardViewer.addFilter("selected", selected, {
           color: "#ffff00",
-          interactive: true,
+          interactive: false,
           alwaysVisible: true
         });
       }
