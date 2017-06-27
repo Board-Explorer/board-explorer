@@ -403,12 +403,18 @@ document.addEventListener("WebComponentsReady", function() {
         type: String,
         value: null
       },
-
       categories: {
         type: Array,
         value: []
       },
-
+      category: {
+        type: Object,
+        value: null
+      },
+      slug: {
+        type: String,
+        value: null
+      },
       keywords: {
         type: Array,
         value: []
@@ -450,7 +456,10 @@ document.addEventListener("WebComponentsReady", function() {
         type: Object,
         value: null
       },
-
+      fetching: {
+        type: Boolean,
+        value: false
+      },
       initialized: {
         type: Boolean,
         value: false
@@ -515,63 +524,31 @@ document.addEventListener("WebComponentsReady", function() {
       if (event.detail.value == null) {
         return;
       }
+
       /* When a category changes, reset the selected and clear the component
        * and pin boxes */
       this.clearComponent();
       this.clearPin();
+      this.clearKeyword();
 
       var index = event.detail.value.getAttribute('index');
-      var category = this.categories[index];
+      var category = this.categories[index]
+      var filters =  this.fetching ? this.selected : [];
+      this.fetching = false;
 
-      /* Only add items to the filter if they exist on the board */
-      this.components = this.availableComponents.filter(function(component) {
-        return (category.list.indexOf(component.refdes) != -1) ? true : false;
-      });
-
-       /* Only add keywords to the filter if they exist on the board */
-      this.keywords = this.availableKeywords.filter(function(keyword) {
-        return (category.list.indexOf(keyword.keyword) != -1) ? true : false;
-      });
-
-      var href = window.location.href.replace(/#.*/, ""); /* Trim of # */
-      /* If the board is set, add it to the URL */
-      if (this.board) {
-         href += "#" + this.board;
-      }
-      /* If the selected array is set, add them to the URL */
-      if (category.slug) {
-        href += "/" + category.slug;
-      }
-      /* If the URL is changing, push it to the window history */
-      if (href != window.location.href) {
-         window.history.replaceState({
-          board: this.board,
-          category: category.name
-        }, category.name, href);
-      }
-
-      this.selected = category.list;
-/*      this.$.boardViewer.addFilter("Category", category, {
-        color: "#ffff00",
-        interactive: true,
-        alwaysVisible: true
-      });*/
+      this.selected = [];
+      this.category = category ? category : null;
+      this.onSelectedChanged(this.board, filters);
     },
 
     onFilterControlChanged: function(event) {
       /* If the filter control changes to something other than to 'All',
-       * clear the selected. */
-      if (event.detail.value != 'all') {
+       * clear the filters. */
+      if (event.detail.value == 'all') {
+        var filters = this.fetching ? this.selected : [];
+        this.category = null;
         this.selected = [];
-      }
-      else {
-        if ('#' + this.board != window.location.href) {
-           window.history.replaceState({
-            board: this.board,
-            category: 'all'
-          }, 'all', '#' + this.board);
-        }
-        this.$.boardViewer.removeFilter("Category");
+        this.onSelectedChanged(this.board, filters);
       }
 
       this.clearKeyword();
@@ -590,6 +567,7 @@ document.addEventListener("WebComponentsReady", function() {
       }
       else {
         this.$.categories.select(-1);
+        this.fetching = false;
       }
     },
 
@@ -607,6 +585,7 @@ document.addEventListener("WebComponentsReady", function() {
       this.$.boardViewer.removeFilter();
       this.selected = [];
       this.infoTitle = "";
+      this.category = null;
       this.onSelectedChanged(this.board, this.selected);
     },
 
@@ -617,6 +596,11 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     clearComponent: function() {
+      /* Deactivate component is is currently set */
+      if (this.component) {
+        this.activateItem(this.component, false);
+      }
+
       this.component = null;
       this.infoTitle = "";
       this.hover = null;
@@ -624,6 +608,11 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     clearPin: function() {
+      /* Deactivate component is is currently set */
+      if (this.pin) {
+        this.activateItem(this.pin, false);
+      }
+
       this.pin = null;
       this.infoTitle = "";
       this.hover = null;
@@ -906,6 +895,18 @@ document.addEventListener("WebComponentsReady", function() {
         }
       }
 
+      /* Turn on the 'Everything' interactive filters;
+       * Pins will be Green
+       * Components will be Cyan */
+      this.$.boardViewer.addFilter("Pins", { type: "PIN", pattern: "*" }, {
+        color: "#00ffff",
+        alwaysVisible: false
+      });
+      this.$.boardViewer.addFilter("Components", { type: "COMPONENT", pattern: "*" }, {
+        color: "#00ffff",
+        alwaysVisible: false
+      });
+
       console.log("Asking for keywords...");
       this.$.boardViewer.getKeywords(function(object) {
         var keywords = [];
@@ -933,33 +934,68 @@ document.addEventListener("WebComponentsReady", function() {
           this.availableComponents = components;
           this.set("components", components);
 
-          if (this.selected.length) {
-            this.active = this.$.boardViewer.findComponent(this.selected[0]);
-            this.hover = null; /* Force DOM update */
-            this.hover = this.active;
-          }
-
+          /* If there are categories for this board, select the 'Categories' radio box */
           this.set("categories", this.$.boardViewer.getCategories());
-
           /* Enable/Disable 'Categories' based on whether there are categories */
           this.$.filterControls.querySelector('[name="categories"]').disabled = (this.categories.length == 0);
 
-          /* If there are categories for this board, select the 'Categories' radio box */
-          if (this.categories.length) {
-            /* start to look if a category is set in the URL */
-            var href = window.location.href;
-            var params = href.split('/');
-            var index = 0;
-            for (var i = 0; i < this.categories.length; i++) {
-              if (this.categories[i].slug == params[params.length -1]) {
-                index = i;
-              }
+          this.fetching = true;
+
+          /* Get component tnat will be activated */
+          var categorySelected = false;
+          var components = [];
+          var countComponens = 0;
+          for (var i = 0; i < this.selected.length; i++) {
+            var component = this.$.boardViewer.findComponent(this.selected[i]);
+            if (component) {
+              components.push(component);
+              countComponens += (component.type == 'component') ? 1 : 0;
             }
-            this.$.filterControls.select("categories");
-            this.$.categories.select(index);
-          } else {
+          }
+
+          if (!this.categories.length) {
             this.$.filterControls.select("all");
             this.$.categories.select(-1);
+          }
+          else {
+            if (!this.slug) {
+              for (var i = 0; i < this.categories.length; i++) {
+                if (this.categories[i].slug == this.selected[0]) {
+                  this.slug = this.categories[i].slug;
+                  this.selected.shift();
+                  break;
+                }
+              }
+            }
+
+            if (this.slug) {
+              for (var i = 0; i < this.categories.length; i++) {
+                if (this.categories[i].slug == this.slug) {
+                  this.$.filterControls.select("categories");
+                  this.$.categories.select(i);
+                  categorySelected = true;
+                  break;
+                }
+              }
+            }
+
+           if (!categorySelected && !this.selected.length) {
+              this.$.filterControls.select("categories");
+              this.$.categories.select(0);
+            }
+
+            if (!categorySelected && this.selected.length) {
+              this.$.filterControls.select("all");
+              this.$.categories.select(-1);
+            }
+          }
+
+          if (components) {
+            if (!categorySelected) {
+              for (var i = 0; i < components.length; i++) {
+                this.activateItem(components[i], countComponens > 1);
+              }
+            }
           }
 
           /* Load the board top-level documentation */
@@ -1040,7 +1076,6 @@ document.addEventListener("WebComponentsReady", function() {
           this.$.boardViewer.removeFilter("keyword");
           this.keyword = null;
           this.set("components", this.availableComponents);
-          return;
         }
 
         this.keyword = item;
@@ -1074,30 +1109,28 @@ document.addEventListener("WebComponentsReady", function() {
           this.$.boardViewer.removeFilter("component");
           this.component = null;
           this.set("keywords", this.availableKeywords);
-          return;
         }
 
         this.component = item;
         this.pins = this.component.pins;
 
-        if (this.$.filterControls.selected == 'all') {
-          this.keywords = this.availableKeywords.filter(function(keyword) {
-            keyword = keyword.keyword;
-            var match = item.keywords ? (item.keywords.indexOf(keyword) != -1) : false;
-            if (match) {
+        this.keywords = this.availableKeywords.filter(function(keyword) {
+          keyword = keyword.keyword;
+          var match = item.keywords ? (item.keywords.indexOf(keyword) != -1) : false;
+          if (match) {
+            return true;
+          }
+          if (!item.pins) {
+            return false;
+          }
+          for (var i = 0; i < item.pins.length; i++) {
+            if (item.pins[i].keywords && (item.pins[i].keywords.indexOf(keyword) != -1)) {
               return true;
             }
-            if (!item.pins) {
-              return false;
-            }
-            for (var i = 0; i < item.pins.length; i++) {
-              if (item.pins[i].keywords && (item.pins[i].keywords.indexOf(keyword) != -1)) {
-                return true;
-              }
-            }
-            return false;
-          });
-        }
+          }
+          return false;
+        });
+
         break;
 
       case "pin":
@@ -1106,16 +1139,16 @@ document.addEventListener("WebComponentsReady", function() {
           this.$.boardViewer.removeFilter("pin");
           this.pin = null;
           this.set("keywords", this.availableKeywords);
-          return;
         }
 
         this.pin = item;
+        this.component = this.$.boardViewer.findComponent(item.component);
+        this.pins = this.component.pins;
 
-        if (this.$.filterControls.selected == 'all') {
-           this.keywords = this.availableKeywords.filter(function(keyword) {
-            return item.keywords ? (item.keywords.indexOf(keyword.keyword) != -1) : false;
-          });
-        }
+         this.keywords = this.availableKeywords.filter(function(keyword) {
+          return item.keywords ? (item.keywords.indexOf(keyword.keyword) != -1) : false;
+        });
+
         break;
       }
 
@@ -1132,17 +1165,62 @@ document.addEventListener("WebComponentsReady", function() {
        * Otherwise set the filter list to the item.
        */
       var index = this.selected.indexOf(item.refdes);
+
       if (isControlPressed) {
-        if (index != -1) {
-          this.selected.splice(index, 1);
-        } else {
-          this.selected.push(item.refdes);
+        if (index != -1)
+        {
+          switch (item.type) {
+            case 'pin':
+             this.selected.splice(index, 1);
+            break;
+            case 'component':
+             for (var i = 0; i < item.pins.length; i++) {
+               var x = this.selected.indexOf(item.pins[i].refdes);
+               if (x != -1) {
+                 this.selected.splice(x, 1);
+               }
+             }
+             this.selected.splice(index, 1);
+            break;
+          }
         }
-      } else {
-        if (this.selected.length == 1 && this.selected[0] == item.refdes) {
-          this.selected = [];
-        } else {
+        else {
+          switch (item.type) {
+            case 'pin':
+              var x  = this.selected.indexOf(item.component);
+              if (x == -1) {
+                this.selected.push(item.component);
+              }
+              this.selected.push(item.refdes);
+            break;
+            case 'component':
+             this.selected.push(item.refdes);
+            break;
+          }
+        }
+      }
+      else
+      {
+        if (index != -1) {
+          switch (item.type) {
+            case 'pin':
+              this.selected = [ item.component ];
+            break;
+            case 'component':
+             this.selected = [];
+            break;
+          }
+        }
+        else {
           this.selected = [ item.refdes ];
+          switch (item.type) {
+            case 'pin':
+              this.selected = [ item.component, item.refdes ];
+            break;
+            case 'component':
+             this.selected = [ item.refdes ];
+            break;
+          }
         }
       }
 
@@ -1151,24 +1229,68 @@ document.addEventListener("WebComponentsReady", function() {
 
     onSelectedChanged: function(board, selected) {
       var href = window.location.href.replace(/#.*/, ""); /* Trim of # */
+      var category = this.category;
 
+      this.$.boardViewer.removeFilter("category");
       /* If the board is set, add it to the URL */
       if (board) {
          href += "#" + board;
       }
 
-      /* If the selected array is set, add them to the URL */
+      /* If the filters are set, add them to the URL */
       if (board && selected && selected.length) {
-        href += "/" + this.selected.join();
+        for (var i = 0; i < this.categories.length; i++) {
+          var index = selected.indexOf(this.categories[i].slug);
+          if (index != -1) {
+            selected.splice(index, 1);
+          }
+        }
+      }
+
+      if (category) {
+        href += "/" + category.slug;
+        /* Only add items to the filter if they exist on the board */
+        this.components = this.availableComponents.filter(function(component) {
+          return (category.list.indexOf(component.refdes) != -1) ? true : false;
+        });
+
+        /* Only add keywords to the filter if they exist on the board */
+        if(!selected.length) {
+          this.keywords = this.availableKeywords.filter(function(keyword) {
+            return (category.list.indexOf(keyword.keyword) != -1) ? true : false;
+          });
+        }
+
+        this.$.boardViewer.addFilter("category", category, {
+          color: "#ffff00",
+          interactive: true,
+          alwaysVisible: true
+        });
+      }
+
+      if (selected.length) {
+        href += "/" + selected.join();
+        this.$.boardViewer.addFilter("selected", selected, {
+          color: "#ffff00",
+          interactive: false,
+          alwaysVisible: true
+        });
+      }
+      else {
+        this.clearKeyword();
+        this.clearComponent();
+        this.clearPin();
+        this.$.boardViewer.removeFilter("selected");
       }
 
       /* If the URL is changing, push it to the window history */
       if (href != window.location.href) {
         /* Add an entry to the window.history to update the URL with the list
-         * of active selected */
+         * of active filters */
         window.history.pushState({
           board: board,
-          selected: selected ? selected.slice() : [] /* Copy of selected array */
+          category: category,
+          filters: selected ? selected.slice() : [] /* Copy of filters array */
         }, board, href);
       }
     },
@@ -1347,6 +1469,13 @@ document.addEventListener("WebComponentsReady", function() {
       var uri = hash.split("/"),
         boardToLoad = null,
         hash = uri[0].substr(1); /* Prune the # */
+
+        /* If we have a category we stored while are not categories loaded yet. */
+        if (uri[2]) {
+          this.slug = uri[1];
+          uri[1] = uri[2];
+          uri.splice(2,1);
+        }
 
       for (var i = 0; i < this.boards.length; i++) {
         if (this.boards[i].directory == hash) {
