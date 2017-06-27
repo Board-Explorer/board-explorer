@@ -7,11 +7,13 @@
   <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
   <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
-
+  <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
   <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 
-  <link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
-  <link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+  <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+  <link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
+
+  <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 
   <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
   <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
@@ -283,73 +285,66 @@
           [[getBoardBoxTitle(board)]]
         </paper-material>
 
+        <paper-material class="vertical layout">
+          <paper-tabs id="searchTabs" selected="{{searchMode}}" attr-for-selected="name">
+            <paper-tab name="searchPage">Search</paper-tab>
+            <paper-tab name="categoriesPage" hidden$="[[isEmpty(categories)]]">Categories</paper-tab>
+            <paper-tab name="keywordsPage">Keywords</paper-tab>
+            <paper-tab name="componentsPage">Components</paper-tab>
+            <paper-tab name="overviewPage" hidden>Get to know the board</paper-tab>
+          </paper-tabs>
+        </paper-material>
+
         <paper-material class="vertical layout start">
-          <paper-radio-group id="filterControls" on-selected-changed="onFilterControlChanged">
-            <paper-radio-button name="all">All items</paper-radio-button>
-            <paper-radio-button name="categories">Categories</paper-radio-button>
-            <paper-radio-button name="know-the-board" disabled>Get to know the board</paper-radio-button>
-          </paper-radio-group>
-        </paper-material>
+          <iron-pages id="pages" selected="[[searchMode]]" attr-for-selected="id">
+            <div id="searchPage" class="vertical layout">
+              <paper-input id="search" value="{{search}}" label="Search" class="flex">
+                <iron-icon suffix slot="suffix" icon="search"></iron-icon>
+              </paper-input>
+              <div hidden$="[[!isEmpty(search)]]">Enter a value to search.</div>
+              <div hidden$="[[isEmpty(search)]]">
+                <div>Search results</div>
+                <div hidden$="[[!isEmpty(matches)]]">No matches.</div>
+                <div class="layout horizontal wrap">
+                  <template is="dom-repeat" items="[[matches]]">
+                    <a is-button on-click="itemClicked" match$="[[item.refdes]]" on-mouseover="buttonOver" on-mouseout="buttonOut">
+                      [[item.field]]: [[item.value]]
+                    </a>
+                  </template>
+                </div>
+              </div>
+            </div>
 
-        <paper-material hidden class="vertical layout start" control="categories">
-          <paper-dropdown-menu label="Category" no-animations>
-          <paper-listbox slot="dropdown-content" id="categories" class="dropdown-content" on-selected-item-changed="categoryChanged" selected="-1">
-            <template is="dom-repeat" items="[[categories]]">
-              <paper-item index$="[[index]]">[[item.name]]</paper-item>
-            </template>
-          </paper-listbox>
-        </paper-dropdown-menu>
-        </paper-material>
+            <div id="categoriesPage" class="vertical layout">
+              <div>Categories</div>
+              <div class="layout horizontal wrap">
+                <template is="dom-repeat" items="[[categories]]">
+                  <a is-button on-click="itemClicked" match$="[[item.slug]]" on-mouseover="buttonOver" on-mouseout="buttonOut">[[item.name]]</a>
+                </template>
+              </div>
+            </div>
 
-        <paper-material id="keywords" hidden$="[[isEmpty(keywords)]]" class="vertical layout start">
-          <div hidden$="[[!isEmpty(keyword)]]">
-            <div hidden$="[[isEmpty(component)]]">Keywords for [[component.refdes]]</div>
-            <div hidden$="[[!isEmpty(component)]]">Filter by keyword</div>
-          </div>
-          <div hidden$="[[isEmpty(keyword)]]"><b>Filtering by</b>:</div>
-          <a is-button on-click="clearKeyword" hidden$="[[isEmpty(keyword)]]">
-            [[keyword.keyword]]
-            <iron-icon hidden$="[[isEmpty(keyword)]]" icon="close"></iron-icon>
-          </a>
-          <div hidden$="[[!isEmpty(keyword)]]" class="horizontal layout wrap">
-            <template is="dom-repeat" items="[[keywords]]">
-              <a is-button on-tap="buttonTapped" match$="[[item.keyword]]" on-mouseover="buttonOver" on-mouseout="buttonOut">[[item.keyword]]</a>
-            </template>
-          </div>
-        </paper-material>
+            <div id="keywordsPage" class="vertical layout">
+              <div>Keywords</div>
+              <div class="horizontal layout wrap">
+                <template is="dom-repeat" items="[[keywords]]">
+                  <a is-button on-click="itemClicked" match$="[[item.keyword]]" on-mouseover="buttonOver" on-mouseout="buttonOut">[[item.keyword]]</a>
+                </template>
+              </div>
+            </div>
 
-        <paper-material id="components" hidden$="[[isEmpty(components)]]" class="vertical layout start">
-          <div hidden$="[[!isEmpty(component)]]">Filter by component</div>
-          <div hidden$="[[isEmpty(component)]]"><b>Filtering by</b>:</div>
-          <a is-button on-click="clearComponent" hidden$="[[isEmpty(component)]]">
-            [[component.refdes]]: [[component.name]]
-            <iron-icon hidden$="[[isEmpty(component)]]" icon="close"></iron-icon>
-          </a>
-          <div hidden$="[[!isEmpty(component)]]" class="layout horizontal wrap">
-            <template is="dom-repeat" items="[[components]]">
-              <a is-button on-click="buttonTapped" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="buttonOver" on-mouseout="buttonOut">
-                <div>[[itemRefDes(item)]]</div>
-                <div>[[itemName(item)]]</div>
-              </a>
-            </template>
-          </div>
-        </paper-material>
-
-        <paper-material id="pins" hidden$="[[isEmpty(pins)]]" class="vertical layout start">
-          <div hidden$="[[!isEmpty(pin)]]">Select a pin</div>
-          <div hidden$="[[isEmpty(pin)]]"><b>Filtering by</b>:</div>
-          <a is-button on-click="clearPin" hidden$="[[isEmpty(pin)]]">
-            [[pin.refdes]]: [[pin.name]]
-            <iron-icon hidden$="[[isEmpty(pin)]]" icon="close"></iron-icon>
-          </a>
-          <div hidden$="[[!isEmpty(pin)]]" class="layout horizontal wrap">
-            <template is="dom-repeat" items="[[pins]]">
-              <a is-button on-click="buttonTapped" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="buttonOver" on-mouseout="buttonOut">
-                <div>[[itemRefDes(item)]]</div>
-                <div>[[itemName(item)]]</div>
-              </a>
-            </template>
-          </div>
+            <div id="componentsPage" class="vertical layout start">
+              <div>Components</div>
+              <div class="layout horizontal wrap">
+                <template is="dom-repeat" items="[[components]]">
+                  <a is-button on-click="itemClicked" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="buttonOver" on-mouseout="buttonOut">
+                    <div>[[itemRefDes(item)]]</div>
+                    <div>[[itemName(item)]]</div>
+                  </a>
+                </template>
+              </div>
+            </div>
+          </iron-pages>
         </paper-material>
 
       </div>
@@ -483,20 +478,101 @@ document.addEventListener("WebComponentsReady", function() {
       "onKeywordChanged(keyword)",
       "onPinChanged(pin)",
       "onHoverChanged(hover)",
-      "setBoardAndSelectedFromHash(boards, hash)"
+      "setBoardAndSelectedFromHash(boards, hash)",
+      "_searchModeChanged(searchMode)",
+      "_searchChanged(search)"
     ],
 
     listeners: {
       "boardViewer.board-changed": "onBoardChanged",
       "boardViewer.item-hover": "onItemHover",
-      "boardViewer.selected-changed": "onBoardSelectedChanged"
+      "boardViewer.selected-changed": "onBoardSelectedChanged",
+      "boardViewer.item-tap": "onItemTap",
+      "search.focused-changed": "_searchFocus"
+    },
+
+    _searchChanged: function(search) {
+      if (this.isEmpty(search)) {
+        this.matches = [];
+        return;
+      }
+
+      var matches = [],
+        regexp = new RegExp(search.replace(/[-^$\\*\/+?().|[\]{}]/g, '\\$&'), "i");
+
+      function _matchItem(regexp, item) {
+        var fields = [ "refdes", "name" ];
+        for (var i = 0; i < fields.length; i++) {
+          var result = regexp.exec(item[fields[i]]);
+          if (!result) {
+            continue;
+          }
+          return {
+            type: item.type,
+            item: item,
+            refdes: item.refdes,
+            field: fields[i],
+            value: item[fields[i]],
+            match: result
+          };
+        }
+
+        return null;
+      }
+
+      this.availableComponents.forEach(function(item) {
+        var match = _matchItem(regexp, item);
+        if (match) {
+          matches.push(match);
+        }
+      });
+
+      this.availableKeywords.forEach(function(item) {
+        var result = regexp.exec(item.keyword);
+        if (!result) {
+          return;
+        }
+        matches.push({
+          type: "keyword",
+          field: "keyword",
+          refdes: item.keyword,
+          keyword: item.keyword,
+          value: item.keyword,
+          match: result
+        });
+      });
+
+      this.categories.forEach(function(item) {
+        var result = regexp.exec(item.name);
+        if (!result) {
+          return;
+        }
+        matches.push({
+          type: "category",
+          field: "category",
+          refdes: item.slug,
+          value: item.name,
+          slug: item.slug,
+          match: result
+        });
+      });
+
+      this.matches = matches;
+    },
+
+    _searchFocus: function(event) {
+      if (event.detail.value) {
+        this.searchMode = "searchPage";
+      }
     },
 
     onBoardSelectedChanged: function(event) {
       if (!this.board) {
         return;
       }
-      this.onSelectedChanged(this.board, this.$.boardViewer.selected || []);
+
+      console.log("TODO: Figure out how to get this.selected to be two-way with board-viewer");
+      this.updateRoute(this.board, this.$.boardViewer.selected || []);
     },
 
     _getItemNamesAndContexts: function(item) {
@@ -538,54 +614,26 @@ document.addEventListener("WebComponentsReady", function() {
       return NaCs;
     },
 
-    categoryChanged: function(event) {
-      if (event.detail.value == null) {
-        return;
-      }
+    _searchModeChanged: function(searchMode) {
+      console.log("Mode changed to " + searchMode);
 
-      /* When a category changes, reset the selected and clear the component
-       * and pin boxes */
-      this.clearComponent();
-      this.clearPin();
-      this.clearKeyword();
-
-      var index = event.detail.value.getAttribute('index');
-      var category = this.categories[index]
-      var filters =  this.fetching ? this.selected : [];
-      this.fetching = false;
-
-      this.selected = [];
-      this.category = category ? category : null;
-      this.onSelectedChanged(this.board, filters);
-    },
-
-    onFilterControlChanged: function(event) {
-      /* If the filter control changes to something other than to 'All',
-       * clear the filters. */
-      if (event.detail.value == 'all') {
-        var filters = this.fetching ? this.selected : [];
-        this.category = null;
-        this.selected = [];
-        this.onSelectedChanged(this.board, filters);
+      if (searchMode == "searchPage") {
+        this.$.search.focus();
+      } else {
+        console.log("Setting focus to " + searchMode);
+        this.$.searchTabs.querySelector("[name='" + searchMode + "']").focus();
       }
 
       this.clearKeyword();
       this.clearComponent();
       this.clearPin();
 
-      var filterControls = Polymer.dom(this.root).querySelectorAll('[control]');
+      var searchTabs = Polymer.dom(this.root).querySelectorAll('[control]');
       this.components = this.availableComponents;
       this.keywords = this.availableKeywords;
-      for (var i = 0; i < filterControls.length; i++) {
-        var attr = filterControls[i].getAttribute('control');
-        filterControls[i].hidden = (attr == event.detail.value) ? false : true;
-      }
-      if (event.detail.value == 'categories') {
-        this.$.categories.select(0);
-      }
-      else {
-        this.$.categories.select(-1);
-        this.fetching = false;
+      for (var i = 0; i < searchTabs.length; i++) {
+        var attr = searchTabs[i].getAttribute('control');
+        searchTabs[i].hidden = (attr == event.detail.value) ? false : true;
       }
     },
 
@@ -601,9 +649,10 @@ document.addEventListener("WebComponentsReady", function() {
       this.$.boardViewer.loadBoard();
       /* Remove all selected */
       this.selected = [];
+      this.$.boardViewer.setSelected(this.selected);
       this.infoTitle = "";
       this.category = null;
-      this.onSelectedChanged(this.board, this.selected);
+      this.updateRoute(this.board, this.selected);
     },
 
     clearKeyword: function() {
@@ -656,11 +705,19 @@ document.addEventListener("WebComponentsReady", function() {
       return item.name || item.readable || item.refdes || "";
     },
 
-    isEmpty: function(item) {
-      return (!item
-        || (Array.isArray(item) && item.length == 0)
-        || item == null
-        || item == "") ? true : false;
+    isEmpty: function(/*item0, ... */) {
+      /* If all parameters passed are empty, return true */
+      for (var i = 0; i < arguments.length; i++) {
+        var item = arguments[i];
+        if (item
+          && (!Array.isArray(item) || item.length != 0)
+          && item != null
+          && item != "") {
+          return false;
+        }
+      }
+
+      return true;
     },
 
     getBoardBoxTitle: function(name) {
@@ -789,7 +846,7 @@ document.addEventListener("WebComponentsReady", function() {
       if (!details.in) {
         if (this.hover == info) {
           /* If no item has been selected via tapping, hover will show info */
-          if (!this.selected) {
+          if (!this.active) {
             this.hover = null; /* Force DOM update */
             this.hover = this.boardInfo;
           }
@@ -811,7 +868,7 @@ document.addEventListener("WebComponentsReady", function() {
 
       this.pendingHover = info;
       /* If no item has been selected via tapping, hover will show info */
-      if (!this.selected) {
+      if (!this.active) {
         this.hover = null; /* Force DOM update */
         this.hover = info;
       }
@@ -833,11 +890,12 @@ document.addEventListener("WebComponentsReady", function() {
       console.log("Loading " + board);
       /* Remove all selected */
       this.selected = [];
+      this.$.boardViewer.setSelected(this.selected);
       if (this.$.boardViewer.board != board) {
         console.log("Loading board via boardClicked");
         this.$.boardViewer.loadBoard(board);
       }
-      this.onSelectedChanged(board, this.selected);
+      this.updateRoute(board, this.selected);
     },
 
     onBoardChanged: function(event) {
@@ -909,66 +967,20 @@ document.addEventListener("WebComponentsReady", function() {
 
           /* If there are categories for this board, select the 'Categories' radio box */
           this.set("categories", this.$.boardViewer.getCategories());
-          /* Enable/Disable 'Categories' based on whether there are categories */
-          this.$.filterControls.querySelector('[name="categories"]').disabled = (this.categories.length == 0);
 
-          this.fetching = true;
+          /* When the application loads, the default filter is set as follows:
+           * 1. If a category is set, searchMode == "categories"
+           * 2. If a keyword is set, searchMode == "keywords"
+           * 3. searchMode == "components"
+           */
 
-          /* Get component tnat will be activated */
-          var categorySelected = false;
-          var components = [];
-          var countComponens = 0;
-          for (var i = 0; i < this.selected.length; i++) {
-            var component = this.$.boardViewer.findComponent(this.selected[i]);
-            if (component) {
-              components.push(component);
-              countComponens += (component.type == 'component') ? 1 : 0;
-            }
-          }
-
-          if (!this.categories.length) {
-            this.$.filterControls.select("all");
-            this.$.categories.select(-1);
-          }
-          else {
-            if (!this.slug) {
-              for (var i = 0; i < this.categories.length; i++) {
-                if (this.categories[i].slug == this.selected[0]) {
-                  this.slug = this.categories[i].slug;
-                  this.selected.shift();
-                  break;
-                }
-              }
-            }
-
-            if (this.slug) {
-              for (var i = 0; i < this.categories.length; i++) {
-                if (this.categories[i].slug == this.slug) {
-                  this.$.filterControls.select("categories");
-                  this.$.categories.select(i);
-                  categorySelected = true;
-                  break;
-                }
-              }
-            }
-
-           if (!categorySelected && !this.selected.length) {
-              this.$.filterControls.select("categories");
-              this.$.categories.select(0);
-            }
-
-            if (!categorySelected && this.selected.length) {
-              this.$.filterControls.select("all");
-              this.$.categories.select(-1);
-            }
-          }
-
-          if (components) {
-            if (!categorySelected) {
-              for (var i = 0; i < components.length; i++) {
-                this.activateItem(components[i], countComponens > 1);
-              }
-            }
+          /* If there are categories for this board, select the 'Categories' radio box */
+          if (this.category) {
+            this.searchMode = "categoriesPage";
+          } else if (this.keyword) {
+            this.searchMode = "keywordsPage";
+          } else {
+            this.searchMode = "componentsPage";
           }
 
           /* Load the board top-level documentation */
@@ -1008,7 +1020,7 @@ document.addEventListener("WebComponentsReady", function() {
 
     onKeywordChanged: function(keyword) {
       this.toggleSelected(
-        Polymer.dom(this.$.keywords),
+        Polymer.dom(this.$.keywordsPage),
         keyword ? keyword.keyword : undefined);
       if (!keyword) {
         this.$.boardViewer.removeFilter("keyword");
@@ -1017,22 +1029,11 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     onComponentChanged: function(component) {
-      this.toggleSelected(Polymer.dom(this.$.components),
+      this.toggleSelected(Polymer.dom(this.$.componentsPage),
         component ? component.refdes : undefined);
       if (!component) {
-        this.$.boardViewer.removeFilter("component");
         this.pin = null;
         this.pins = [];
-        this.set("keywords", this.availableKeywords);
-      }
-    },
-
-    onPinChanged: function(pin) {
-      this.toggleSelected(Polymer.dom(this.$.pins),
-        pin ? pin.refdes : undefined);
-      if (!pin) {
-        this.$.boardViewer.removeFilter("pin");
-        console.log("TODO: Filter keywords on component if still active");
         this.set("keywords", this.availableKeywords);
       }
     },
@@ -1079,7 +1080,6 @@ document.addEventListener("WebComponentsReady", function() {
       case "component":
         if (this.component && this.component.refdes == item.refdes) {
           this.active = null;
-          this.$.boardViewer.removeFilter("component");
           this.component = null;
           this.set("keywords", this.availableKeywords);
         }
@@ -1109,7 +1109,6 @@ document.addEventListener("WebComponentsReady", function() {
       case "pin":
         if (this.pin && this.pin.refdes == item.refdes) {
           this.active = null;
-          this.$.boardViewer.removeFilter("pin");
           this.pin = null;
           this.set("keywords", this.availableKeywords);
         }
@@ -1129,124 +1128,43 @@ document.addEventListener("WebComponentsReady", function() {
       this.hover = null; /* Force DOM update */
       this.hover = item;
 
-      /* Behavior with control pressed:
-       * If the item is in the filter list, remove it. Otherwise add it.
-       * If the list is empty, remove the filter
-       *
-       * Behavior without control pressed:
-       * If the item is in the only item in filter list, remove it
-       * Otherwise set the filter list to the item.
-       */
-      var index = this.selected.indexOf(item.refdes);
-
-      if (isControlPressed) {
-        if (index != -1)
-        {
-          switch (item.type) {
-            case 'pin':
-             this.selected.splice(index, 1);
-            break;
-            case 'component':
-             for (var i = 0; i < item.pins.length; i++) {
-               var x = this.selected.indexOf(item.pins[i].refdes);
-               if (x != -1) {
-                 this.selected.splice(x, 1);
-               }
-             }
-             this.selected.splice(index, 1);
-            break;
-          }
-        }
-        else {
-          switch (item.type) {
-            case 'pin':
-              var x  = this.selected.indexOf(item.component);
-              if (x == -1) {
-                this.selected.push(item.component);
-              }
-              this.selected.push(item.refdes);
-            break;
-            case 'component':
-             this.selected.push(item.refdes);
-            break;
-          }
-        }
-      }
-      else
-      {
-        if (index != -1) {
-          switch (item.type) {
-            case 'pin':
-              this.selected = [ item.component ];
-            break;
-            case 'component':
-             this.selected = [];
-            break;
-          }
-        }
-        else {
-          this.selected = [ item.refdes ];
-          switch (item.type) {
-            case 'pin':
-              this.selected = [ item.component, item.refdes ];
-            break;
-            case 'component':
-             this.selected = [ item.refdes ];
-            break;
-          }
-        }
-      }
-
-      this.onSelectedChanged(this.board, this.selected);
+      this.updateRoute(this.board, this.selected);
     },
 
-    onSelectedChanged: function(board, selected) {
-      var href = window.location.href.replace(/#.*/, ""); /* Trim of # */
-      var category = this.category;
+    updateRoute: function(board, selected) {
+      /* Start with an empty route by trimming the hash parameters */
+      var href = window.location.href.replace(/#.*/, ""),
+        params = [];
 
-      this.$.boardViewer.removeFilter("category");
       /* If the board is set, add it to the URL */
       if (board) {
          href += "#" + board;
-      }
 
-      /* If the filters are set, add them to the URL */
-      if (board && selected && selected.length) {
-        for (var i = 0; i < this.categories.length; i++) {
-          var index = selected.indexOf(this.categories[i].slug);
-          if (index != -1) {
-            selected.splice(index, 1);
+        /* If the filters are set, add them to the URL */
+        if (board && selected && selected.length) {
+          for (var i = 0; i < selected.length; i++) {
+            if (this.$.boardViewer.findComponent(selected[i])) {
+              params.push(selected[i]);
+              break;
+            }
+
+            if (this.availableKeywords.indexOf(selected[i]) != -1) {
+              params.push(selected[i]);
+              break;
+            }
+
+            console.log("Dropping invalid selection: " + selected[i]);
           }
         }
-      }
 
-      if (category) {
-        href += "/" + category.slug;
-        /* Only add items to the filter if they exist on the board */
-        this.components = this.availableComponents.filter(function(component) {
-          return (category.list.indexOf(component.refdes) != -1) ? true : false;
-        });
-
-        /* Only add keywords to the filter if they exist on the board */
-        if(!selected.length) {
-          this.keywords = this.availableKeywords.filter(function(keyword) {
-            return (category.list.indexOf(keyword.keyword) != -1) ? true : false;
-          });
+        /* If there is a category set, add it to the first part of the URL */
+        if (this.category) {
+          params.unshift(this.category.slug);
         }
 
-        this.$.boardViewer.addFilter("category", category, {
-          color: "#ffff00",
-          interactive: true,
-          alwaysVisible: true
-        });
-      }
-
-      if (selected.length) {
-        href += "/" + selected.join(",");
-      } else {
-        this.clearKeyword();
-        this.clearComponent();
-        this.clearPin();
+        if (params.length) {
+          href += "/" + params.join(",");
+        }
       }
 
       /* If the URL is changing, push it to the window history */
@@ -1255,8 +1173,8 @@ document.addEventListener("WebComponentsReady", function() {
          * of active filters */
         window.history.pushState({
           board: board,
-          category: category,
-          filters: selected ? selected.slice() : [] /* Copy of filters array */
+          category: this.category ? this.category.slug : null,
+          selected: selected ? selected.slice() : [] /* Copy of selected array */
         }, board, href);
       }
     },
@@ -1271,6 +1189,10 @@ document.addEventListener("WebComponentsReady", function() {
       case "keyword":
         /* For keywords, refdes is the array of refdes that have this keyword */
         data = event.model.item.keyword;
+        if (this.selected.indexOf(data) == -1) {
+          this.push("selected", data);
+          this.$.boardViewer.setSelected(this.selected);
+        }
         this.$.boardViewer.addFilter("Keyword hover " + data, data, {
           color: "#00ff00", /* color for highlight border */
           interactive: false /* Since this is shown/hidden based on the user
@@ -1282,9 +1204,14 @@ document.addEventListener("WebComponentsReady", function() {
         break;
 
       case "component":
+        if (this.selected.indexOf(data) == -1) {
+          this.push("selected", data);
+          this.$.boardViewer.setSelected(this.selected);
+        }
+        console.log("selected: " + JSON.stringify(this.selected, null, 2));
         this.highlightItem(event.model.item, true);
         this.highlightKeywords(event.model.item.keywords, true);
-        /* If no item has been active via tapping, hover will show info */
+        /* If no item has been selected via tapping, hover will show info */
         if (!this.active) {
           this.hover = null; /* Force DOM update */
           this.hover = event.model.item;
@@ -1292,13 +1219,21 @@ document.addEventListener("WebComponentsReady", function() {
         break;
 
       case "pin":
+        if (this.selected.indexOf(data) == -1) {
+          this.push("selected", data);
+          this.$.boardViewer.setSelected(this.selected);
+        }
         this.highlightItem(event.model.item, true);
         this.highlightKeywords(event.model.item.keywords, true);
-        /* If no item has been active via tapping, hover will show info */
+        /* If no item has been selected via tapping, hover will show info */
         if (!this.active) {
           this.hover = null; /* Force DOM update */
           this.hover = event.model.item;
         }
+        break;
+      default:
+        console.log("Unrecognized item type: " + type);
+        break;
       }
     },
 
@@ -1307,7 +1242,7 @@ document.addEventListener("WebComponentsReady", function() {
         data = event.model.item.refdes;
 
       if (event.model.item == this.hover) {
-        /* If no item has been active via tapping, hover will show info */
+        /* If no item has been selected via tapping, hover will show info */
         if (!this.active) {
           this.hover = null; /* Force DOM update */
           this.hover = this.boardInfo;
@@ -1317,14 +1252,22 @@ document.addEventListener("WebComponentsReady", function() {
       event.preventDefault();
       switch (type) {
       case "component":
-        this.$.boardViewer.removeFilter("Component hover " + data);
         this.highlightItem(event.model.item, false);
         this.highlightKeywords(event.model.item.keywords, false);
+        var index = this.selected.indexOf(data);
+        if (index != -1) {
+          this.splice("selected", index, 1);
+          this.$.boardViewer.setSelected(this.selected);
+        }
         break;
       case "pin":
-        this.$.boardViewer.removeFilter("Pin hover " + data);
         this.highlightItem(event.model.item, false);
         this.highlightKeywords(event.model.item.keywords, false);
+        var index = this.selected.indexOf(data);
+        if (index != -1) {
+          this.splice("selected", index, 1);
+          this.$.boardViewer.setSelected(this.selected);
+        }
         break;
       case "keyword":
         /* For keywords, refdes is the array of refdes that have this keyword */
@@ -1332,11 +1275,13 @@ document.addEventListener("WebComponentsReady", function() {
         this.$.boardViewer.removeFilter("Keyword hover " + data);
         this.highlightItemsWithKeyword(data, false)
         this.highlightKeywords([data], false);
+        var index = this.selected.indexOf(data);
+        if (index != -1) {
+          this.splice("selected", index, 1);
+          this.$.boardViewer.setSelected(this.selected);
+        }
         break;
       }
-      /* Remove filters for related and/or connected components */
-      this.$.boardViewer.removeFilter("related");
-      this.$.boardViewer.removeFilter("connected");
     },
 
     pinClicked: function(event) {
@@ -1350,7 +1295,7 @@ document.addEventListener("WebComponentsReady", function() {
 
       keywords.forEach(function(keyword) {
         Array.prototype.forEach.call(
-          this.$.keywords.querySelectorAll("a[match='"+keyword+"']"),
+          this.$.keywordsPage.querySelectorAll("a[match='"+keyword+"']"),
           function(el) {
             el.classList.toggle("active", show);
         });
@@ -1384,20 +1329,18 @@ document.addEventListener("WebComponentsReady", function() {
       switch (item.type) {
       case "keyword":
         match = item.keyword;
-        container = this.$.keywords;
+        container = this.$.keywordsPage;
         break;
 
       case "pin":
-        /* For a pin, highlight the parent component as well */
-        this.highlightItem({type: "component", refdes: item.component }, show);
-
-        match = item.refdes;
-        container = this.$.pins;
+        /* For a pin, highlight the parent component */
+        match = item.component;
+        container = this.$.componentsPage;
         break;
 
       case "component":
         match = item.refdes;
-        container = this.$.components;
+        container = this.$.componentsPage;
       }
 
       if (!container) {
@@ -1424,11 +1367,12 @@ document.addEventListener("WebComponentsReady", function() {
 
       this.board = event.state.board;
       this.selected = event.state.selected;
+      this.$.boardViewer.setSelected(this.selected);
       if (this.board != this.$.boardViewer.board) {
         console.log("Loading board via popstate: " + this.board);
         this.$.boardViewer.loadBoard(this.board);
       }
-      this.onSelectedChanged(this.board, this.selected);
+      this.updateRoute(this.board, this.selected);
     },
 
     setBoardAndSelectedFromHash: function(boards, hash) {
@@ -1452,6 +1396,7 @@ document.addEventListener("WebComponentsReady", function() {
 
       if (!boardToLoad) {
         this.selected = [];
+        this.$.boardViewer.setSelected(this.selected);
         this.board = "";
         /* If the boards.json has loaded, and no board is going to be loaded,
          * the app is initialized; show the board selector */
@@ -1466,13 +1411,14 @@ document.addEventListener("WebComponentsReady", function() {
         } else {
           this.selected = [];
         }
+        this.$.boardViewer.setSelected(this.selected);
         if (boardToLoad != this.$.boardViewer.board) {
           console.log("Loading board via setBoardAndSelectedFromHash: " + boardToLoad);
           this.$.boardViewer.loadBoard(boardToLoad);
         }
       }
 
-      this.onSelectedChanged(boardToLoad, this.selected);
+      this.updateRoute(boardToLoad, this.selected);
     },
 
     attached: function() {
