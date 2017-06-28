@@ -26,7 +26,18 @@
 
   <script src="../../bower_components/highlightjs/highlight.pack.min.js"></script>
 
-  <link rel="stylesheet" href="../../bower_components/highlightjs/styles/atom-one-light.css"-->
+  <link rel="stylesheet" href="../../bower_components/highlightjs/styles/atom-one-light.css">
+
+  <!--
+  `<board-explorer-app>` Provides a container for the board-viewer.
+
+  The board-explorer loads the board-viewer and displays additional selection
+  elements for interacting with the board-viewer. It also provides an area
+  to render the documentation for a given item (via board-viewer::getDocumentation)
+
+  @demo demo/index.html Simple demo showing a statically loaded view.
+  -->
+
 </head>
 
 <dom-module id="board-explorer-app">
@@ -302,7 +313,7 @@
           </a>
           <div hidden$="[[!isEmpty(keyword)]]" class="horizontal layout wrap">
             <template is="dom-repeat" items="[[keywords]]">
-              <a is-button on-click="itemClicked" match$="[[item.keyword]]" on-mouseover="itemOver" on-mouseout="itemOut">[[item.keyword]]</a>
+              <a is-button on-tap="buttonTapped" match$="[[item.keyword]]" on-mouseover="buttonOver" on-mouseout="buttonOut">[[item.keyword]]</a>
             </template>
           </div>
         </paper-material>
@@ -316,7 +327,7 @@
           </a>
           <div hidden$="[[!isEmpty(component)]]" class="layout horizontal wrap">
             <template is="dom-repeat" items="[[components]]">
-              <a is-button on-click="itemClicked" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="itemOver" on-mouseout="itemOut">
+              <a is-button on-click="buttonTapped" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="buttonOver" on-mouseout="buttonOut">
                 <div>[[itemRefDes(item)]]</div>
                 <div>[[itemName(item)]]</div>
               </a>
@@ -333,7 +344,7 @@
           </a>
           <div hidden$="[[!isEmpty(pin)]]" class="layout horizontal wrap">
             <template is="dom-repeat" items="[[pins]]">
-              <a is-button on-click="itemClicked" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="itemOver" on-mouseout="itemOut">
+              <a is-button on-click="buttonTapped" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="buttonOver" on-mouseout="buttonOut">
                 <div>[[itemRefDes(item)]]</div>
                 <div>[[itemName(item)]]</div>
               </a>
@@ -478,7 +489,14 @@ document.addEventListener("WebComponentsReady", function() {
     listeners: {
       "boardViewer.board-changed": "onBoardChanged",
       "boardViewer.item-hover": "onItemHover",
-      "boardViewer.item-tap": "onItemTap"
+      "boardViewer.selected-changed": "onBoardSelectedChanged"
+    },
+
+    onBoardSelectedChanged: function(event) {
+      if (!this.board) {
+        return;
+      }
+      this.onSelectedChanged(this.board, this.$.boardViewer.selected || []);
     },
 
     _getItemNamesAndContexts: function(item) {
@@ -582,7 +600,6 @@ document.addEventListener("WebComponentsReady", function() {
     unloadBoard: function() {
       this.$.boardViewer.loadBoard();
       /* Remove all selected */
-      this.$.boardViewer.removeFilter();
       this.selected = [];
       this.infoTitle = "";
       this.category = null;
@@ -811,38 +828,6 @@ document.addEventListener("WebComponentsReady", function() {
       }
     },
 
-    /* Fired by the board-viewer */
-    onItemTap: function(event) {
-      var refdes = event.detail.refdes,
-        parts = refdes.split("Pin"),
-        isPin = parts.length == 2,
-        isControlPressed = event.detail.event.ctrlKey;
-
-      var item = null;
-      for (var i = 0; i < this.components.length; i++) {
-        if (this.components[i].refdes == parts[0]) {
-          item = this.components[i];
-          break;
-        }
-      }
-
-      if (!item) {
-        return;
-      }
-
-      if (!isPin) {
-        this.activateItem(item, isControlPressed);
-        return;
-      }
-
-      for (var i = 0; i < item.pins.length; i++) {
-        if (item.pins[i].refdes == refdes) {
-          this.activateItem(item.pins[i], isControlPressed);
-          return;
-        }
-      }
-    },
-
     boardClicked: function(event) {
       var board = event.model.item.directory;
       console.log("Loading " + board);
@@ -894,18 +879,6 @@ document.addEventListener("WebComponentsReady", function() {
           break;
         }
       }
-
-      /* Turn on the 'Everything' interactive filters;
-       * Pins will be Green
-       * Components will be Cyan */
-      this.$.boardViewer.addFilter("Pins", { type: "PIN", pattern: "*" }, {
-        color: "#00ffff",
-        alwaysVisible: false
-      });
-      this.$.boardViewer.addFilter("Components", { type: "COMPONENT", pattern: "*" }, {
-        color: "#00ffff",
-        alwaysVisible: false
-      });
 
       console.log("Asking for keywords...");
       this.$.boardViewer.getKeywords(function(object) {
@@ -1064,7 +1037,7 @@ document.addEventListener("WebComponentsReady", function() {
       }
     },
 
-    itemClicked: function(event) {
+    buttonTapped: function(event) {
       this.activateItem(event.model.item, event.ctrlKey);
     },
 
@@ -1269,18 +1242,11 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       if (selected.length) {
-        href += "/" + selected.join();
-        this.$.boardViewer.addFilter("selected", selected, {
-          color: "#ffff00",
-          interactive: false,
-          alwaysVisible: true
-        });
-      }
-      else {
+        href += "/" + selected.join(",");
+      } else {
         this.clearKeyword();
         this.clearComponent();
         this.clearPin();
-        this.$.boardViewer.removeFilter("selected");
       }
 
       /* If the URL is changing, push it to the window history */
@@ -1295,7 +1261,7 @@ document.addEventListener("WebComponentsReady", function() {
       }
     },
 
-    itemOver: function(event) {
+    buttonOver: function(event) {
       var type = event.model.item.type,
         data = event.model.item.refdes;
 
@@ -1336,7 +1302,7 @@ document.addEventListener("WebComponentsReady", function() {
       }
     },
 
-    itemOut: function(event) {
+    buttonOut: function(event) {
       var type = event.model.item.type,
         data = event.model.item.refdes;
 
