@@ -308,7 +308,7 @@
                 <div class="layout horizontal wrap">
                   <template is="dom-repeat" items="[[matches]]">
                     <a is-button on-click="itemClicked" match$="[[item.refdes]]" on-mouseover="buttonOver" on-mouseout="buttonOut">
-                      [[item.field]]: [[item.value]]
+                      <b>[[itemName(item)]]</b> - [[item.field]]: [[item.value]]
                     </a>
                   </template>
                 </div>
@@ -501,7 +501,7 @@ document.addEventListener("WebComponentsReady", function() {
         regexp = new RegExp(search.replace(/[-^$\\*\/+?().|[\]{}]/g, '\\$&'), "i");
 
       function _matchItem(regexp, item) {
-        var fields = [ "refdes", "name" ];
+        var fields = [ "name", "refdes", "description" ];
         for (var i = 0; i < fields.length; i++) {
           var result = regexp.exec(item[fields[i]]);
           if (!result) {
@@ -510,6 +510,7 @@ document.addEventListener("WebComponentsReady", function() {
           return {
             type: item.type,
             item: item,
+            name: item.name || item.readable || "",
             refdes: item.refdes,
             field: fields[i],
             value: item[fields[i]],
@@ -517,6 +518,22 @@ document.addEventListener("WebComponentsReady", function() {
           };
         }
 
+        if (item.keywords) {
+          for (var i = 0; i < item.keywords.length; i++) {
+            var result = regexp.exec(item.keywords[i]);
+            if (!result) {
+              return;
+            }
+            return {
+              type: item.type,
+              item: item,
+              refdes: item.refdes,
+              field: "keyword",
+              value: item.keywords[i],
+              match: result
+            };
+          }
+        }
         return null;
       }
 
@@ -524,6 +541,15 @@ document.addEventListener("WebComponentsReady", function() {
         var match = _matchItem(regexp, item);
         if (match) {
           matches.push(match);
+        }
+
+        if (item.pins) {
+          item.pins.forEach(function(pin) {
+            var match = _matchItem(regexp, pin);
+            if (match) {
+              matches.push(match);
+            }
+          });
         }
       });
 
