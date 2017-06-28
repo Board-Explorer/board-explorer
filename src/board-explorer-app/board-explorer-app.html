@@ -527,7 +527,7 @@ document.addEventListener("WebComponentsReady", function() {
             return {
               type: item.type,
               item: item,
-              refdes: item.refdes,
+              name: item.name || item.readable || "",
               field: "keyword",
               value: item.keywords[i],
               match: result
