@@ -295,13 +295,13 @@
           </paper-tabs>
         </paper-material>
 
-        <paper-material class="vertical layout start">
+        <paper-material class="vertical layout">
           <iron-pages id="pages" selected="[[searchMode]]" attr-for-selected="id">
             <div id="searchPage" class="vertical layout">
               <paper-input id="search" value="{{search}}" label="Search" class="flex">
                 <iron-icon suffix slot="suffix" icon="search"></iron-icon>
               </paper-input>
-              <div hidden$="[[!isEmpty(search)]]">Enter a value to search.</div>
+              <div hidden$="[[!isEmpty(search)]]">Enter a string to search (for example "I2C").</div>
               <div hidden$="[[isEmpty(search)]]">
                 <div>Search results</div>
                 <div hidden$="[[!isEmpty(matches)]]">No matches.</div>
