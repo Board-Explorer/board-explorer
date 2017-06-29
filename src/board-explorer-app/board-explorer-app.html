@@ -10,6 +10,8 @@
   <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
   <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 
+  <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
   <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
   <link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
 
@@ -65,7 +67,7 @@
       height: 480px;
     }
 
-    a[is-button] {
+    paper-button {
       cursor: pointer;
       display: inline-block;
       box-sizing: border-box;
@@ -81,26 +83,31 @@
       font-size: 1em;
     }
 
-    a[is-button]:hover {
+    paper-button[disabled] {
+      border-style: dashed;
+      color: #888;
+    }
+
+    paper-button:hover {
       background-color: #e0e0e0;
     }
 
-    a[is-button].active {
+    paper-button.active {
       background-color: #404040;
       color: #f0f0f0;
     }
 
-    a[is-button].item-with-name div:first-child {
+    paper-button.item-with-name div:first-child {
       font-size: 0.6em;
       line-height: 0.8em;
     }
 
-    a[is-button].item-with-name div:last-child {
+    paper-button.item-with-name div:last-child {
       font-size: 1em;
       line-height: 1em;
     }
 
-    a[is-button]:not(.item-with-name) div:last-child {
+    paper-button:not(.item-with-name) div:last-child {
       display: none;
     }
 
@@ -267,7 +274,7 @@
       <div class="heading">Select a board to explore</div>
       <div id="board-list" class="layout horizontal start-justified wrap">
         <template is="dom-repeat" items="[[boards]]">
-          <paper-button raised noink class="board-card layout vertical" tabindex$="[[index]]" on-tap="boardClicked">
+          <paper-button raised noink class="board-card layout vertical" tabindex$="[[index]]" on-tap="boardTap">
             <div class="image" style$="background-image: url('boards/[[item.board]]/[[item.image]]');">
             </div>
             <div class="title">[[item.name]]</div>
@@ -281,7 +288,7 @@
     <div id="panel-left">
       <div class="vertical layout flex" id="sidebar-left">
 
-        <paper-material id="boardTitle" on-click="unloadBoard" class="vertical layout start">
+        <paper-material id="boardTitle" on-tap="unloadBoard" class="vertical layout start">
           [[getBoardBoxTitle(board)]]
         </paper-material>
 
@@ -307,9 +314,9 @@
                 <div hidden$="[[!isEmpty(matches)]]">No matches.</div>
                 <div class="layout horizontal wrap">
                   <template is="dom-repeat" items="[[matches]]">
-                    <a is-button on-click="itemClicked" match$="[[item.refdes]]" on-mouseover="buttonOver" on-mouseout="buttonOut">
+                    <paper-button on-tap="itemTap" match$="[[item.refdes]]" on-mouseover="buttonOver" on-mouseout="buttonOut">
                       <b>[[itemName(item)]]</b> - [[item.field]]: [[item.value]]
-                    </a>
+                    </paper-button>
                   </template>
                 </div>
               </div>
@@ -319,7 +326,7 @@
               <div>Categories</div>
               <div class="layout horizontal wrap">
                 <template is="dom-repeat" items="[[categories]]">
-                  <a is-button on-click="itemClicked" match$="[[item.slug]]" on-mouseover="buttonOver" on-mouseout="buttonOut">[[item.name]]</a>
+                  <paper-button on-tap="itemTap" match$="[[item.slug]]" on-mouseover="buttonOver" on-mouseout="buttonOut">[[item.name]]</paper-button>
                 </template>
               </div>
             </div>
@@ -328,7 +335,7 @@
               <div>Keywords</div>
               <div class="horizontal layout wrap">
                 <template is="dom-repeat" items="[[keywords]]">
-                  <a is-button on-click="itemClicked" match$="[[item.keyword]]" on-mouseover="buttonOver" on-mouseout="buttonOut">[[item.keyword]]</a>
+                  <paper-button on-tap="itemTap" match$="[[item.keyword]]" on-mouseover="buttonOver" on-mouseout="buttonOut">[[item.keyword]]</paper-button>
                 </template>
               </div>
             </div>
@@ -337,10 +344,10 @@
               <div>Components</div>
               <div class="layout horizontal wrap">
                 <template is="dom-repeat" items="[[components]]">
-                  <a is-button on-click="itemClicked" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="buttonOver" on-mouseout="buttonOut">
+                  <paper-button on-tap="itemTap" class$="[[itemClassList(item)]] layout vertical start" match$="[[item.refdes]]" on-mouseover="buttonOver" on-mouseout="buttonOut">
                     <div>[[itemRefDes(item)]]</div>
                     <div>[[itemName(item)]]</div>
-                  </a>
+                  </paper-button>
                 </template>
               </div>
             </div>
@@ -486,7 +493,6 @@ document.addEventListener("WebComponentsReady", function() {
       "boardViewer.board-changed": "onBoardChanged",
       "boardViewer.item-hover": "onItemHover",
       "boardViewer.selected-changed": "onBoardSelectedChanged",
-      "boardViewer.item-tap": "onItemTap",
       "search.focused-changed": "_searchFocus"
     },
 
@@ -595,6 +601,65 @@ document.addEventListener("WebComponentsReady", function() {
       if (!this.board) {
         return;
       }
+
+      var selected = this.$.boardViewer.selected || [];
+
+      /* If no selection is active, then enable everything and return */
+      if (selected.length == 0) {
+        Array.prototype.forEach.call(this.$.keywordsPage.querySelectorAll("paper-button"), function(el) {
+          el.disabled = false;
+        });
+        Array.prototype.forEach.call(this.$.componentsPage.querySelectorAll("paper-button"), function(el) {
+          el.disabled = false;
+        });
+        return;
+      }
+
+      /* Disable all items in the currently viewed page */
+      Array.prototype.forEach.call(this.$.keywordsPage.querySelectorAll("paper-button"), function(el) {
+        el.disabled = true;
+      });
+      Array.prototype.forEach.call(this.$.componentsPage.querySelectorAll("paper-button"), function(el) {
+        el.disabled = true;
+      });
+
+      /* Walk through the list of selected items and enable them in the
+       * keywords and components */
+      selected.forEach(function(refdes) {
+        /* Check if it is a keyword... */
+        var el = this.querySelector("paper-button[match='"+refdes+"']");
+        if (el) {
+          el.disabled = false;
+        }
+
+        var item = this.$.boardViewer.findComponent(refdes);
+
+        /* If the item is part of a component, enable the component */
+        if (item.component) {
+          item = this.$.boardViewer.findComponent(item.component);
+          if (item) {
+            el = this.querySelector("paper-button[match='" + item.refdes + "']");
+            if (el) {
+              el.disabled = false;
+            }
+          }
+        }
+
+        if (item) {
+          for (var i = 0; i < item.connected.length; i++) {
+            el = this.querySelector("paper-button[match='" + item.connected[i] + "']");
+            if (el) {
+              el.disabled = false;
+            }
+          }
+          for (var i = 0; i < item.related.length; i++) {
+            el = this.querySelector("paper-button[match='" + item.related[i] + "']");
+            if (el) {
+              el.disabled = false;
+            }
+          }
+        }
+      }.bind(this));
 
       console.log("TODO: Figure out how to get this.selected to be two-way with board-viewer");
       this.updateRoute(this.board, this.$.boardViewer.selected || []);
@@ -898,26 +963,24 @@ document.addEventListener("WebComponentsReady", function() {
         this.hover = info;
       }
 
-      if (details.in) {
-        this.debounce("pendingHover", function() {
-          if (!this.pendingHover) {
-            return;
-          }
-          this.highlightItem(this.pendingHover, 1);
-          this.highlightKeywords(this.pendingHover.keywords, 1);
-          this.pendingHover = null;
-        }, 100);
-      }
+      this.debounce("pendingHover", function() {
+        if (!this.pendingHover) {
+          return;
+        }
+        this.highlightItem(this.pendingHover, 1);
+        this.highlightKeywords(this.pendingHover.keywords, 1);
+        this.pendingHover = null;
+      }, 100);
     },
 
-    boardClicked: function(event) {
+    boardTap: function(event) {
       var board = event.model.item.directory;
       console.log("Loading " + board);
       /* Remove all selected */
       this.selected = [];
       this.$.boardViewer.setSelected(this.selected);
       if (this.$.boardViewer.board != board) {
-        console.log("Loading board via boardClicked");
+        console.log("Loading board via boardTap");
         this.$.boardViewer.loadBoard(board);
       }
       this.updateRoute(board, this.selected);
@@ -1028,7 +1091,7 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     toggleSelected: function(container, match) {
-      var items = container.querySelectorAll("a.active");
+      var items = container.querySelectorAll("paper-button.active");
       Array.prototype.forEach.call(items, function(el) {
         el.classList.remove("active");
       });
@@ -1206,36 +1269,22 @@ document.addEventListener("WebComponentsReady", function() {
 
     buttonOver: function(event) {
       var type = event.model.item.type,
-        data = event.model.item.refdes;
+        data = event.model.item.refdes,
+        item = event.model.item;
 
       event.preventDefault();
 
       switch (type) {
       case "keyword":
-        /* For keywords, refdes is the array of refdes that have this keyword */
-        data = event.model.item.keyword;
-        if (this.selected.indexOf(data) == -1) {
-          this.push("selected", data);
-          this.$.boardViewer.setSelected(this.selected);
-        }
-        this.$.boardViewer.addFilter("Keyword hover " + data, data, {
-          color: "#00ff00", /* color for highlight border */
-          interactive: false /* Since this is shown/hidden based on the user
-                              * hovering over this Anchor, the actual GUI
-                              * is set as non-interactive */
-        });
+        this.$.boardViewer.setHighlight(item);
         this.highlightItemsWithKeyword(data, true)
         this.highlightKeywords([data], true);
         break;
 
       case "component":
-        if (this.selected.indexOf(data) == -1) {
-          this.push("selected", data);
-          this.$.boardViewer.setSelected(this.selected);
-        }
-        console.log("selected: " + JSON.stringify(this.selected, null, 2));
-        this.highlightItem(event.model.item, true);
+        this.$.boardViewer.setHighlight(item);
         this.highlightKeywords(event.model.item.keywords, true);
+        this.highlightItem(event.model.item, true);
         /* If no item has been selected via tapping, hover will show info */
         if (!this.active) {
           this.hover = null; /* Force DOM update */
@@ -1244,10 +1293,7 @@ document.addEventListener("WebComponentsReady", function() {
         break;
 
       case "pin":
-        if (this.selected.indexOf(data) == -1) {
-          this.push("selected", data);
-          this.$.boardViewer.setSelected(this.selected);
-        }
+        this.$.boardViewer.setHighlight(item);
         this.highlightItem(event.model.item, true);
         this.highlightKeywords(event.model.item.keywords, true);
         /* If no item has been selected via tapping, hover will show info */
@@ -1280,36 +1326,22 @@ document.addEventListener("WebComponentsReady", function() {
         this.highlightItem(event.model.item, false);
         this.highlightKeywords(event.model.item.keywords, false);
         var index = this.selected.indexOf(data);
-        if (index != -1) {
-          this.splice("selected", index, 1);
-          this.$.boardViewer.setSelected(this.selected);
-        }
         break;
+
       case "pin":
         this.highlightItem(event.model.item, false);
         this.highlightKeywords(event.model.item.keywords, false);
         var index = this.selected.indexOf(data);
-        if (index != -1) {
-          this.splice("selected", index, 1);
-          this.$.boardViewer.setSelected(this.selected);
-        }
         break;
+
       case "keyword":
-        /* For keywords, refdes is the array of refdes that have this keyword */
-        data = event.model.item.keyword;
-        this.$.boardViewer.removeFilter("Keyword hover " + data);
         this.highlightItemsWithKeyword(data, false)
         this.highlightKeywords([data], false);
-        var index = this.selected.indexOf(data);
-        if (index != -1) {
-          this.splice("selected", index, 1);
-          this.$.boardViewer.setSelected(this.selected);
-        }
         break;
       }
     },
 
-    pinClicked: function(event) {
+    pinTap: function(event) {
       console.log(JSON.stringify(event.model.item, null, 2));
     },
 
@@ -1320,7 +1352,7 @@ document.addEventListener("WebComponentsReady", function() {
 
       keywords.forEach(function(keyword) {
         Array.prototype.forEach.call(
-          this.$.keywordsPage.querySelectorAll("a[match='"+keyword+"']"),
+          this.$.keywordsPage.querySelectorAll("[match='"+keyword+"']"),
           function(el) {
             el.classList.toggle("active", show);
         });
@@ -1372,7 +1404,7 @@ document.addEventListener("WebComponentsReady", function() {
         return;
       }
 
-      var el = container.querySelector('a[match="' + match + '"');
+      var el = container.querySelector('[match="' + match + '"');
       if (el) {
         el.classList.toggle("active", show);
       }
