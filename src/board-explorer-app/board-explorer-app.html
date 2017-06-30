@@ -641,47 +641,6 @@ document.addEventListener("WebComponentsReady", function() {
       }
     },
 
-    _setAssociatedItemButtonsStyle: function(item) {
-      var el;
-
-      if (!item) {
-        return;
-      }
-
-      /* Walk through the connected and related items for this item.
-       * If a relation is to a pin, then activate it's containing
-       * component's button */
-      var item, list = [];
-      for (var i = 0; i < item.connected.length; i++) {
-        item = this.$.boardViewer.findComponent(item.connected[i]);
-        if (!item) {
-          continue;
-        }
-        list.push({
-          refdes: item.component ? item.component : item.refdes,
-          style: "connected"
-        });
-      }
-      for (var i = 0; i < item.related.length; i++) {
-        item = this.$.boardViewer.findComponent(item.related[i]);
-        if (!item) {
-          continue;
-        }
-        list.push({
-          refdes: item.component ? item.component : item.refdes,
-          style: "related"
-        });
-      }
-
-      list.forEach(function(item) {
-        el = this.$[this.searchMode].querySelector("paper-button[match='" + item.refdes + "']");
-        if (el) {
-          el.classList.add(item.style);
-        }
-      }.bind(this));
-    },
-
-
     onBoardSelectedChanged: function(event) {
       if (!this.board) {
         return;
@@ -977,15 +936,12 @@ document.addEventListener("WebComponentsReady", function() {
         return;
       }
 
-      /* Clear all "related", "connected", and "hover" highlights */
-      [ "related", "connected", "hover" ].forEach(function(style) {
-        Array.prototype.forEach.call(this.querySelectorAll("paper-button." + style),
-            function(el) {
-          el.classList.remove(style);
-        });
-      }.bind(this));
+      Array.prototype.forEach.call(this.querySelectorAll("paper-button.hover"),
+          function(el) {
+        el.classList.remove("hover");
+      });
 
-      /* If the direction is IN, add "related" to all KEYWORDs for this item */
+      /* If the direction is IN, add "hover" to all KEYWORDs for this item */
       if (info.in) {
         item.keywords.forEach(function(keyword) {
           el = this.$.keywordsPage.querySelector("paper-button[match='" + keyword + "']");
@@ -1001,17 +957,13 @@ document.addEventListener("WebComponentsReady", function() {
         info.refdes = item.component;
       }
 
-      /* Toggle the "hover" state for the item */
+      /* Toggle the "hover" state for the item and scroll it into view */
       el = this.$[this.searchMode].querySelector("paper-button[match='" + info.refdes + "']");
       if (el) {
         el.classList.toggle("hover", info.in);
         if (info.in && info.source == "board-viewer") {
           el.scrollIntoView();
         }
-      }
-
-      if (info.in) {
-        this._setAssociatedItemButtonsStyle(item);
       }
 
       /* Leaving an item */
