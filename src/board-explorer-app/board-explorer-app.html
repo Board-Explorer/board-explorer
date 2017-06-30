@@ -106,12 +106,12 @@
       background-color: #e0e0e0;
     }
 
-    #panel-left paper-button.item-with-name div:first-child {
+    paper-button.item-with-name div:first-child {
       font-size: 0.6em;
       line-height: 0.8em;
     }
 
-    #panel-left paper-button.item-with-name div:last-child {
+    paper-button.item-with-name div:last-child {
       font-size: 1em;
       line-height: 1em;
     }
@@ -143,8 +143,18 @@
       width: 100%;
     }
 
-    #info div:not(.item-with-name) #name {
-      display: none;
+    #tooltip {
+      position: absolute;
+      left: 0px;
+      right: 0px;
+      margin: -64px 32px auto 32px;
+      padding: 4px 16px;
+      box-shadow: 0px 3px 3px rgba(64, 64, 64, 0.25);
+      box-sizing: border-box;
+      font-size: 10pt;
+      background-color: rgba(64, 64, 64, 0.5);
+      color: #fff;
+      pointer-events: none;
     }
 
     /* NOTE: For this to not horribly squash image aspect ratios, we have
@@ -385,24 +395,38 @@
 
     <vaadin-split-layout vertical id="panel-right">
       <board-viewer
-        class="flex-grow"
-        hidden$="[[isEmpty(board)]]"
-        id="boardViewer"
-        selected="{{selected}}"
-        disable-auto-resize
-        enable-zoom
-        enable-drag></board-viewer>
+          class="flex-grow"
+          hidden$="[[isEmpty(board)]]"
+          id="boardViewer"
+          selected="{{selected}}"
+          disable-auto-resize
+          enable-zoom
+          enable-drag></board-viewer>
       <div id="panel-bottom">
+        <div id="tooltip" hidden$="[[isEmpty(hover)]]"
+            class$="[[itemClassList(hover)]] horizontal layout">
+          <div hidden$="[[hideReadable(hover)]]"
+              class="context-and-name layout vertical justified start">
+            <div>&nbsp;</div>
+            <div>[[hover.readable]]: </div>
+          </div>
+          <template is="dom-repeat" items="[[_getItemNamesAndContexts(hover)]]">
+            <div class="context-and-name layout vertical justified start">
+              <div>[[item.context]]</div>
+              <div>[[item.name]]</div>
+            </div>
+          </template>
+        </div>
         <div id="info"
-          hidden$="[[isEmpty(hover)]]"
-          class$="[[itemClassList(hover)]] vertical layout">
+          hidden$="[[isEmpty(active)]]"
+          class$="[[itemClassList(active)]] vertical layout">
           <paper-toolbar>
-            <div hidden$="[[hideReadable(hover)]]"
+            <div hidden$="[[hideReadable(active)]]"
               class="context-and-name layout vertical justified start">
               <div>&nbsp;</div>
-              <div>[[hover.readable]]: </div>
+              <div>[[active.readable]]: </div>
             </div>
-            <template is="dom-repeat" items="[[_getItemNamesAndContexts(hover)]]">
+            <template is="dom-repeat" items="[[_getItemNamesAndContexts(active)]]">
               <div class="context-and-name layout vertical justified start">
                 <div>[[item.context]]</div>
                 <div>[[item.name]]</div>
@@ -410,14 +434,14 @@
             </template>
           </paper-toolbar>
           <div class="info-content">
-            <div hidden$="[[isEmpty(hover.component)]]">Component: [[hover.component]]</div>
-            <div hidden$="[[isEmpty(hover.pins)]]">Pins: [[hover.pins.length]]</div>
-            <div hidden$="[[isEmpty(hover.keywords)]]">Keywords:
-              <template is="dom-repeat" items="[[hover.keywords]]" as="keyword">
+            <div hidden$="[[isEmpty(active.component)]]">Component: [[active.component]]</div>
+            <div hidden$="[[isEmpty(active.pins)]]">Pins: [[active.pins.length]]</div>
+            <div hidden$="[[isEmpty(active.keywords)]]">Keywords:
+              <template is="dom-repeat" items="[[active.keywords]]" as="keyword">
                 <a href="#[[board]]/[[keyword]]">[[keyword]]</a>
               </template>
             </div>
-            <div hidden$="[[isEmpty(hover.description)]]">Description: [[hover.description]]</div>
+            <div hidden$="[[isEmpty(active.description)]]">Description: [[active.description]]</div>
             <div><div id="documentation"></div></div>
           </div>
         </div>
@@ -440,6 +464,12 @@ document.addEventListener("WebComponentsReady", function() {
       },
       board: {
         type: String,
+        value: null
+      },
+      /** The currently "active" item, which is either the board itself
+       * or the first non-keyword in the board-viewer's "selected" list */
+      active: {
+        type: Object,
         value: null
       },
       categories: {
@@ -483,10 +513,12 @@ document.addEventListener("WebComponentsReady", function() {
         value: ""
       },
 
-      hover: { /* item currently hovered over */
+      /** Item currently hovered over; used for tool-tip */
+      hover: {
         type: Object,
         value: null
       },
+
       fetching: {
         type: Boolean,
         value: false
@@ -503,7 +535,8 @@ document.addEventListener("WebComponentsReady", function() {
       "onHoverChanged(hover)",
       "setBoardAndSelectedFromHash(boards, hash)",
       "_searchModeChanged(searchMode)",
-      "_searchChanged(search)"
+      "_searchChanged(search)",
+      "_activeChanged(active)"
     ],
 
     listeners: {
@@ -511,6 +544,19 @@ document.addEventListener("WebComponentsReady", function() {
       "boardViewer.item-hover": "onBoardItemHover",
       "boardViewer.selected-changed": "onBoardSelectedChanged",
       "search.focused-changed": "_searchFocus"
+    },
+
+    _activeChanged: function(active) {
+      if (!active) {
+        return;
+      }
+
+      if (active.html) {
+        Polymer.dom(this.$.documentation).innerHTML = active.html;
+      } else {
+        Polymer.dom(this.$.documentation).innerHTML = "Loading...";
+        this.loadingQueue(active);
+      }
     },
 
     _searchChanged: function(search) {
@@ -656,6 +702,9 @@ document.addEventListener("WebComponentsReady", function() {
         Array.prototype.forEach.call(this.$.componentsPage.querySelectorAll("paper-button"), function(el) {
           el.disabled = false;
         });
+
+        this.active = this.boardInfo;
+
         return;
       }
 
@@ -666,6 +715,8 @@ document.addEventListener("WebComponentsReady", function() {
       Array.prototype.forEach.call(this.$.componentsPage.querySelectorAll("paper-button"), function(el) {
         el.disabled = true;
       });
+
+      var active = null;
 
       /* Walk through the list of selected items and enable them in the
        * keywords and components */
@@ -683,6 +734,11 @@ document.addEventListener("WebComponentsReady", function() {
           return;
         }
 
+        /* If the first non-keyword hasn't been set, set it to this item */
+        if (!active) {
+          active = item;
+        }
+
         this._enableItemButtons(item);
 
         /* If the item is part of a component, enable the component too */
@@ -690,6 +746,10 @@ document.addEventListener("WebComponentsReady", function() {
           this._enableItemButtons(this.$.boardViewer.findComponent(item.component));
         }
       }.bind(this));
+
+      /* Set the active documentation to either the first non-keyword, or if
+       * non are in the selected list, set it to the boardInfo. */
+      this.active = active || this.boardInfo;
 
       console.log("TODO: Figure out how to get this.selected to be two-way with board-viewer");
       this.updateRoute(this.board, this.$.boardViewer.selected || []);
@@ -867,38 +927,54 @@ document.addEventListener("WebComponentsReady", function() {
          * fetch the documentation for the parent component and set this
          * item's content to that */
         if (!item.component) {
-          return "<p>No additional documentation for " + item.refdes;
+          return "<p>No additional documentation for " + this.itemRefDes(item);
         }
 
         var component = this.$.boardViewer.findComponent(item.component);
-        if (component.html) {
-          return component.html;
-        }
 
-        /* If the current hover item is no longer this one, do not chain
-         * to lookup the component's documentation. */
-        if (this.hover != item) {
+        /* If the current active item is no longer this one, do not chain
+        * to lookup the component's documentation. */
+        if (!component.html && this.active != item) {
           return Promise.reject();
         }
 
-        return this.getDocumentation(component, "HTML").then(function(results) {
+        if (component.html) {
+          return "<p>Documentation for containing component " + item.component + ": " +
+            "<p>" + component.html;
+        }
+
+        return promise.then(function(results) {
           if (results.status == 200) {
-            component.html = "<p>No additional documentation for " + component.refdes;
-            return component.html;
+            /* Set the component's html so it doesn't get fetched again */
+            component.html = results.content;
+
+            /* Set the item's documentation to indicate it is the doc for the
+             * containing component */
+            return "<p>Documentation for containing component " + item.component + ": " +
+                "<p>" + results.content;
           }
-          return results.content;
-        });
+
+          /* If it wasn't a 400, there was an error fetching the content */
+          if (results.status != 400) {
+            return Promise.reject(new Error("Error returned from getDocumentation"));
+          }
+
+          /* Return "no additional content"... */
+          return "<p>No additional documentation for " + this.itemRefDes(item);
+        }.bind(this, item));
       }.bind(this, item)).then(function(item, html) {
         item.html = html;
-
+      }.bind(this, item)).catch(function(item, error) {
+        /* On error, set the item's HTML to "No additional documentation..." */
+        item.html = "<p>No additional documentation for " + this.itemRefDes(item);
+      }.bind(this, item)).then(function(item) {
         /* If this is the item currently being hovered on, notify the UI
          * to update the DOM */
-        if (this.hover == item) {
-          Polymer.dom(this.$.documentation).innerHTML = html;
+        if (this.$.boardViewer.selected.length &&
+            this.$.boardViewer.selected[0] == item.refdes) {
+          Polymer.dom(this.$.documentation).innerHTML = item.html;
         }
-      }.bind(this, item)).catch(function(item, error) {
-        return "<p>No additional documentation for " + item.refdes;
-      }.bind(this, item)).then(function(item) {
+
         /* Fire off the most recent load request if it changed while the above
          * was resolving */
         if (this.loading != item) {
@@ -917,14 +993,6 @@ document.addEventListener("WebComponentsReady", function() {
       if (!hover) {
         return;
       }
-
-      if (hover.html) {
-        Polymer.dom(this.$.documentation).innerHTML = hover.html;
-        return;
-      }
-
-      Polymer.dom(this.$.documentation).innerHTML = "Loading...";
-      this.loadingQueue(hover);
     },
 
     onBoardItemHover: function(event) {
@@ -967,42 +1035,15 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       /* Leaving an item */
-      if (!info.in) {
-        if (this.hover == item) {
-          /* If no item has been selected via tapping, hover will show info */
-          if (!this.active) {
-            this.hover = null; /* Force DOM update */
-            this.hover = this.boardInfo;
-          }
-        }
-
-        /* If the hover is leaving the item, and the last hover has not yet
-         * triggered, clear the debounce. */
-        if (this.pendingHover == item) {
-          this.pendingHover = null;
-          this.cancelDebouncer("pendingHover");
-        } else {
-          /* Otherwise clear the item leaving */
-        }
+      if (!info.in && this.hover == item) {
+        /* If the direction is "OUT" and the hover is currently looking at
+         * the item being left, clear the "hover" */
+        this.hover = null; /* Force DOM update */
 
         return;
       }
 
-      /* Entering an item */
-      this.pendingHover = item;
-      /* If no item has been selected via tapping, hover will show info */
-      if (!this.active) {
-        this.hover = null; /* Force DOM update */
-        this.hover = item;
-      }
-
-
-      this.debounce("pendingHover", function() {
-        if (!this.pendingHover) {
-          return;
-        }
-        this.pendingHover = null;
-      }, 100);
+      this.hover = item;
     },
 
     boardTap: function(event) {
@@ -1091,19 +1132,27 @@ document.addEventListener("WebComponentsReady", function() {
         this.searchMode = "componentsPage";
       }
 
+      if (!this.active) {
+        Polymer.dom(this.$.documentation).innerHTML = "Loading...";
+      }
+
       /* Load the board top-level documentation */
       this.$.boardViewer.getDocumentation(null, "HTML", function(results) {
         if (!results || results.error) {
           console.log(results.error);
-          this.hover = null; /* Force DOM update */
-          this.hover = this.boardInfo;
           return;
         }
 
         this.boardInfo.html = results.content;
+
+        /* If nothing else is active, set the active to the boardInfo
+         * If something is active, and the active item is the boardInfo,
+         * then set the "documentation" directly here since the change
+         * won't be detected automatically */
         if (!this.active) {
-          this.hover = null; /* Force DOM update */
-          this.hover = this.boardInfo;
+          this.active = this.boardInfo;
+        } else if (this.active == this.boardInfo) {
+          Polymer.dom(this.$.documentation).innerHTML = results.content;
         }
       }.bind(this));
     },
