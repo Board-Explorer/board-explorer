@@ -558,6 +558,7 @@ document.addEventListener("WebComponentsReady", function() {
       }
     },
 
+    /* Callback whenever the Search box changes text */
     _searchChanged: function(search) {
       if (this.isEmpty(search)) {
         this.matches = [];
@@ -567,6 +568,8 @@ document.addEventListener("WebComponentsReady", function() {
       var matches = [],
         regexp = new RegExp(search.replace(/[-^$\\*\/+?().|[\]{}]/g, '\\$&'), "i");
 
+      /* Look into an item and try and match various fields for the search string
+       * including keywords, names, etc. */
       function _matchItem(regexp, item) {
         var fields = [ "name", "refdes", "description" ];
         for (var i = 0; i < fields.length; i++) {
@@ -589,7 +592,7 @@ document.addEventListener("WebComponentsReady", function() {
           for (var i = 0; i < item.keywords.length; i++) {
             var result = regexp.exec(item.keywords[i]);
             if (!result) {
-              return;
+              continue;
             }
             return {
               type: item.type,
