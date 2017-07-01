@@ -542,7 +542,6 @@ document.addEventListener("WebComponentsReady", function() {
 
     observers: [
       "onComponentChanged(component)",
-      "onHoverChanged(hover)",
       "setBoardAndSelectedFromHash(boards, hash)",
       "_searchModeChanged(searchMode)",
       "_searchChanged(search)",
@@ -988,12 +987,6 @@ document.addEventListener("WebComponentsReady", function() {
           this.loading = null;
         }
       }.bind(this, item));
-    },
-
-    onHoverChanged: function(hover) {
-      if (!hover) {
-        return;
-      }
     },
 
     onBoardItemHover: function(event) {
