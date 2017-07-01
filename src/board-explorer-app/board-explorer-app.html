@@ -705,6 +705,8 @@ document.addEventListener("WebComponentsReady", function() {
 
         this.active = this.boardInfo;
 
+        this.updateRoute(this.board, selected);
+
         return;
       }
 
@@ -751,8 +753,7 @@ document.addEventListener("WebComponentsReady", function() {
        * non are in the selected list, set it to the boardInfo. */
       this.active = active || this.boardInfo;
 
-      console.log("TODO: Figure out how to get this.selected to be two-way with board-viewer");
-      this.updateRoute(this.board, this.$.boardViewer.selected || []);
+      this.updateRoute(this.board, selected);
     },
 
     _getItemNamesAndContexts: function(item) {
@@ -1171,12 +1172,18 @@ document.addEventListener("WebComponentsReady", function() {
           for (var i = 0; i < selected.length; i++) {
             if (this.$.boardViewer.findComponent(selected[i])) {
               params.push(selected[i]);
-              break;
+              continue;
             }
 
-            if (this.keywords.indexOf(selected[i]) != -1) {
-              params.push(selected[i]);
-              break;
+            var keyword = null;
+            for (var j = 0; !keyword && j < this.keywords.length; j++) {
+              if (this.keywords[j].refdes == selected[i]) {
+                keyword = selected[i];
+              }
+            }
+            if (keyword) {
+              params.push(keyword);
+              continue;
             }
 
             console.log("Dropping invalid selection: " + selected[i]);
@@ -1241,7 +1248,7 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     onHashChange: function(event) {
-      if (window.location.hash) {
+      if (window.location.hash && this.hash != window.location.hash) {
         this.hash = window.location.hash;
       }
     },
@@ -1267,12 +1274,12 @@ document.addEventListener("WebComponentsReady", function() {
         boardToLoad = null,
         hash = uri[0].substr(1); /* Prune the # */
 
-        /* If we have a category we stored while are not categories loaded yet. */
-        if (uri[2]) {
-          this.slug = uri[1];
-          uri[1] = uri[2];
-          uri.splice(2,1);
-        }
+      /* If we have a category we stored while are not categories loaded yet. */
+      if (uri[2]) {
+        this.slug = uri[1];
+        uri[1] = uri[2];
+        uri.splice(2,1);
+      }
 
       for (var i = 0; i < this.boards.length; i++) {
         if (this.boards[i].directory == hash) {
@@ -1311,19 +1318,6 @@ document.addEventListener("WebComponentsReady", function() {
     attached: function() {
       window.addEventListener("popstate", this.onPopState.bind(this));
       window.addEventListener("hashchange", this.onHashChange.bind(this));
-
-      (function() {
-        var oldHash = null;
-        function check() {
-          if (oldHash != window.location.hash) {
-            oldHash = window.location.hash;
-            this.onHashChange(oldHash);
-          }
-          setTimeout(check.bind(this), 100);
-        }
-
-        check.call(this);
-      }.bind(this))();
 
       this.$.boardViewer.getBoards(function(boards) {
         if (!boards || boards instanceof Error) {
