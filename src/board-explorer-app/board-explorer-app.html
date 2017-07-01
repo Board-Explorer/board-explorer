@@ -674,19 +674,6 @@ document.addEventListener("WebComponentsReady", function() {
       if (el) {
         el.disabled = false;
       }
-
-      for (var i = 0; i < item.connected.length; i++) {
-        el = this.querySelector("paper-button[match='" + item.connected[i] + "']");
-        if (el) {
-          el.disabled = false;
-        }
-      }
-      for (var i = 0; i < item.related.length; i++) {
-        el = this.querySelector("paper-button[match='" + item.related[i] + "']");
-        if (el) {
-          el.disabled = false;
-        }
-      }
     },
 
     onBoardSelectedChanged: function(event) {
