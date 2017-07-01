@@ -71,11 +71,11 @@
       border-radius: 3px;
       border: 1px solid rgba(0, 0, 0, 0.5);
       min-width: 8em;
-      text-align: center;
       text-decoration: none;
       background-color: #f0f0f0;
       color: black;
       font-size: 1em;
+      min-height: 2.3em;
     }
 
     #panel-left paper-button[disabled] {
@@ -112,8 +112,13 @@
     }
 
     paper-button.item-with-name div:last-child {
-      font-size: 1em;
-      line-height: 1em;
+      box-sizing: border-box;
+      padding-top: 0.3em;
+      font-size: 0.9em;
+    }
+
+    #panel-left paper-button:not(.item-with-name) div:first-child {
+      line-height: 1.8em;
     }
 
     #panel-left paper-button:not(.item-with-name) div:last-child {
@@ -334,10 +339,12 @@
                 <div class="layout horizontal wrap">
                   <template is="dom-repeat" items="[[matches]]">
                     <paper-button match$="[[item.refdes]]"
-                      on-tap="buttonTap"
-                      on-mouseover="buttonOver"
-                      on-mouseout="buttonOut">
-                      <b>[[itemName(item)]]</b> - [[item.field]]: [[item.value]]
+                        class="item-with-name layout vertical start"
+                        on-tap="buttonTap"
+                        on-mouseover="buttonOver"
+                        on-mouseout="buttonOut">
+                      <div>[[itemName(item)]]</div>
+                      <div>[[item.field]]: [[item.value]]</div>
                     </paper-button>
                   </template>
                 </div>
@@ -349,10 +356,12 @@
               <div class="layout horizontal wrap">
                 <template is="dom-repeat" items="[[categories]]">
                   <paper-button match$="[[item.slug]]"
-                    on-tap="buttonTap"
-                    on-mouseover="buttonOver"
-                    on-mouseout="buttonOut">
-                    [[item.name]]
+                      class$="layout vertical start"
+                      on-tap="buttonTap"
+                      on-mouseover="buttonOver"
+                      on-mouseout="buttonOut">
+                    <div>[[item.name]]</div>
+                    <div></div>
                   </paper-button>
                 </template>
               </div>
@@ -363,10 +372,12 @@
               <div class="horizontal layout wrap">
                 <template is="dom-repeat" items="[[keywords]]">
                   <paper-button match$="[[item.refdes]]"
-                    on-tap="buttonTap"
-                    on-mouseover="buttonOver"
-                    on-mouseout="buttonOut">
-                    [[item.refdes]]
+                      class$="layout vertical start"
+                      on-tap="buttonTap"
+                      on-mouseover="buttonOver"
+                      on-mouseout="buttonOut">
+                    <div>[[item.refdes]]</div>
+                    <div></div>
                   </paper-button>
                 </template>
               </div>
@@ -377,10 +388,10 @@
               <div class="layout horizontal wrap">
                 <template is="dom-repeat" items="[[components]]">
                   <paper-button match$="[[item.refdes]]"
-                    class$="[[itemClassList(item)]] layout vertical start"
-                    on-tap="buttonTap"
-                    on-mouseover="buttonOver"
-                    on-mouseout="buttonOut">
+                      class$="[[itemClassList(item)]] layout vertical start"
+                      on-tap="buttonTap"
+                      on-mouseover="buttonOver"
+                      on-mouseout="buttonOut">
                     <div>[[itemRefDes(item)]]</div>
                     <div>[[itemName(item)]]</div>
                   </paper-button>
