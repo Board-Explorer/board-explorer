@@ -527,7 +527,6 @@ document.addEventListener("WebComponentsReady", function() {
         type: Boolean,
         value: false
       }
-
     },
 
     observers: [
@@ -1156,6 +1155,13 @@ document.addEventListener("WebComponentsReady", function() {
           Polymer.dom(this.$.documentation).innerHTML = results.content;
         }
       }.bind(this));
+
+      /* After everything has loaded and is initialized, *then* set the active
+       * selection */
+      if (this.selectedOnceLoaded) {
+        this.selected = this.selectedOnceLoaded;
+        delete this.selectedOnceLoaded;
+      }
     },
 
     updateRoute: function(board, selected) {
@@ -1200,8 +1206,9 @@ document.addEventListener("WebComponentsReady", function() {
         }
       }
 
-      /* If the URL is changing, push it to the window history */
-      if (href != window.location.href) {
+      /* If the URL is changing, push it to the window history *IFF* there are
+       * not pending selections (if there are, a board is actively loading) */
+      if (href != window.location.href && !this.selectedOnceLoaded) {
         /* Add an entry to the window.history to update the URL with the list
          * of active filters */
         window.history.pushState({
@@ -1298,21 +1305,28 @@ document.addEventListener("WebComponentsReady", function() {
            this.initialized = true;
            console.log("Initialized to board-selector");
          }
-      } else {
-        // Get selected from the url if there are some.
-        if (uri[1]) {
-          this.selected = uri[1].split(",");
-        } else {
-          this.selected = [];
-        }
-        this.$.boardViewer.setSelected(this.selected);
-        if (boardToLoad != this.$.boardViewer.board) {
-          console.log("Loading board via setBoardAndSelectedFromHash: " + boardToLoad);
-          this.$.boardViewer.loadBoard(boardToLoad);
-        }
+
+         return;
       }
 
-      this.updateRoute(boardToLoad, this.selected);
+      // Get selected from the url if there are some.
+      if (uri[1]) {
+        var tokens = uri[1].split(",");
+        for (var i = 0; i < tokens.length; i++) {
+          tokens[i] = tokens[i].toUpperCase();
+        }
+        this.selected = tokens;
+      } else {
+        this.selected = [];
+      }
+      if (boardToLoad != this.$.boardViewer.board) {
+        console.log("Loading board via setBoardAndSelectedFromHash: " + boardToLoad);
+        this.selectedOnceLoaded = this.selected;
+        this.$.boardViewer.loadBoard(boardToLoad);
+      } else {
+        this.$.boardViewer.setSelected(this.selected);
+        this.updateRoute(boardToLoad, this.selected);
+      }
     },
 
     attached: function() {
