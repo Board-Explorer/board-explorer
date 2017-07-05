@@ -1216,12 +1216,6 @@ document.addEventListener("WebComponentsReady", function() {
     buttonTap: function(event) {
       event.preventDefault();
 
-      this.$.boardViewer.setHover({
-        type: event.model.item.type,
-        refdes: event.model.item.refdes,
-        in: true
-      });
-
       var refdes = event.model.item.refdes,
         index = this.selected.indexOf(refdes);
 
