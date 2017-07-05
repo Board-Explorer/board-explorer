@@ -692,20 +692,22 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       var selected = this.$.boardViewer.selected || [];
-
       /* If no selection is active, then enable everything and return */
       if (selected.length == 0) {
+
         Array.prototype.forEach.call(this.$.keywordsPage.querySelectorAll("paper-button"), function(el) {
           el.disabled = false;
         });
         Array.prototype.forEach.call(this.$.componentsPage.querySelectorAll("paper-button"), function(el) {
           el.disabled = false;
         });
+        Array.prototype.forEach.call(this.$.categoriesPage.querySelectorAll("paper-button"), function(el) {
+          el.disabled = false;
+        });
 
+        this.category = null;
         this.active = this.boardInfo;
-
-        this.updateRoute(this.board, selected);
-
+        this.updateRoute(this.board, selected, null);
         return;
       }
 
@@ -716,8 +718,19 @@ document.addEventListener("WebComponentsReady", function() {
       Array.prototype.forEach.call(this.$.componentsPage.querySelectorAll("paper-button"), function(el) {
         el.disabled = true;
       });
+      Array.prototype.forEach.call(this.$.categoriesPage.querySelectorAll("paper-button"), function(el) {
+        el.disabled = true;
+      });
 
       var active = null;
+
+      if (this.category) {
+        var el = this.querySelector("paper-button[match='"+ this.category.slug +"']");
+        if (el) {
+          el.disabled = false;
+        }
+        return;
+      }
 
       /* Walk through the list of selected items and enable them in the
        * keywords and components */
@@ -752,7 +765,7 @@ document.addEventListener("WebComponentsReady", function() {
        * non are in the selected list, set it to the boardInfo. */
       this.active = active || this.boardInfo;
 
-      this.updateRoute(this.board, selected);
+      this.updateRoute(this.board, selected, null);
     },
 
     _getItemNamesAndContexts: function(item) {
@@ -830,7 +843,7 @@ document.addEventListener("WebComponentsReady", function() {
       this.$.boardViewer.setSelected(this.selected);
       this.infoTitle = "";
       this.category = null;
-      this.updateRoute(this.board, this.selected);
+      this.updateRoute(this.board, this.selected, null);
     },
 
     itemClassList: function(item) {
@@ -1050,7 +1063,7 @@ document.addEventListener("WebComponentsReady", function() {
         console.log("Loading board via boardTap");
         this.$.boardViewer.loadBoard(board);
       }
-      this.updateRoute(board, this.selected);
+      this.updateRoute(board, this.selected, null);
     },
 
     onBoardChanged: function(event) {
@@ -1153,12 +1166,19 @@ document.addEventListener("WebComponentsReady", function() {
       /* After everything has loaded and is initialized, *then* set the active
        * selection */
       if (this.selectedOnceLoaded) {
-        this.selected = this.selectedOnceLoaded;
+        var category = this.$.boardViewer.findCategory(this.selectedOnceLoaded[0]);
+        if (category) {
+          this.category = category;
+          this.selected = category.list;
+        }
+        else {
+          this.selected = this.selectedOnceLoaded;
+        }
         delete this.selectedOnceLoaded;
       }
     },
 
-    updateRoute: function(board, selected) {
+    updateRoute: function(board, selected, category) {
       /* Start with an empty route by trimming the hash parameters */
       var href = window.location.href.replace(/#.*/, ""),
         params = [];
@@ -1191,8 +1211,8 @@ document.addEventListener("WebComponentsReady", function() {
         }
 
         /* If there is a category set, add it to the first part of the URL */
-        if (this.category) {
-          params.unshift(this.category.slug);
+        if (category) {
+          params.unshift(category.slug);
         }
 
         if (params.length) {
@@ -1207,7 +1227,7 @@ document.addEventListener("WebComponentsReady", function() {
          * of active filters */
         window.history.pushState({
           board: board,
-          category: this.category ? this.category.slug : null,
+          category: category ? category.slug : null,
           selected: selected ? selected.slice() : [] /* Copy of selected array */
         }, board, href);
       }
@@ -1223,20 +1243,45 @@ document.addEventListener("WebComponentsReady", function() {
       });
 
       var refdes = event.model.item.refdes,
+        category = this.$.boardViewer.findCategory(refdes),
         index = this.selected.indexOf(refdes);
+
+      /* If we get a category */
+      if (category) {
+        /* If category get is not the same as the category alreadey set,
+         * then is a new active category */
+        if (this.category != category) {
+          this.category = category;
+          this.selected = category.list;
+          this.$.boardViewer.setSelected(category.list);
+          this.updateRoute(this.board, [], category);
+          return;
+        }
+        /* Otherwise we nee to remove ite */
+        if (this.category == category) {
+          this.category = null;
+          this.selected = [];
+          this.$.boardViewer.setSelected(this.selected);
+          this.updateRoute(this.board, this.selected, null);
+          return;
+        }
+
+      }
+      else {
+        this.category = null;
+      }
 
       if (index == -1) {
         this.selected = [ event.model.item.refdes ];
       } else {
         this.selected.splice(index, 1);
         this.$.boardViewer.setSelected(this.selected);
-        this.updateRoute(this.board, this.selected);
+        this.updateRoute(this.board, this.selected, null);
       }
     },
 
     buttonOver: function(event) {
       event.preventDefault();
-
       this.$.boardViewer.setHover({
         type: event.model.item.type,
         refdes: event.model.item.refdes,
@@ -1246,7 +1291,6 @@ document.addEventListener("WebComponentsReady", function() {
 
     buttonOut: function(event) {
       event.preventDefault();
-
       this.$.boardViewer.setHover({
         type: event.model.item.type,
         refdes: event.model.item.refdes,
@@ -1273,7 +1317,7 @@ document.addEventListener("WebComponentsReady", function() {
         console.log("Loading board via popstate: " + this.board);
         this.$.boardViewer.loadBoard(this.board);
       }
-      this.updateRoute(this.board, this.selected);
+      this.updateRoute(this.board, this.selected, null);
     },
 
     setBoardAndSelectedFromHash: function(boards, hash) {
@@ -1325,7 +1369,7 @@ document.addEventListener("WebComponentsReady", function() {
         this.$.boardViewer.loadBoard(boardToLoad);
       } else {
         this.$.boardViewer.setSelected(this.selected);
-        this.updateRoute(boardToLoad, this.selected);
+        this.updateRoute(boardToLoad, this.selected, null);
       }
     },
 
