@@ -59,42 +59,48 @@
               "function": [ "GPIO_9", "ADC/COMP9", "SPI_S_SDIN" ],
               "description": "Arduino Pin 8",
               "keywords": [ "dio", "gpio", "adc", "spi" ],
-              "connected": [ "J13Pin3" ]
+              "connected": [ "J13Pin3" ],
+              "markdown": "qmsi.md"
             },
             "2": {
               "name": [ "DIO_9", "DIO_9", "QM_PIN_ID_24" ],
               "function": [ "GPIO_24", "-", "PWM1" ],
               "description": "Arduino Pin 9 PWM1",
               "keywords": [ "dio", "gpio", "pwm", "lpd" ],
-              "connected": [ "J13Pin9" ]
+              "connected": [ "J13Pin9" ],
+              "markdown": "qmsi.md"
             },
             "3": {
               "name": [ "SPI_M_SSO/DIO_10", "SPI_SS_DIO_10", "QM_PIN_ID_0" ],
               "function": [ "GPIO_0", "ADC/COMP0", "SPI_M_SSO" ],
               "description": "Arduino Pin 10 SSO",
               "keywords": [ "spi", "dio", "gpio", "adc" ],
-              "connected": [ "J13Pin2" ]
+              "connected": [ "J13Pin2" ],
+              "markdown": "qmsi.md"
             },
             "4": {
               "name": [ "M_MOSI/DIO_11", "MOSI/DIO_11", "QM_PIN_ID_17" ],
               "function": [ "GPIO_17", "ADC/COMP17", "SPI_M_DOUT" ],
               "description": "Arduino Pin 11 MOSI",
               "keywords": [ "spi", "dio", "gpio", "adc" ],
-              "connected": [ "J13Pin5" ]
+              "connected": [ "J13Pin5" ],
+              "markdown": "qmsi.md"
             },
             "5": {
               "name": [ "M_MISO/DIO_12", "MISO/DIO_12", "QM_PIN_ID_18" ],
               "function": [ "GPIO_18", "ADC/COMP18", "SPI_M_DIN" ],
               "description": "Arduino Pin 12 MISO",
               "keywords": [ "spi", "dio", "gpio", "adc" ],
-              "connected": [ "J13Pin4" ]
+              "connected": [ "J13Pin4" ],
+              "markdown": "qmsi.md"
             },
             "6": {
               "description": "Arduino Pin 13 SCK",
               "name": [ "M_SCK/DIO_13", "SCK/DIO_13", "QM_PIN_ID_16" ],
               "function": [ "GPIO_16", "ADC/COMP16", "M_SCK/DIO_13" ],
               "keywords": [ "spi", "dio", "gpio", "adc" ],
-              "connected": [ "J8Pin7" ]
+              "connected": [ "J8Pin7" ],
+              "markdown": "qmsi.md"
             },
             "7": {
               "description": "Ground",
@@ -111,14 +117,16 @@
               "name": [ "SDA/AIN_04", "SDA/AIN_04/DIO_18", null ],
               "function": [ "GPIO_7", "ADC/COMP7", "I2C_SDA" ],
               "keywords": [ "i2c", "dio", "gpio", "adc" ],
-              "connected": [ "J8Pin10" ]
+              "connected": [ "J8Pin10" ],
+              "markdown": "qmsi.md"
             },
             "10": {
               "description": "Arduino Pin SCL",
               "name": [ "SCL/AIN_05", "SCL/AIN_05_DIO_19", null ],
               "function": [ "GPIO_6", "ADC/COMP6", "I2C_SCL" ],
               "keywords": [ "i2c", "dio", "gpio", "adc" ],
-              "connected": [ "J8Pin9" ]
+              "connected": [ "J8Pin9" ],
+              "markdown": "qmsi.md"
             }
           }
         },
@@ -135,54 +143,62 @@
               "function": [ "GPIO_13", "ADC/COMP13", "UART_A_RXD" ],
               "description": "Arduino Pin 0 RX [UART_A]",
               "keywords": ["uart", "dio", "gpio", "adc" ],
-              "connected": [ "J8Pin3" ]
+              "connected": [ "J8Pin3" ],
+              "markdown": "qmsi.md"
             },
             "2": {
               "name": [ "UART_TXD/DIO_1", "UART_TXD/DIO_1", "QM_PIN_ID_12" ],
               "function": [ "GPIO_12", "ADC/COMP12", "UART_A_TXD" ],
               "description": "Arduino Pin 1 TX [UART_A]",
               "keywords": ["uart", "dio", "gpio", "adc" ],
-              "connected": [ "J8Pin4" ]
+              "connected": [ "J8Pin4" ],
+              "markdown": "qmsi.md"
             },
             "3": {
               "name": [ "DIO_2", "DIO_2", "QM_PIN_ID_11" ],
               "function": [ "GPIO_11", "ADC/COMP11", "SPI_S_SCS" ],
               "description": "Arduino Pin 2",
               "keywords": [ "dio", "gpio", "adc", "spi" ],
-              "connected": [ "J13Pin7" ]
+              "connected": [ "J13Pin7" ],
+              "markdown": "qmsi.md"
             },
             "4": {
               "name": [ "DIO_3", "DIO_3", "QM_PIN_ID_10" ],
               "function": [ "GPIO_10", "ADC/COMP10", "SPI_S_SDOUT" ],
               "description": "Arduino Pin 3",
               "keywords": [ "dio", "gpio", "adc", "spi" ],
-              "connected": [ "J13Pin1" ]
+              "connected": [ "J13Pin1" ],
+              "markdown": "qmsi.md"
             },
             "5": {
               "name": [ "DIO_4", "DIO_4", "QM_PIN_ID_5" ],
               "function": [ "GPIO_5", "ADC/COMP5", "SYS_CLK_OUT" ],
               "description": "Arduino Pin 4",
               "keywords": [ "dio", "gpio", "adc", "spi", "clock" ],
-              "connected": [ "J8Pin8" ]
+              "connected": [ "J8Pin8" ],
+              "markdown": "qmsi.md"
             },
             "6": {
               "name": [ "DIO_5", "DIO_5", "QM_PIN_ID_2" ],
               "function": [ "GPIO_2", "ADC/COMP2", "SPI_M_SS2" ],
               "description": "Arduino Pin 5",
               "keywords": [ "dio", "gpio", "adc", "spi" ],
-              "connected": [ "J8Pin5" ]
+              "connected": [ "J8Pin5" ],
+              "markdown": "qmsi.md"
             },
             "7": {
               "name": [ "USB port/DIO_06", "DIO_06", "QM_PIN_ID_19" ],
               "function": [ "JTAG_TDO", "GPIO_19", "PWM0" ],
               "description": "Arduino Pin 6 PWM0",
-              "keywords": [ "usb", "dio", "gpio", "jtag", "pwm" ]
+              "keywords": [ "usb", "dio", "gpio", "jtag", "pwm" ],
+              "markdown": "qmsi.md"
             },
             "8": {
               "name": [ "DIO_07", "DIO_07", "QM_PIN_ID_8" ],
               "function": [ "GPIO_8", "ADC/COMP8", "SPI_S_SCLK" ],
               "description": "Arduino Pin 7",
-              "keywords": [ "dio", "gpio", "adc", "spi" ]
+              "keywords": [ "dio", "gpio", "adc", "spi" ],
+              "markdown": "qmsi.md"
             }
           }
         },
@@ -405,41 +421,47 @@
               "function": [ "GPIO_3", "ADC/COMP3", "SPI_M_SS3" ],
               "description": "Arduino Pin A0",
               "keywords": [ "aio", "gpio", "adc", "spi" ],
-              "connected": [ "J13Pin8" ]
+              "connected": [ "J13Pin8" ],
+              "markdown": "qmsi.md"
             },
             "2": {
               "name": [ "AIN_01", "AIN_01", "QM_PIN_ID_4" ],
               "function": [ "GPIO_4", "ADC/COMP4", "RTC_CLK_OUT" ],
               "description": "Arduino Pin A1",
               "keywords": [ "aio", "gpio", "adc", "spi", "clock" ],
-              "connected": [ "J8Pin6" ]
+              "connected": [ "J8Pin6" ],
+              "markdown": "qmsi.md"
             },
             "3": {
               "name": [ "AIN_02", "AIN_02", "QM_PIN_ID_14" ],
               "function": [ "GPIO_14", "ADC/COMP14", "UART_A_RTS" ],
               "description": "Arduino Pin A2",
               "keywords": [ "aio", "gpio", "adc", "uart" ],
-              "connected": [ "J8Pin2" ]
+              "connected": [ "J8Pin2" ],
+              "markdown": "qmsi.md"
             },
             "4": {
               "name": [ "AIN_03", "AIN_03", "QM_PIN_ID_15" ],
               "function": [ "GPIO_15", "ADC/COMP15", "UART_A_CTS" ],
               "description": "Arduino Pin A3",
-              "keywords": [ "aio", "gpio", "adc", "uart" ]
+              "keywords": [ "aio", "gpio", "adc", "uart" ],
+              "markdown": "qmsi.md"
             },
             "5": {
               "name": [ "AIN_04/SDA", "SDA/AIN_04/DIO_18", "QM_PIN_ID_7" ],
               "function": [ "GPIO_7", "ADC/COMP7", "I2C_SDA" ],
               "description": "Arduino Pin A4 SDA",
               "keywords": [ "aio", "spi" ],
-              "connected": [ "J8Pin10" ]
+              "connected": [ "J8Pin10" ],
+              "markdown": "qmsi.md"
             },
             "6": {
               "name": [ "AIN_0/SCL", "SCL/AIN_05/DIO_19", "QM_PIN_ID_6" ],
               "function": [ "GPIO_6", "ADC/COMP6", "I2C_SCL" ],
               "description": "Arduino Pin A5 SCL",
               "keywords": [ "aio", "spi" ],
-              "connected": [ "J8Pin9" ]
+              "connected": [ "J8Pin9" ],
+              "markdown": "qmsi.md"
             }
           }
         },
