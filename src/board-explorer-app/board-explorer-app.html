@@ -121,10 +121,6 @@
       line-height: 1.8em;
     }
 
-    #panel-left paper-button:not(.item-with-name) div:last-child {
-      display: none;
-    }
-
     paper-material {
       margin: 0.5em;
       padding: 1em;
@@ -393,7 +389,7 @@
                       on-mouseover="buttonOver"
                       on-mouseout="buttonOut">
                     <div>[[itemRefDes(item)]]</div>
-                    <div>[[itemName(item)]]</div>
+                    <template is="dom-if" if="{{itemClassList(item)}}"><div>[[itemName(item)]]</div></template>
                   </paper-button>
                 </template>
               </div>
