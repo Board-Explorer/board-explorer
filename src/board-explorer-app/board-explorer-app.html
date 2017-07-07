@@ -463,9 +463,19 @@ limitations under the License.
           <div class="info-content">
             <div hidden$="[[isEmpty(active.component)]]">Component: [[active.component]]</div>
             <div hidden$="[[isEmpty(active.pins)]]">Pins: [[active.pins.length]]</div>
-            <div hidden$="[[isEmpty(active.keywords)]]">Keywords:
-              <template is="dom-repeat" items="[[active.keywords]]" as="keyword">
+            <div hidden$="[[isEmpty(active.keywords)]]">
+              Keywords: <template is="dom-repeat" items="[[active.keywords]]" as="keyword">
                 <a href="#[[board]]/[[keyword]]">[[keyword]]</a>
+              </template>
+            </div>
+            <div hidden$="[[isEmpty(active.connected)]]">
+              Connected to: <template is="dom-repeat" items="[[active.connected]]" as="refdes">
+                <a href="#[[board]]/[[refdes]]">[[lookupName(refdes)]]</a>
+              </template>
+            </div>
+            <div hidden$="[[isEmpty(active.related)]]">
+              Related to: <template is="dom-repeat" items="[[active.related]]" as="refdes">
+                <a href="#[[board]]/[[refdes]]">[[lookupName(refdes)]]</a>
               </template>
             </div>
             <div hidden$="[[isEmpty(active.description)]]">Description: [[active.description]]</div>
@@ -887,6 +897,14 @@ document.addEventListener("WebComponentsReady", function() {
 
     itemName: function(item) {
       return item.name || item.readable || item.refdes || "";
+    },
+
+    lookupName: function(refdes) {
+      var item = this.$.boardViewer.findComponent(refdes);
+      if (!item) {
+        return refdes;
+      }
+      return this.itemRefDes(item);
     },
 
     isEmpty: function(/*item0, ... */) {
