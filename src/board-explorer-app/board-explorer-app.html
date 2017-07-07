@@ -501,6 +501,12 @@ document.addEventListener("WebComponentsReady", function() {
         value: []
       },
 
+      /** Array of items which match the search pattern. */
+      matches: {
+        type: Array,
+        value: []
+      },
+
       components: {
         type: Array,
         value: []
@@ -537,7 +543,6 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     observers: [
-      "onComponentChanged(component)",
       "setBoardAndSelectedFromHash(boards, hash)",
       "_searchModeChanged(searchMode)",
       "_searchChanged(search)",
