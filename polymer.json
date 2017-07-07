@@ -4,6 +4,7 @@
     "rules": ["polymer-2-hybrid"]
   },
   "sources": [
+    "LICENSE.md",
     "src/**/*",
     "css/**/*",
     "boards/**/*",
