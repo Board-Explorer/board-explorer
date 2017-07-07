@@ -1,6 +1,6 @@
 #!/bin/bash
 [ ! -d build/default ] && {
-  echo "Run ./build.sh first."
+  echo "Run 'polymer build' first."
   exit -1
 }
 
