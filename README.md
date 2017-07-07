@@ -14,6 +14,7 @@ Copyright (C) 2016-2017 Intel Corporation
 | Apache 2.0 | Front-end application and components                 |
 | CC-BY-3.0  | boards/* including documentation and graphics        |
 
+
 ## Overview
 
 The Board Explorer is:
@@ -59,6 +60,42 @@ dependencies:
 cd board-explorer
 bower install
 npm install
+```
+
+## Hosting a single board
+
+To host a single board, the board needs to be declared in the boards.json file.
+
+Once declared there, change the "singleBoard" property in 
+src/board-explorer/board-explorer.html to be set to the board's "board" 
+name (which is an alias for the directory holding the board contents.)
+
+For example, if you have the following:
+
+```bash
+ls boards/
+quark_mcu_dev_kit_d2000
+```
+
+In boards.json, you would have:
+
+```json
+{
+  "title": "The Intel® Quark™ Microcontroller Developer Kit D2000",
+  "board": "quark_mcu_dev_kit_d2000",
+  "image": "front.svg"
+}
+```
+
+Then you would change "singleBoard" to the following:
+
+```text
+      ...
+      singleBoard: {
+        type: String,
+        value: "quark_mcu_dev_kit_d2000" /* replace with board-name for single board explorer */
+      },
+      ...
 ```
 
 

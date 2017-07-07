@@ -485,6 +485,10 @@ document.addEventListener("WebComponentsReady", function() {
         type: Array,
         value: []
       },
+      singleBoard: {
+        type: String,
+        value: "" /* replace with board-name for single board explorer */
+      },
       board: {
         type: String,
         value: null
@@ -845,6 +849,14 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     unloadBoard: function() {
+      /* If singleBoard is set, clear the selection and stay on board */
+      if (this.singleBoard) {
+        this.selected = [];
+        this.$.boardViewer.setSelected(this.selected);
+        this.updateRoute(this.board, this.selected, null);
+        return;
+      }
+
       this.$.boardViewer.loadBoard();
       /* Remove all selected */
       this.selected = [];
@@ -1339,10 +1351,16 @@ document.addEventListener("WebComponentsReady", function() {
         uri.splice(2,1);
       }
 
-      for (var i = 0; i < this.boards.length; i++) {
-        if (this.boards[i].directory == hash) {
-          boardToLoad = this.boards[i].directory;
-          break;
+      /* If single-board override is in effect, only load the single board
+       * and ignore the hash portion of the URL ... */
+      if (this.singleBoard) {
+        boardToLoad = this.singleBoard;
+      } else {
+        for (var i = 0; i < this.boards.length; i++) {
+          if (this.boards[i].directory == hash) {
+            boardToLoad = this.boards[i].directory;
+            break;
+          }
         }
       }
 
