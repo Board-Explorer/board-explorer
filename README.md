@@ -54,29 +54,51 @@ npm install
 
 ## Running
 
-You can either host the content out of the root of the project, or you
-can optimize a version for download via the build.sh script, which
-uses the Polymer CLI build tools.
+There are two ways to host the project.
 
-NOTE: The polymer build tools required NodeJS > 6.x
+1. Using `polymer serve`
+2. Using a webserver and hosting a built version of the site
+
+### Using `polymer serve`
+
+To host using the Polymer CLI, you only need to run:
 
 ```bash
-polymer build
+polymer serve
 ```
 
-The build defaults to assuming it will be hosted under the path:
+and it will create a local server to host the content. Internally it will
+fixup all of the paths to route correctly.
 
-  `/board-explorer/build/default`
+### Using a webserver
 
-To change that, set the BASE environment variable:
+The easiest way to host the project using a webserver is to run the build script
+and then either point your webserver to the build/default directory or recursively
+copy that directory to where you want it.
+
+For example:
 
 ```bash
-BASE=/board-explorer/ ./build.sh
+./build.sh
+rsync -avprl defult/build/ /var/www/board-explorer/
 ```
 
-When we push new versions to board-explorer.github.io, we run:
+The above will build the web application (which vulanizes and minimizes the HTML and JS)
+and resurisvely copy the results to the /var/www/board-explorer/
 
-```bash
-BASE=/$(basename $(pwd))/ ./build.sh
-./publish.sh
+If you want to host a non-build version of the site, you need to add a `<base>`
+tag to the beginning of index.html
+
+For example, to host the project from **/random-path**, you would add a `<base>` tag
+as follows:
+
+```html
+   ...
+   <title>board-explorer</title>
+   <meta name="description" content="board-explorer description">
+
+   <base href='/random-path/'>
+
+   <!-- Clear Sans font -->
+   ...
 ```
