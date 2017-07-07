@@ -6,11 +6,12 @@ Copyright (C) 2016-2017 Intel Corporation
 
 [Live demo!](https://board-explorer.github.io/board-explorer/#quark_mcu_dev_kit_d2000)
 
+
 # License
 
 | License    | Components                                           |
 |:-----------|:-----------------------------------------------------|
-| Apache 2.0 | Front-end application and components, and app server |
+| Apache 2.0 | Front-end application and components                 |
 | CC-BY-3.0  | boards/* including documentation and graphics        |
 
 ## Overview
@@ -30,12 +31,20 @@ presentation. Stand alone applications can use the `board-viewer` element
 independent of the Board Explorer application.
 
 
-### Prerequisites
+### Minimal prerequisites
 
 ```bash
 sudo apt-get install nodejs nodejs-legacy npm
 sudo npm install -g bower
 ```
+
+**NOTE**: If you will want to build and host a minified version of the board-explorer,
+you will need polymer command line tools, which require NodeJS >= 6.x (See [Polymer 
+node-support](https://www.polymer-project.org/2.0/docs/tools/node-support).)
+
+See [Polymer CLI](https://www.polymer-project.org/2.0/docs/tools/polymer-cli) for instructions
+on installing the Polymer CLI.
+
 
 ## Installation
 
@@ -52,12 +61,14 @@ bower install
 npm install
 ```
 
+
 ## Running
 
 There are two ways to host the project.
 
 1. Using `polymer serve`
 2. Using a webserver and hosting a built version of the site
+
 
 ### Using `polymer serve`
 
@@ -70,27 +81,28 @@ polymer serve
 and it will create a local server to host the content. Internally it will
 fixup all of the paths to route correctly.
 
+
 ### Using a webserver
 
-The easiest way to host the project using a webserver is to run the build script
+The easiest way to host the project using a webserver is to use `polymer build` 
 and then either point your webserver to the build/default directory or recursively
 copy that directory to where you want it.
 
 For example:
 
 ```bash
-./build.sh
-rsync -avprl defult/build/ /var/www/board-explorer/
+polymer build &&
+  rsync -avprl defult/build/ /var/www/board-explorer/
 ```
 
 The above will build the web application (which vulanizes and minimizes the HTML and JS)
-and resurisvely copy the results to the /var/www/board-explorer/
+and on success, it will then resurisvely copy the results to the /var/www/board-explorer/
 
 If you want to host a non-build version of the site, you need to add a `<base>`
 tag to the beginning of index.html
 
 For example, to host the project from **/random-path**, you would add a `<base>` tag
-as follows:
+prior to any other resources being loaded, as seen in this snippet:
 
 ```html
    ...
@@ -98,7 +110,5 @@ as follows:
    <meta name="description" content="board-explorer description">
 
    <base href='/random-path/'>
-
-   <!-- Clear Sans font -->
    ...
 ```
