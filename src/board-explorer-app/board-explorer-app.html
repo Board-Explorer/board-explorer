@@ -532,15 +532,6 @@ document.addEventListener("WebComponentsReady", function() {
         type: Array,
         value: []
       },
-      pin: {
-        type: Object,
-        value: null
-      },
-
-      infoTitle: {
-        type: String,
-        value: ""
-      },
 
       /** Item currently hovered over; used for tool-tip */
       hover: {
@@ -858,7 +849,6 @@ document.addEventListener("WebComponentsReady", function() {
       /* Remove all selected */
       this.selected = [];
       this.$.boardViewer.setSelected(this.selected);
-      this.infoTitle = "";
       this.category = null;
       this.updateRoute(this.board, this.selected, null);
     },
