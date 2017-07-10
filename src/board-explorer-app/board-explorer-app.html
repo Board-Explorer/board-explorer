@@ -716,7 +716,6 @@ document.addEventListener("WebComponentsReady", function() {
       if (!this.board) {
         return;
       }
-
       var selected = this.$.boardViewer.selected || [];
       /* If no selection is active, then enable everything and return */
       if (selected.length == 0) {
@@ -731,12 +730,10 @@ document.addEventListener("WebComponentsReady", function() {
           el.disabled = false;
         });
 
-        this.category = null;
         this.active = this.boardInfo;
         this.updateRoute(this.board, selected, null);
         return;
       }
-
       /* Disable all items in the currently viewed page */
       Array.prototype.forEach.call(this.$.keywordsPage.querySelectorAll("paper-button"), function(el) {
         el.disabled = true;
@@ -750,11 +747,24 @@ document.addEventListener("WebComponentsReady", function() {
 
       var active = null;
 
-      if (this.category) {
+      /* Comparing selected set with all category lists */
+      var isCategory = false;
+      for (var i = 0; i < this.categories.length; i++) {
+        /* If the current selection is the same list as a defined category list,
+         * Then we assume that is a category interaction. */
+        if (this.categories[i].list == selected) {
+          isCategory = true;
+          break;
+        }
+      }
+
+      if (isCategory && this.category) {
         var el = this.querySelector("paper-button[match='"+ this.category.slug +"']");
         if (el) {
           el.disabled = false;
         }
+        this.active = this.boardInfo;
+        this.updateRoute(this.board, [], this.category);
         return;
       }
 
@@ -790,7 +800,6 @@ document.addEventListener("WebComponentsReady", function() {
       /* Set the active documentation to either the first non-keyword, or if
        * non are in the selected list, set it to the boardInfo. */
       this.active = active || this.boardInfo;
-
       this.updateRoute(this.board, selected, null);
     },
 
@@ -1223,7 +1232,6 @@ document.addEventListener("WebComponentsReady", function() {
       /* Start with an empty route by trimming the hash parameters */
       var href = window.location.href.replace(/#.*/, ""),
         params = [];
-
       /* If the board is set, add it to the URL */
       if (board) {
          href += "#" + board;
@@ -1294,31 +1302,25 @@ document.addEventListener("WebComponentsReady", function() {
         if (this.category != category) {
           this.category = category;
           this.selected = category.list;
-          this.$.boardViewer.setSelected(category.list);
-          this.updateRoute(this.board, [], category);
           return;
         }
-        /* Otherwise we nee to remove ite */
+        /* Otherwise we need to remove it */
         if (this.category == category) {
           this.category = null;
           this.selected = [];
-          this.$.boardViewer.setSelected(this.selected);
-          this.updateRoute(this.board, this.selected, null);
           return;
         }
-
       }
-      else {
+
+      if (!category) {
         this.category = null;
+        if (index == -1) {
+          this.selected = [ event.model.item.refdes ];
+        } else {
+          this.selected.splice(index, 1);
+        }
       }
 
-      if (index == -1) {
-        this.selected = [ event.model.item.refdes ];
-      } else {
-        this.selected.splice(index, 1);
-        this.$.boardViewer.setSelected(this.selected);
-        this.updateRoute(this.board, this.selected, null);
-      }
     },
 
     buttonOver: function(event) {
