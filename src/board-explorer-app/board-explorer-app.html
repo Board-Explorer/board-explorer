@@ -1431,7 +1431,7 @@ document.addEventListener("WebComponentsReady", function() {
       if (uri[1]) {
         var tokens = uri[1].split(",");
         for (var i = 0; i < tokens.length; i++) {
-          tokens[i] = tokens[i];
+          tokens[i] = tokens[i].toUpperCase();
         }
         this.selected = tokens;
       } else {
