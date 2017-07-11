@@ -1341,6 +1341,8 @@ document.addEventListener("WebComponentsReady", function() {
           this.selected = [ event.model.item.refdes ];
         } else {
           this.selected.splice(index, 1);
+          this.$.boardViewer.setSelected(this.selected);
+          this.updateRoute(this.board, this.selected, null);
         }
       }
 
@@ -1429,7 +1431,7 @@ document.addEventListener("WebComponentsReady", function() {
       if (uri[1]) {
         var tokens = uri[1].split(",");
         for (var i = 0; i < tokens.length; i++) {
-          tokens[i] = tokens[i].toUpperCase();
+          tokens[i] = tokens[i];
         }
         this.selected = tokens;
       } else {
