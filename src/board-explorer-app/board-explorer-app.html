@@ -716,6 +716,7 @@ document.addEventListener("WebComponentsReady", function() {
       if (!this.board) {
         return;
       }
+
       var selected = this.$.boardViewer.selected || [];
       /* If no selection is active, then enable everything and return */
       if (selected.length == 0) {
@@ -1055,10 +1056,18 @@ document.addEventListener("WebComponentsReady", function() {
     onBoardItemHover: function(event) {
       var info = event.detail,
         item = this.$.boardViewer.findComponent(info.refdes),
-        el;
+        categories = [], el;
 
       if (!item) {
         return;
+      }
+
+      /* Getting owner categories for the item refdes. */
+      for (var i = 0; i < this.categories.length; i++) {
+        if (this.categories[i].list.indexOf(item.refdes) != -1
+          || this.categories[i].list.indexOf(item.component) != -1) {
+          categories.push(this.categories[i].slug);
+        }
       }
 
       Array.prototype.forEach.call(this.querySelectorAll("paper-button.hover"),
@@ -1068,12 +1077,25 @@ document.addEventListener("WebComponentsReady", function() {
 
       /* If the direction is IN, add "hover" to all KEYWORDs for this item */
       if (info.in) {
-        item.keywords.forEach(function(keyword) {
-          el = this.$.keywordsPage.querySelector("paper-button[match='" + keyword + "']");
-          if (el) {
-            el.classList.add("hover");
-          }
-        }.bind(this));
+        if (item.keywords) {
+          item.keywords.forEach(function(keyword) {
+            el = this.$.keywordsPage.querySelector("paper-button[match='" + keyword + "']");
+            if (el) {
+              el.classList.add("hover");
+            }
+          }.bind(this));
+        }
+
+        /* Adding hover class to all category buttons, if the refdes belongs to,
+         * at least one .*/
+        if (categories) {
+          categories.forEach(function(slug) {
+            el = this.$.categoriesPage.querySelector("paper-button[match='" + slug + "']");
+            if (el) {
+              el.classList.add("hover");
+            }
+          }.bind(this));
+        }
       }
 
       /* If a pin is being hovered over in the board-viewer, then set the
@@ -1239,6 +1261,7 @@ document.addEventListener("WebComponentsReady", function() {
         /* If the filters are set, add them to the URL */
         if (board && selected && selected.length) {
           for (var i = 0; i < selected.length; i++) {
+
             if (this.$.boardViewer.findComponent(selected[i])) {
               params.push(selected[i]);
               continue;
