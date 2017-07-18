@@ -19,6 +19,10 @@
   "board": "joule_570x",
   "image": "front.svg"
 }, {
+  "title": "UP",
+  "board": "up-board",
+  "image": "upboard.svg"
+}, {
   "title": "tinyTILE - Intel Curie Module Based Board",
   "board": "tinyTILE",
   "image": "tinyTILE.svg"
