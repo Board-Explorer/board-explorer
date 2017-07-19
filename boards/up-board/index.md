@@ -5,4 +5,4 @@ The UP is a high performance, low power single board computer.
 * Storage options: 16GB / 32 GB / 64 GB eMMC
 * Operating temperature range of 32-140°F / 0-60°C
 
-More information on [up-board.org](http://up-board.org).
+More information on [up-board.org](http://up-board.org/up).
