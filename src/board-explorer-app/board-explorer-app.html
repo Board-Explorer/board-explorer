@@ -470,12 +470,12 @@ limitations under the License.
             </div>
             <div hidden$="[[isEmpty(active.connected)]]">
               Connected to: <template is="dom-repeat" items="[[active.connected]]" as="refdes">
-                <a href="#[[board]]/[[refdes]]">[[lookupName(refdes)]]</a>
+                <a on-mouseover="onAnchorHoverIn" on-mouseout="onAnchorHoverOut" href="#[[board]]/[[refdes]]">[[lookupName(refdes)]]</a>
               </template>
             </div>
             <div hidden$="[[isEmpty(active.related)]]">
               Related to: <template is="dom-repeat" items="[[active.related]]" as="refdes">
-                <a href="#[[board]]/[[refdes]]">[[lookupName(refdes)]]</a>
+                <a on-mouseover="onAnchorHoverIn" on-mouseout="onAnchorHoverOut" href="#[[board]]/[[refdes]]">[[lookupName(refdes)]]</a>
               </template>
             </div>
             <div hidden$="[[isEmpty(active.description)]]">Description: [[active.description]]</div>
@@ -1125,6 +1125,30 @@ document.addEventListener("WebComponentsReady", function() {
       this.hover = item;
     },
 
+    onAnchorHoverIn: function(event) {
+      var component  = this.$.boardViewer.findComponent(event.model.__data__.refdes);
+      if (component) {
+        this.$.boardViewer.setHover({
+          type: component.type,
+          refdes: component.refdes,
+          source: "board-viewer",
+          in: true
+        });
+      }
+    },
+
+    onAnchorHoverOut: function(event) {
+      var component  = this.$.boardViewer.findComponent(event.model.__data__.refdes);
+      if (component) {
+        this.$.boardViewer.setHover({
+          type: component.type,
+          refdes: component.refdes,
+          source: "board-viewer",
+          in: false
+        });
+      }
+    },
+
     boardTap: function(event) {
       var board = event.model.item.directory;
       console.log("Loading " + board);
@@ -1448,6 +1472,7 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     attached: function() {
+
       window.addEventListener("popstate", this.onPopState.bind(this));
       window.addEventListener("hashchange", this.onHashChange.bind(this));
 
@@ -1464,6 +1489,7 @@ document.addEventListener("WebComponentsReady", function() {
       }.bind(this));
     }
   });
+
 });
 </script>
 </dom-module>
