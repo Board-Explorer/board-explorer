@@ -7,11 +7,20 @@
       "components": {
         "CPU": {},
         "CSI": {},
-        "DDR3L1": {},
-        "DDR3L2": {},
+        "DDR3L1": {
+          "readable": "RAM bank",
+          "name": "DDR3L",
+	        "markdown": "memory.md"
+        },
+        "DDR3L2": {
+          "readable": "RAM bank",
+          "name": "DDR3L",
+          "markdown": "memory.md"
+        },
         "DSI": {},
         "HAT": {
-          "description": "40 Pin GP-Bus",
+          "readable": "HAT",
+          "name": "40 Pin GP-Bus",
           "modes": [ "Mode 0", "Mode 1" ],
           "pins": {
             "1": {
@@ -22,7 +31,8 @@
             "2": {
               "name": "5V",
               "description": "+5V",
-              "keywords": [ "power" ]
+              "keywords": [ "power" ],
+              "connected": [ "power_input" ]
             },
             "3": {
               "name": "GPIO0/I2C_SDA",
@@ -32,7 +42,8 @@
             "4": {
               "name": "5V",
               "description": "+5V",
-              "keywords": [ "power" ]
+              "keywords": [ "power" ],
+              "connected": [ "power_input" ]
             },
             "5": {
               "name": "GPIO1/I2C1_SCL",
@@ -213,19 +224,36 @@
         "HEADER": {},
         "J1": {},
         "JPOWER": {},
-        "JRTC": {},
+        "RTC": {},
         "LED": {
           "keywords": [ "power" ]
         },
         "POWER_INPUT": {
-          "keywords": [ "power" ]
+          "keywords": [ "power" ],
+          "related": [ "LED" ]
         },
         "RESET": {},
         "RJ45": {},
-        "UART": {},
-        "USB2_1": {},
-        "USB2_3": {},
-        "USB3_3": {}
+        "UART_HEADER": {
+          "keywords": [ "UART", "USB" ]
+        },
+        "USB2_1": {
+          "readable": "USB Ports",
+          "name": "USB 2.0",
+          "description": "Provides 2 USB 2.0 ports",
+          "keywords": [ "USB" ]
+        },
+        "USB2_3": {
+          "readable": "USB Ports",
+          "name": "USB 2.0",
+          "description": "Provides 2 USB 2.0 ports",
+          "keywords": [ "USB" ]
+        },
+        "USB3_3": {
+          "readable": "USB 3.0",
+          "name": "USB 3 - OTG",
+          "keywords": [ "USB" ]
+        }
       }
     }
   }

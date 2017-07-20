@@ -531,7 +531,7 @@
            class="st4"
            width="1.4"
            height="8.5" /></g></g><g
-       id="BV_UART"
+       id="BV_UART_HEADER"
        inkscape:label="#g305"><g
          id="g307"><g
            id="J8_2_"><g
@@ -2145,7 +2145,7 @@
        width="8.6"
        height="34.1"
        inkscape:label="#_x30_.1.0.6_6_" /><g
-       id="BV_JRTC"
+       id="BV_RTC"
        inkscape:label="#g831"><rect
          id="_x30_.1.13.0.0.0.0.0.0.0.3.1_2_"
          x="3.1"
