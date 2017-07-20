@@ -470,12 +470,12 @@ limitations under the License.
             </div>
             <div hidden$="[[isEmpty(active.connected)]]">
               Connected to: <template is="dom-repeat" items="[[active.connected]]" as="refdes">
-                <a on-mouseover="onAnchorHoverIn" on-mouseout="onAnchorHoverOut" href="#[[board]]/[[refdes]]">[[lookupName(refdes)]]</a>
+                <a href="#[[board]]/[[refdes]]">[[lookupName(refdes)]]</a>
               </template>
             </div>
             <div hidden$="[[isEmpty(active.related)]]">
               Related to: <template is="dom-repeat" items="[[active.related]]" as="refdes">
-                <a on-mouseover="onAnchorHoverIn" on-mouseout="onAnchorHoverOut" href="#[[board]]/[[refdes]]">[[lookupName(refdes)]]</a>
+                <a href="#[[board]]/[[refdes]]">[[lookupName(refdes)]]</a>
               </template>
             </div>
             <div hidden$="[[isEmpty(active.description)]]">Description: [[active.description]]</div>
@@ -1039,6 +1039,12 @@ document.addEventListener("WebComponentsReady", function() {
           Polymer.dom(this.$.documentation).innerHTML = item.html;
         }
 
+        self = this;
+        Array.prototype.forEach.call(this.$.info.querySelectorAll('a[href^="#' + this.board + '"]'), function(el) {
+          el.addEventListener('mouseover', self.onAnchorHoverIn.bind(self));
+          el.addEventListener('mouseout', self.onAnchorHoverOut.bind(self));
+        });
+
         /* Fire off the most recent load request if it changed while the above
          * was resolving */
         if (this.loading != item) {
@@ -1126,7 +1132,9 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     onAnchorHoverIn: function(event) {
-      var component  = this.$.boardViewer.findComponent(event.model.__data__.refdes);
+      var href  = event.target.href;
+      var refdes = href.split("/").pop();
+      var component  = this.$.boardViewer.findComponent(refdes);
       if (component) {
         this.$.boardViewer.setHover({
           type: component.type,
@@ -1138,7 +1146,9 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     onAnchorHoverOut: function(event) {
-      var component  = this.$.boardViewer.findComponent(event.model.__data__.refdes);
+      var href  = event.target.href;
+      var refdes = href.split("/").pop();
+      var component  = this.$.boardViewer.findComponent(refdes);
       if (component) {
         this.$.boardViewer.setHover({
           type: component.type,
