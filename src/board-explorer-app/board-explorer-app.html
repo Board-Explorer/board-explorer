@@ -1039,6 +1039,12 @@ document.addEventListener("WebComponentsReady", function() {
           Polymer.dom(this.$.documentation).innerHTML = item.html;
         }
 
+        self = this;
+        Array.prototype.forEach.call(this.$.info.querySelectorAll('a[href^="#' + this.board + '"]'), function(el) {
+          el.addEventListener('mouseover', self.onAnchorHoverIn.bind(self));
+          el.addEventListener('mouseout', self.onAnchorHoverOut.bind(self));
+        });
+
         /* Fire off the most recent load request if it changed while the above
          * was resolving */
         if (this.loading != item) {
@@ -1123,6 +1129,34 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       this.hover = item;
+    },
+
+    onAnchorHoverIn: function(event) {
+      var href  = event.target.href;
+      var refdes = href.split("/").pop();
+      var component  = this.$.boardViewer.findComponent(refdes);
+      if (component) {
+        this.$.boardViewer.setHover({
+          type: component.type,
+          refdes: component.refdes,
+          source: "board-viewer",
+          in: true
+        });
+      }
+    },
+
+    onAnchorHoverOut: function(event) {
+      var href  = event.target.href;
+      var refdes = href.split("/").pop();
+      var component  = this.$.boardViewer.findComponent(refdes);
+      if (component) {
+        this.$.boardViewer.setHover({
+          type: component.type,
+          refdes: component.refdes,
+          source: "board-viewer",
+          in: false
+        });
+      }
     },
 
     boardTap: function(event) {
@@ -1448,6 +1482,7 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     attached: function() {
+
       window.addEventListener("popstate", this.onPopState.bind(this));
       window.addEventListener("hashchange", this.onHashChange.bind(this));
 
@@ -1464,6 +1499,7 @@ document.addEventListener("WebComponentsReady", function() {
       }.bind(this));
     }
   });
+
 });
 </script>
 </dom-module>
