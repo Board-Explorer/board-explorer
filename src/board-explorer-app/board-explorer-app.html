@@ -19,9 +19,12 @@ limitations under the License.
 <head>
   <link rel="import" href="../../bower_components/polymer/polymer.html">
 
+  <link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
+
   <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
   <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
   <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+  <link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
   <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
   <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 
@@ -73,12 +76,57 @@ limitations under the License.
       cursor: pointer;
     }
 
+    #mobileHeader {
+      display: flex;
+      height: 15%;
+      max-height: 15%;
+    }
+
+    #mobileHeader paper-material {
+      width: 100%;
+      margin-left: 18px;
+    }
+
+    #mobileHeader div {
+      height: 10%;
+      cursor: pointer;
+      float: left;
+      margin-top: -8px;
+    }
+
+    #mobileHeader #boardTitle{
+      margin-left: 50px;
+      width: 85%;
+      font-size: 0.9em;
+      margin-top: 0px !important;
+    }
+
+    app-drawer {
+      background: white;
+      overflow: auto;
+      z-index: 1;
+      top: 13%;
+      bottom: 0;
+      --app-drawer-width: 100%;
+      --app-drawer-scrim-background: rgb(255, 255, 255);
+      --app-drawer-content-container: {
+        padding: 0 !important;
+      }
+    }
+
     board-viewer {
       position: relative;
       height: 480px;
     }
 
-    #panel-left paper-button {
+    #drawer #sidebar-left {
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 120px 0;
+    }
+
+    #layout paper-button {
       cursor: pointer;
       display: inline-block;
       box-sizing: border-box;
@@ -94,46 +142,46 @@ limitations under the License.
       min-height: 2.3em;
     }
 
-    #panel-left paper-button[disabled] {
+    #layout paper-button[disabled] {
       border-style: dashed;
       color: #888;
     }
 
-    #panel-left paper-button.hover,
-    #panel-left paper-button:hover {
+    #layout paper-button.hover,
+    #layout paper-button:hover {
       background-color: #404040;
       border-color: #00ffff;
       color: #00ffff;
     }
 
-    #panel-left paper-button.connected {
+    #layout paper-button.connected {
       border-color: #ff8000;
       color: #ff8000;
       background-color: #888;
     }
 
-    #panel-left paper-button.related {
+    #layout paper-button.related {
       border-color: #00ff00;
       color: #00ff00;
       background-color: #888;
     }
 
-    #panel-left paper-button.active {
+    #layout paper-button.active {
       background-color: #e0e0e0;
     }
 
-    paper-button.item-with-name div:first-child {
+    #layout paper-button.item-with-name div:first-child {
       font-size: 0.6em;
       line-height: 0.8em;
     }
 
-    paper-button.item-with-name div:last-child {
+    #layout paper-button.item-with-name div:last-child {
       box-sizing: border-box;
       padding-top: 0.3em;
       font-size: 0.9em;
     }
 
-    #panel-left paper-button:not(.item-with-name) div:first-child {
+    #layout paper-button:not(.item-with-name) div:first-child {
       line-height: 1.8em;
     }
 
@@ -265,6 +313,16 @@ limitations under the License.
       max-height: 100%;
     }
 
+    #vaadin-container {
+      height: 100%;
+    }
+
+    #layout.mobile {
+      height: 87%;
+      max-height: 87%;
+      margin-left: -10px;
+    }
+
     #sidebar-left {
       width: 100%;
       max-width: 100%;
@@ -309,6 +367,8 @@ limitations under the License.
 
   </style>
 
+  <iron-media-query query="(max-width:480px)" query-matches="{{isMobileLayout}}" on-query-matches-changed="onLayoutChange"></iron-media-query>
+
   <paper-material id="board-selector" hidden$="[[hideSelector(board,initialized)]]" class="layout vertical start">
     <div class="vertical layout wrap">
       <div class="heading">Select a board to explore</div>
@@ -324,169 +384,264 @@ limitations under the License.
     </div>
   </paper-material>
 
-  <vaadin-split-layout hidden$="[[isEmpty(board)]]" class="horizontal layout justified" id="layout">
-    <div id="panel-left">
-      <div class="vertical layout flex" id="sidebar-left">
+  <div id="layout" id="layout" hidden$="[[isEmpty(board)]]">
 
-        <paper-material id="boardTitle" on-tap="unloadBoard" class="vertical layout start">
-          [[getBoardBoxTitle(board)]]
-        </paper-material>
+    <div id="mobileHeader" hidden$="{{!isMobileLayout}}">
+      <paper-material>
+        <div><paper-icon-button icon="menu" slot="dropdown-trigger" alt="menu" on-tap="toggleDrawer"></paper-icon-button></div>
+        <div id="boardTitle" on-tap="unloadBoard">[[getBoardBoxTitle(board)]]</div>
+      </paper-material>
+    </div>
 
-        <paper-material class="vertical layout">
-          <paper-tabs id="searchTabs" selected="{{searchMode}}" attr-for-selected="name">
-            <paper-tab name="searchPage">Search</paper-tab>
-            <paper-tab name="categoriesPage" hidden$="[[isEmpty(categories)]]">Categories</paper-tab>
-            <paper-tab name="keywordsPage">Keywords</paper-tab>
-            <paper-tab name="componentsPage">Components</paper-tab>
-            <paper-tab name="overviewPage" hidden>Get to know the board</paper-tab>
-          </paper-tabs>
-        </paper-material>
+    <app-drawer id="drawer">
+      <paper-material class="vertical layout">
+            <paper-tabs id="searchTabs" selected="{{searchMode}}" attr-for-selected="name">
+              <paper-tab name="searchPage">Search</paper-tab>
+              <paper-tab name="categoriesPage" hidden$="[[isEmpty(categories)]]">Categories</paper-tab>
+              <paper-tab name="keywordsPage">Keywords</paper-tab>
+              <paper-tab name="componentsPage">Components</paper-tab>
+              <paper-tab name="overviewPage" hidden>Get to know the board</paper-tab>
+            </paper-tabs>
+          </paper-material>
 
-        <paper-material class="vertical layout">
-          <iron-pages id="pages" selected="[[searchMode]]" attr-for-selected="id">
-            <div id="searchPage" class="vertical layout">
-              <paper-input id="search" value="{{search}}" label="Search" class="flex">
-                <iron-icon suffix slot="suffix" icon="search"></iron-icon>
-              </paper-input>
-              <div hidden$="[[!isEmpty(search)]]">Enter a string to search (for example "I2C").</div>
-              <div hidden$="[[isEmpty(search)]]">
-                <div>Search results</div>
-                <div hidden$="[[!isEmpty(matches)]]">No matches.</div>
+          <paper-material class="vertical layout">
+            <iron-pages id="pages" selected="[[searchMode]]" attr-for-selected="id">
+              <div id="searchPage" class="vertical layout">
+                <paper-input id="search" value="{{search}}" label="Search" class="flex">
+                  <iron-icon suffix slot="suffix" icon="search"></iron-icon>
+                </paper-input>
+                <div hidden$="[[!isEmpty(search)]]">Enter a string to search (for example "I2C").</div>
+                <div hidden$="[[isEmpty(search)]]">
+                  <div>Search results</div>
+                  <div hidden$="[[!isEmpty(matches)]]">No matches.</div>
+                  <div class="layout horizontal wrap">
+                    <template is="dom-repeat" items="[[matches]]">
+                      <paper-button match$="[[item.refdes]]"
+                          class="item-with-name layout vertical start"
+                          on-tap="buttonTap"
+                          on-mouseover="buttonOver"
+                          on-mouseout="buttonOut">
+                        <div>[[itemName(item)]]</div>
+                        <div>[[item.field]]: [[item.value]]</div>
+                      </paper-button>
+                    </template>
+                  </div>
+                </div>
+              </div>
+
+              <div id="categoriesPage" class="vertical layout">
+                <div>Categories</div>
                 <div class="layout horizontal wrap">
-                  <template is="dom-repeat" items="[[matches]]">
-                    <paper-button match$="[[item.refdes]]"
-                        class="item-with-name layout vertical start"
+                  <template is="dom-repeat" items="[[categories]]">
+                    <paper-button match$="[[item.slug]]"
+                        class$="layout vertical start"
                         on-tap="buttonTap"
                         on-mouseover="buttonOver"
                         on-mouseout="buttonOut">
-                      <div>[[itemName(item)]]</div>
-                      <div>[[item.field]]: [[item.value]]</div>
+                      <div>[[item.name]]</div>
+                      <div></div>
                     </paper-button>
                   </template>
                 </div>
               </div>
-            </div>
 
-            <div id="categoriesPage" class="vertical layout">
-              <div>Categories</div>
-              <div class="layout horizontal wrap">
-                <template is="dom-repeat" items="[[categories]]">
-                  <paper-button match$="[[item.slug]]"
-                      class$="layout vertical start"
-                      on-tap="buttonTap"
-                      on-mouseover="buttonOver"
-                      on-mouseout="buttonOut">
-                    <div>[[item.name]]</div>
-                    <div></div>
-                  </paper-button>
-                </template>
+              <div id="keywordsPage" class="vertical layout">
+                <div>Keywords</div>
+                <div class="horizontal layout wrap">
+                  <template is="dom-repeat" items="[[keywords]]">
+                    <paper-button match$="[[item.refdes]]"
+                        class$="layout vertical start"
+                        on-tap="buttonTap"
+                        on-mouseover="buttonOver"
+                        on-mouseout="buttonOut">
+                      <div>[[item.refdes]]</div>
+                      <div></div>
+                    </paper-button>
+                  </template>
+                </div>
               </div>
-            </div>
 
-            <div id="keywordsPage" class="vertical layout">
-              <div>Keywords</div>
-              <div class="horizontal layout wrap">
-                <template is="dom-repeat" items="[[keywords]]">
-                  <paper-button match$="[[item.refdes]]"
-                      class$="layout vertical start"
-                      on-tap="buttonTap"
-                      on-mouseover="buttonOver"
-                      on-mouseout="buttonOut">
-                    <div>[[item.refdes]]</div>
-                    <div></div>
-                  </paper-button>
-                </template>
+              <div id="componentsPage" class="vertical layout start">
+                <div>Components</div>
+                <div class="layout horizontal wrap">
+                  <template is="dom-repeat" items="[[components]]">
+                    <paper-button match$="[[item.refdes]]"
+                        class$="[[itemClassList(item)]] layout vertical start"
+                        on-tap="buttonTap"
+                        on-mouseover="buttonOver"
+                        on-mouseout="buttonOut">
+                      <div>[[itemRefDes(item)]]</div>
+                      <template is="dom-if" if="{{itemClassList(item)}}"><div>[[itemName(item)]]</div></template>
+                    </paper-button>
+                  </template>
+                </div>
               </div>
-            </div>
+            </iron-pages>
+          </paper-material>
 
-            <div id="componentsPage" class="vertical layout start">
-              <div>Components</div>
-              <div class="layout horizontal wrap">
-                <template is="dom-repeat" items="[[components]]">
-                  <paper-button match$="[[item.refdes]]"
-                      class$="[[itemClassList(item)]] layout vertical start"
-                      on-tap="buttonTap"
-                      on-mouseover="buttonOver"
-                      on-mouseout="buttonOut">
-                    <div>[[itemRefDes(item)]]</div>
-                    <template is="dom-if" if="{{itemClassList(item)}}"><div>[[itemName(item)]]</div></template>
-                  </paper-button>
-                </template>
+    </app-drawer>
+
+    <vaadin-split-layout class="horizontal layout justified" id="vaadin-container">
+      <div id="panel-left" hidden$="{{isMobileLayout}}">
+        <div class="vertical layout flex" id="sidebar-left">
+          <paper-material id="boardTitle" on-tap="unloadBoard" class="vertical layout start" hidden$="{{isMobileLayout}}">
+            [[getBoardBoxTitle(board)]]
+          </paper-material>
+
+          <paper-material class="vertical layout">
+            <paper-tabs id="searchTabs" selected="{{searchMode}}" attr-for-selected="name">
+              <paper-tab name="searchPage">Search</paper-tab>
+              <paper-tab name="categoriesPage" hidden$="[[isEmpty(categories)]]">Categories</paper-tab>
+              <paper-tab name="keywordsPage">Keywords</paper-tab>
+              <paper-tab name="componentsPage">Components</paper-tab>
+              <paper-tab name="overviewPage" hidden>Get to know the board</paper-tab>
+            </paper-tabs>
+          </paper-material>
+
+          <paper-material class="vertical layout">
+            <iron-pages id="pages" selected="[[searchMode]]" attr-for-selected="id">
+              <div id="searchPage" class="vertical layout">
+                <paper-input id="search" value="{{search}}" label="Search" class="flex">
+                  <iron-icon suffix slot="suffix" icon="search"></iron-icon>
+                </paper-input>
+                <div hidden$="[[!isEmpty(search)]]">Enter a string to search (for example "I2C").</div>
+                <div hidden$="[[isEmpty(search)]]">
+                  <div>Search results</div>
+                  <div hidden$="[[!isEmpty(matches)]]">No matches.</div>
+                  <div class="layout horizontal wrap">
+                    <template is="dom-repeat" items="[[matches]]">
+                      <paper-button match$="[[item.refdes]]"
+                          class="item-with-name layout vertical start"
+                          on-tap="buttonTap"
+                          on-mouseover="buttonOver"
+                          on-mouseout="buttonOut">
+                        <div>[[itemName(item)]]</div>
+                        <div>[[item.field]]: [[item.value]]</div>
+                      </paper-button>
+                    </template>
+                  </div>
+                </div>
               </div>
-            </div>
-          </iron-pages>
-        </paper-material>
 
+              <div id="categoriesPage" class="vertical layout">
+                <div>Categories</div>
+                <div class="layout horizontal wrap">
+                  <template is="dom-repeat" items="[[categories]]">
+                    <paper-button match$="[[item.slug]]"
+                        class$="layout vertical start"
+                        on-tap="buttonTap"
+                        on-mouseover="buttonOver"
+                        on-mouseout="buttonOut">
+                      <div>[[item.name]]</div>
+                      <div></div>
+                    </paper-button>
+                  </template>
+                </div>
+              </div>
+
+              <div id="keywordsPage" class="vertical layout">
+                <div>Keywords</div>
+                <div class="horizontal layout wrap">
+                  <template is="dom-repeat" items="[[keywords]]">
+                    <paper-button match$="[[item.refdes]]"
+                        class$="layout vertical start"
+                        on-tap="buttonTap"
+                        on-mouseover="buttonOver"
+                        on-mouseout="buttonOut">
+                      <div>[[item.refdes]]</div>
+                      <div></div>
+                    </paper-button>
+                  </template>
+                </div>
+              </div>
+
+              <div id="componentsPage" class="vertical layout start">
+                <div>Components</div>
+                <div class="layout horizontal wrap">
+                  <template is="dom-repeat" items="[[components]]">
+                    <paper-button match$="[[item.refdes]]"
+                        class$="[[itemClassList(item)]] layout vertical start"
+                        on-tap="buttonTap"
+                        on-mouseover="buttonOver"
+                        on-mouseout="buttonOut">
+                      <div>[[itemRefDes(item)]]</div>
+                      <template is="dom-if" if="{{itemClassList(item)}}"><div>[[itemName(item)]]</div></template>
+                    </paper-button>
+                  </template>
+                </div>
+              </div>
+            </iron-pages>
+          </paper-material>
+        </div>
       </div>
-    </div>
 
-    <vaadin-split-layout vertical id="panel-right">
-      <board-viewer
+      <vaadin-split-layout vertical id="panel-right">
+        <board-viewer
           class="flex-grow"
           hidden$="[[isEmpty(board)]]"
           id="boardViewer"
           selected="{{selected}}"
           disable-auto-resize
           enable-zoom
-          enable-drag></board-viewer>
-      <div id="panel-bottom">
-        <div id="tooltip" hidden$="[[isEmpty(hover)]]"
-            class$="[[itemClassList(hover)]] horizontal layout">
-          <div hidden$="[[hideReadable(hover)]]"
-              class="context-and-name layout vertical justified start">
-            <div>&nbsp;</div>
-            <div>[[hover.readable]]: </div>
-          </div>
-          <template is="dom-repeat" items="[[_getItemNamesAndContexts(hover)]]">
-            <div class="context-and-name layout vertical justified start">
-              <div>[[item.context]]</div>
-              <div>[[item.name]]</div>
-            </div>
-          </template>
-        </div>
-        <div id="info"
-          hidden$="[[isEmpty(active)]]"
-          class$="[[itemClassList(active)]] vertical layout">
-          <paper-toolbar>
-            <div hidden$="[[hideReadable(active)]]"
-              class="context-and-name layout vertical justified start">
+          enable-drag>
+        </board-viewer>
+        <div id="panel-bottom">
+          <div id="tooltip" hidden$="[[isEmpty(hover)]]"
+              class$="[[itemClassList(hover)]] horizontal layout">
+            <div hidden$="[[hideReadable(hover)]]"
+                class="context-and-name layout vertical justified start">
               <div>&nbsp;</div>
-              <div>[[active.readable]]: </div>
+              <div>[[hover.readable]]: </div>
             </div>
-            <template is="dom-repeat" items="[[_getItemNamesAndContexts(active)]]">
+            <template is="dom-repeat" items="[[_getItemNamesAndContexts(hover)]]">
               <div class="context-and-name layout vertical justified start">
                 <div>[[item.context]]</div>
                 <div>[[item.name]]</div>
               </div>
             </template>
-          </paper-toolbar>
-          <div class="info-content">
-            <div hidden$="[[isEmpty(active.component)]]">Component: [[active.component]]</div>
-            <div hidden$="[[isEmpty(active.pins)]]">Pins: [[active.pins.length]]</div>
-            <div hidden$="[[isEmpty(active.keywords)]]">
-              Keywords: <template is="dom-repeat" items="[[active.keywords]]" as="keyword">
-                <a href="#[[board]]/[[keyword]]">[[keyword]]</a>
+          </div>
+          <div id="info"
+            hidden$="[[isEmpty(active)]]"
+            class$="[[itemClassList(active)]] vertical layout">
+            <paper-toolbar>
+              <div hidden$="[[hideReadable(active)]]"
+                class="context-and-name layout vertical justified start">
+                <div>&nbsp;</div>
+                <div>[[active.readable]]: </div>
+              </div>
+              <template is="dom-repeat" items="[[_getItemNamesAndContexts(active)]]">
+                <div class="context-and-name layout vertical justified start">
+                  <div>[[item.context]]</div>
+                  <div>[[item.name]]</div>
+                </div>
               </template>
+            </paper-toolbar>
+            <div class="info-content">
+              <div hidden$="[[isEmpty(active.component)]]">Component: [[active.component]]</div>
+              <div hidden$="[[isEmpty(active.pins)]]">Pins: [[active.pins.length]]</div>
+              <div hidden$="[[isEmpty(active.keywords)]]">
+                Keywords: <template is="dom-repeat" items="[[active.keywords]]" as="keyword">
+                  <a href="#[[board]]/[[keyword]]">[[keyword]]</a>
+                </template>
+              </div>
+              <div hidden$="[[isEmpty(active.connected)]]">
+                Connected to: <template is="dom-repeat" items="[[active.connected]]" as="refdes">
+                  <a href="#[[board]]/[[refdes]]">[[lookupName(refdes)]]</a>
+                </template>
+              </div>
+              <div hidden$="[[isEmpty(active.related)]]">
+                Related to: <template is="dom-repeat" items="[[active.related]]" as="refdes">
+                  <a href="#[[board]]/[[refdes]]">[[lookupName(refdes)]]</a>
+                </template>
+              </div>
+              <div hidden$="[[isEmpty(active.description)]]">Description: [[active.description]]</div>
+              <div><div id="documentation"></div></div>
             </div>
-            <div hidden$="[[isEmpty(active.connected)]]">
-              Connected to: <template is="dom-repeat" items="[[active.connected]]" as="refdes">
-                <a href="#[[board]]/[[refdes]]">[[lookupName(refdes)]]</a>
-              </template>
-            </div>
-            <div hidden$="[[isEmpty(active.related)]]">
-              Related to: <template is="dom-repeat" items="[[active.related]]" as="refdes">
-                <a href="#[[board]]/[[refdes]]">[[lookupName(refdes)]]</a>
-              </template>
-            </div>
-            <div hidden$="[[isEmpty(active.description)]]">Description: [[active.description]]</div>
-            <div><div id="documentation"></div></div>
           </div>
         </div>
-      </div>
+      </vaadin-split-layout>
     </vaadin-split-layout>
-
-  </vaadin-split-layout>
-
+  </div>
 </template>
 <script>
 "use strict";
@@ -564,6 +719,10 @@ document.addEventListener("WebComponentsReady", function() {
       initialized: {
         type: Boolean,
         value: false
+      },
+      isMobileLayout: {
+        type: Boolean,
+        value: false
       }
     },
 
@@ -579,6 +738,20 @@ document.addEventListener("WebComponentsReady", function() {
       "boardViewer.item-hover": "onBoardItemHover",
       "boardViewer.selected-changed": "onBoardSelectedChanged",
       "search.focused-changed": "_searchFocus"
+    },
+
+    toggleDrawer: function () {
+      this.$.drawer.toggle();
+    },
+
+    onLayoutChange: function(event) {
+      if (event.detail.value) {
+        this.$.layout.classList.add('mobile');
+      }
+      else {
+        this.$.layout.classList.remove('mobile');
+        this.$.drawer.close();
+      }
     },
 
     _activeChanged: function(active) {
@@ -706,10 +879,9 @@ document.addEventListener("WebComponentsReady", function() {
         return;
       }
 
-      el = this.querySelector("paper-button[match='" + item.refdes + "']");
-      if (el) {
+     Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button[match='" + item.refdes + "']"), function(el) {
         el.disabled = false;
-      }
+      });
     },
 
     onBoardSelectedChanged: function(event) {
@@ -721,13 +893,7 @@ document.addEventListener("WebComponentsReady", function() {
       /* If no selection is active, then enable everything and return */
       if (selected.length == 0) {
 
-        Array.prototype.forEach.call(this.$.keywordsPage.querySelectorAll("paper-button"), function(el) {
-          el.disabled = false;
-        });
-        Array.prototype.forEach.call(this.$.componentsPage.querySelectorAll("paper-button"), function(el) {
-          el.disabled = false;
-        });
-        Array.prototype.forEach.call(this.$.categoriesPage.querySelectorAll("paper-button"), function(el) {
+        Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button"), function(el) {
           el.disabled = false;
         });
 
@@ -736,15 +902,10 @@ document.addEventListener("WebComponentsReady", function() {
         return;
       }
       /* Disable all items in the currently viewed page */
-      Array.prototype.forEach.call(this.$.keywordsPage.querySelectorAll("paper-button"), function(el) {
+      Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button"), function(el) {
         el.disabled = true;
       });
-      Array.prototype.forEach.call(this.$.componentsPage.querySelectorAll("paper-button"), function(el) {
-        el.disabled = true;
-      });
-      Array.prototype.forEach.call(this.$.categoriesPage.querySelectorAll("paper-button"), function(el) {
-        el.disabled = true;
-      });
+
 
       var active = null;
 
@@ -760,10 +921,11 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       if (isCategory && this.category) {
-        var el = this.querySelector("paper-button[match='"+ this.category.slug +"']");
-        if (el) {
-          el.disabled = false;
-        }
+
+        Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button[match='"+ this.category.slug +"']"), function(el) {
+          el.disabled = true;
+        });
+
         this.active = this.boardInfo;
         this.updateRoute(this.board, [], this.category);
         return;
@@ -773,10 +935,9 @@ document.addEventListener("WebComponentsReady", function() {
        * keywords and components */
       selected.forEach(function(refdes) {
         /* Disable the button that matches this refdes */
-        var el = this.querySelector("paper-button[match='"+refdes+"']");
-        if (el) {
-          el.disabled = false;
-        }
+        Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button[match='"+ refdes +"']"), function(el) {
+          el.disabled = true;
+        });
 
         /* Check if it is a component/pin... */
         var item = this.$.boardViewer.findComponent(refdes);
@@ -873,6 +1034,12 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     unloadBoard: function() {
+
+      /* Force to close drawer in mobile layout. */
+      if (this.isMobileLayout) {
+        this.$.drawer.close();
+      }
+
       /* If singleBoard is set, clear the selection and stay on board */
       if (this.singleBoard) {
         this.selected = [];
@@ -1189,7 +1356,6 @@ document.addEventListener("WebComponentsReady", function() {
         console.log("Board Explorer unloaded board.");
         return;
       }
-
       this.boardLoaded();
     },
 
@@ -1360,12 +1526,22 @@ document.addEventListener("WebComponentsReady", function() {
         if (this.category != category) {
           this.category = category;
           this.selected = category.list;
+
+          if (this.isMobileLayout) {
+            this.$.drawer.toggle();
+          }
+
           return;
         }
         /* Otherwise we need to remove it */
         if (this.category == category) {
           this.category = null;
           this.selected = [];
+
+          if (this.isMobileLayout) {
+            this.$.drawer.toggle();
+          }
+
           return;
         }
       }
@@ -1379,8 +1555,12 @@ document.addEventListener("WebComponentsReady", function() {
           this.$.boardViewer.setSelected(this.selected);
           this.updateRoute(this.board, this.selected, null);
         }
-      }
 
+        if (this.isMobileLayout) {
+          this.$.drawer.toggle();
+        }
+
+      }
     },
 
     buttonOver: function(event) {
