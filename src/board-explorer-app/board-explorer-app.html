@@ -1115,7 +1115,8 @@ document.addEventListener("WebComponentsReady", function() {
       if (el) {
         el.classList.toggle("hover", info.in);
         if (info.in && info.source == "board-viewer") {
-          el.scrollIntoView();
+          var panel = this.$.layout.querySelector("#panel-left");
+          panel.scrollTop = el.offsetTop;
         }
       }
 
