@@ -1283,7 +1283,21 @@ document.addEventListener("WebComponentsReady", function() {
         el.classList.toggle("hover", info.in);
         if (info.in && info.source == "board-viewer") {
           var panel = this.$.layout.querySelector("#panel-left");
-          panel.scrollTop = el.offsetTop;
+          var top = panel.scrollTop;
+          /* If the element is above the top of the viewport scroll the viewport,
+           * to have the element at the top of the viewport. */
+          if (el.offsetTop < top) {
+            top = el.offsetTop;
+          }
+          /* Otherwise, if the element is below the viewport scroll the viewport,
+           * to have the element at the bottom of the viewport. */
+          else if (el.offsetTop + el.offsetHeight > top + panel.offsetHeight) {
+            top = el.offsetTop  + panel.offsetHeight + el.offsetHeight;
+          }
+          /* If scroll position changed, update it on the panel */
+          if (top != panel.scrollTop) {
+            panel.scrollTop = top;
+          }
         }
       }
 
