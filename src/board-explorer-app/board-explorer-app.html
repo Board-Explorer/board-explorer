@@ -1314,22 +1314,22 @@ document.addEventListener("WebComponentsReady", function() {
       if (el) {
         el.classList.toggle("hover", info.in);
         if (info.in && info.source == "board-viewer") {
-          var panel = this.$.layout.querySelector("#panel-left");
-          var top = panel.scrollTop;
+          var panel = this.$["panel-left"],
+            top = panel.scrollTop,
+            offset = el.getBoundingClientRect().top;
+
           /* If the element is above the top of the viewport scroll the viewport,
            * to have the element at the top of the viewport. */
-          if (el.offsetTop < top) {
-            top = el.offsetTop;
+          if (offset < 8) {
+            top += offset - 8;
           }
-          /* Otherwise, if the element is below the viewport scroll the viewport,
-           * to have the element at the bottom of the viewport. */
-          else if (el.offsetTop + el.offsetHeight > top + panel.offsetHeight) {
-            top = el.offsetTop  + panel.offsetHeight + el.offsetHeight;
+          /* Otherwise, if the bottom of the element is below the viewport
+           * scroll the viewport, to have the element justified to the bottom
+           * the viewport. */
+          else if (offset + el.offsetHeight + 8 > panel.clientHeight) {
+            top = top + offset - (panel.clientHeight - el.offsetHeight) + 8;
           }
-          /* If scroll position changed, update it on the panel */
-          if (top != panel.scrollTop) {
-            panel.scrollTop = top;
-          }
+          this.scroll(top, true);
         }
       }
 
@@ -1343,6 +1343,76 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       this.hover = item;
+    },
+
+    /* The following scroll code was derived from
+     * https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/paper-scroll-header-panel.html
+     * Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+     * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+     */
+
+     /**
+     * Scroll to a specific y coordinate.
+     *
+     * @method scroll
+     * @param {number} top The coordinate to scroll to, along the y-axis.
+     * @param {boolean} smooth true if the scroll position should be smoothly adjusted.
+     */
+    scroll: function(top, smooth) {
+      // the scroll event will trigger _updateScrollState directly,
+      // However, _updateScrollState relies on the previous `scrollTop` to update the states.
+      // Calling _updateScrollState will ensure that the states are synced correctly.
+      if (smooth) {
+        // TODO(blasten): use CSS scroll-behavior once it ships in Chrome.
+        var easingFn = function easeOutQuad(t, b, c, d) {
+          t /= d;
+          return -c * t*(t-2) + b;
+        };
+        var animationId = Math.random();
+        var duration = 200;
+        var startTime = Date.now();
+        var currentScrollTop = this.$["panel-left"].scrollTop;
+        var deltaScrollTop = top - currentScrollTop;
+        this._currentAnimationId = animationId;
+        (function updateFrame() {
+          var now = Date.now();
+          var elapsedTime = now - startTime;
+          if (elapsedTime > duration) {
+            this.$["panel-left"].scrollTop = top;
+            this._updateScrollState(top);
+          } else if (this._currentAnimationId === animationId) {
+            this.$["panel-left"].scrollTop = easingFn(elapsedTime, currentScrollTop, deltaScrollTop, duration);
+            requestAnimationFrame(updateFrame.bind(this));
+          }
+        }).call(this);
+      } else {
+        this.$["panel-left"].scrollTop = top;
+        this._updateScrollState(top);
+      }
+    },
+    /**
+     * Scroll to the top of the content.
+     *
+     * @method scrollToTop
+     * @param {boolean} smooth true if the scroll position should be smoothly adjusted.
+     */
+    scrollToTop: function(smooth) {
+      this.scroll(0, smooth);
+    },
+    /** @param {Event=} event */
+    _scroll: function(event) {
+      this._updateScrollState(this.$["panel-left"].scrollTop);
+      this.fire('content-scroll', {
+        target: this.$["panel-left"]
+      }, {
+        cancelable: false
+      });
+    },
+    _updateScrollState: function(scrollTop) {
+      var deltaScrollTop = scrollTop - this._prevScrollTop,
+        y = Math.max(0, scrollTop);
+      this._prevScrollTop = Math.max(scrollTop, 0);
+      this._y = y;
     },
 
     onAnchorHoverIn: function(event) {
