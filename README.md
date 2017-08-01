@@ -149,3 +149,45 @@ prior to any other resources being loaded, as seen in this snippet:
    <base href='/random-path/'>
    ...
 ```
+
+
+### Publishing a new live version
+
+Whenever there is a new version to put on the live demo page hosted by GitHub, the
+the following sequence is run:
+
+NOTE: If there is a new board-viewer, the following will tag and publish a
+new version of the board-viewer component:
+
+```bash
+cd board-viewer
+./tag-release.sh
+# Note the version number
+./publish.sh
+cd ..
+```
+
+Next, edit the board-explorer entry in `bower.json` to reference the latest version
+of the board-viewer, and install it:
+
+```bash
+cd board-explorer
+
+# Update the board-viewer version in board-explorer
+VERSION=0.0.32 # or whatever version was reported via ./tag-release.sh above
+sed -ie "s,board-explorer/board-viewer#^[^\"]*,board-explorer/board-viewer#^${VERSION},g" bower.json
+bower install # Install the latest board-viewer
+
+# Test the board-explorer to make sure it works correctly with latest version
+# polymer serve
+# ...
+
+# Commit and push the version change to GitHub
+git diff # Verify the only change is the version string
+git commit -s bower.json -m "Updated board-viewer to ${VERSION}"
+git push origin master
+
+# Build and publish the live site
+polymer build
+./publish.sh
+```
