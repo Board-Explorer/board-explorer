@@ -132,14 +132,17 @@ limitations under the License.
       box-sizing: border-box;
       padding: 0.25em 0.5em;
       margin: 0.25em 0.5em;
-      border-radius: 3px;
+      border-radius: 6px;
       border: 1px solid rgba(0, 0, 0, 0.5);
       min-width: 8em;
       text-decoration: none;
       background-color: #f0f0f0;
       color: black;
       font-size: 1em;
-      min-height: 2.3em;
+      min-height: 2.2em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-wrap: break-word;
     }
 
     #layout paper-button[disabled] {
@@ -171,7 +174,8 @@ limitations under the License.
     }
 
     #layout paper-button.item-with-name div:first-child {
-      font-size: 0.6em;
+      padding-top: 0.3em;
+      font-size: 0.8em;
       line-height: 0.8em;
     }
 
@@ -182,7 +186,7 @@ limitations under the License.
     }
 
     #layout paper-button:not(.item-with-name) div:first-child {
-      line-height: 1.8em;
+      line-height: 2.1em;
     }
 
     paper-material {
@@ -331,6 +335,17 @@ limitations under the License.
     #panel-left {
       width: 33.3%;
       overflow: auto;
+      min-width: 250px;
+    }
+
+    #panel-left.constrained {
+      font-size: 0.8em;
+    }
+
+    #panel-left.constrained paper-tab {
+      --paper-tab: {
+        font-size: 0.8em;
+      };
     }
 
     #panel-right {
@@ -482,7 +497,7 @@ limitations under the License.
     </app-drawer>
 
     <vaadin-split-layout class="horizontal layout justified" id="vaadin-container">
-      <div id="panel-left" hidden$="{{isMobileLayout}}">
+      <div id="panel-left" hidden$="{{isMobileLayout}}" class$="[[_panelLeftClass]]">
         <div class="vertical layout flex" id="sidebar-left">
           <paper-material id="boardTitle" on-tap="unloadBoard" class="vertical layout start" hidden$="{{isMobileLayout}}">
             [[getBoardBoxTitle(board)]]
@@ -723,6 +738,12 @@ document.addEventListener("WebComponentsReady", function() {
       isMobileLayout: {
         type: Boolean,
         value: false
+      },
+
+      /** Class to apply to left-panel (used for responsive design) */
+      _panelLeftClass: {
+        type: String,
+        value: ""
       }
     },
 
@@ -734,10 +755,22 @@ document.addEventListener("WebComponentsReady", function() {
     ],
 
     listeners: {
+      "vaadin-container.iron-resize": "onPanelLeftResize",
       "boardViewer.board-changed": "onBoardChanged",
       "boardViewer.item-hover": "onBoardItemHover",
       "boardViewer.selected-changed": "onBoardSelectedChanged",
       "search.focused-changed": "_searchFocus"
+    },
+
+    onPanelLeftResize: function(event) {
+      this.async(function() {
+        if (this.$.panel-left.offsetWidth < 480) {
+          this._panelLeftClass = "constrained";
+        } else {
+          this._panelLeftClass = "";
+        }
+        this.updateStyles();
+      });
     },
 
     toggleDrawer: function () {
