@@ -410,90 +410,89 @@ limitations under the License.
 
     <app-drawer id="drawer">
       <paper-material class="vertical layout">
-            <paper-tabs id="searchTabs" selected="{{searchMode}}" attr-for-selected="name">
-              <paper-tab name="searchPage">Search</paper-tab>
-              <paper-tab name="categoriesPage" hidden$="[[isEmpty(categories)]]">Categories</paper-tab>
-              <paper-tab name="keywordsPage">Keywords</paper-tab>
-              <paper-tab name="componentsPage">Components</paper-tab>
-              <paper-tab name="overviewPage" hidden>Get to know the board</paper-tab>
-            </paper-tabs>
-          </paper-material>
+        <paper-tabs id="searchTabs" selected="{{searchMode}}" attr-for-selected="name">
+          <paper-tab name="searchPage">Search</paper-tab>
+          <paper-tab name="categoriesPage" hidden$="[[isEmpty(categories)]]">Categories</paper-tab>
+          <paper-tab name="keywordsPage">Keywords</paper-tab>
+          <paper-tab name="componentsPage">Components</paper-tab>
+          <paper-tab name="overviewPage" hidden>Get to know the board</paper-tab>
+        </paper-tabs>
+      </paper-material>
 
-          <paper-material class="vertical layout">
-            <iron-pages id="pages" selected="[[searchMode]]" attr-for-selected="id">
-              <div id="searchPage" class="vertical layout">
-                <paper-input id="search" value="{{search}}" label="Search" class="flex">
-                  <iron-icon suffix slot="suffix" icon="search"></iron-icon>
-                </paper-input>
-                <div hidden$="[[!isEmpty(search)]]">Enter a string to search (for example "I2C").</div>
-                <div hidden$="[[isEmpty(search)]]">
-                  <div>Search results</div>
-                  <div hidden$="[[!isEmpty(matches)]]">No matches.</div>
-                  <div class="layout horizontal wrap">
-                    <template is="dom-repeat" items="[[matches]]">
-                      <paper-button match$="[[item.refdes]]"
-                          class="item-with-name layout vertical start"
-                          on-tap="buttonTap"
-                          on-mouseover="buttonOver"
-                          on-mouseout="buttonOut">
-                        <div>[[itemName(item)]]</div>
-                        <div>[[item.field]]: [[item.value]]</div>
-                      </paper-button>
-                    </template>
-                  </div>
-                </div>
+      <paper-material class="vertical layout">
+        <iron-pages id="pages" selected="[[searchMode]]" attr-for-selected="id">
+          <div id="searchPage" class="vertical layout">
+            <paper-input id="search" value="{{search}}" label="Search" class="flex">
+              <iron-icon suffix slot="suffix" icon="search"></iron-icon>
+            </paper-input>
+            <div hidden$="[[!isEmpty(search)]]">Enter a string to search (for example "I2C").</div>
+            <div hidden$="[[isEmpty(search)]]">
+              <div>Search results</div>
+              <div hidden$="[[!isEmpty(matches)]]">No matches.</div>
+              <div class="layout horizontal wrap">
+                <template is="dom-repeat" items="[[matches]]">
+                  <paper-button match$="[[item.refdes]]"
+                      class="item-with-name layout vertical start"
+                      on-tap="buttonTap"
+                      on-mouseover="buttonOver"
+                      on-mouseout="buttonOut">
+                    <div>[[itemName(item)]]</div>
+                    <div>[[item.field]]: [[item.value]]</div>
+                  </paper-button>
+                </template>
               </div>
+            </div>
+          </div>
 
-              <div id="categoriesPage" class="vertical layout">
-                <div>Categories</div>
-                <div class="layout horizontal wrap">
-                  <template is="dom-repeat" items="[[categories]]">
-                    <paper-button match$="[[item.slug]]"
-                        class$="layout vertical start"
-                        on-tap="buttonTap"
-                        on-mouseover="buttonOver"
-                        on-mouseout="buttonOut">
-                      <div>[[item.name]]</div>
-                      <div></div>
-                    </paper-button>
-                  </template>
-                </div>
-              </div>
+          <div id="categoriesPage" class="vertical layout">
+            <div>Categories</div>
+            <div class="layout horizontal wrap">
+              <template is="dom-repeat" items="[[categories]]">
+                <paper-button match$="[[item.slug]]"
+                    class$="layout vertical start"
+                    on-tap="buttonTap"
+                    on-mouseover="buttonOver"
+                    on-mouseout="buttonOut">
+                  <div>[[item.name]]</div>
+                  <div></div>
+                </paper-button>
+              </template>
+            </div>
+          </div>
 
-              <div id="keywordsPage" class="vertical layout">
-                <div>Keywords</div>
-                <div class="horizontal layout wrap">
-                  <template is="dom-repeat" items="[[keywords]]">
-                    <paper-button match$="[[item.refdes]]"
-                        class$="layout vertical start"
-                        on-tap="buttonTap"
-                        on-mouseover="buttonOver"
-                        on-mouseout="buttonOut">
-                      <div>[[item.refdes]]</div>
-                      <div></div>
-                    </paper-button>
-                  </template>
-                </div>
-              </div>
+          <div id="keywordsPage" class="vertical layout">
+            <div>Keywords</div>
+            <div class="horizontal layout wrap">
+              <template is="dom-repeat" items="[[keywords]]">
+                <paper-button match$="[[item.refdes]]"
+                    class$="layout vertical start"
+                    on-tap="buttonTap"
+                    on-mouseover="buttonOver"
+                    on-mouseout="buttonOut">
+                  <div>[[item.refdes]]</div>
+                  <div></div>
+                </paper-button>
+              </template>
+            </div>
+          </div>
 
-              <div id="componentsPage" class="vertical layout start">
-                <div>Components</div>
-                <div class="layout horizontal wrap">
-                  <template is="dom-repeat" items="[[components]]">
-                    <paper-button match$="[[item.refdes]]"
-                        class$="[[itemClassList(item)]] layout vertical start"
-                        on-tap="buttonTap"
-                        on-mouseover="buttonOver"
-                        on-mouseout="buttonOut">
-                      <div>[[itemRefDes(item)]]</div>
-                      <template is="dom-if" if="{{itemClassList(item)}}"><div>[[itemName(item)]]</div></template>
-                    </paper-button>
-                  </template>
-                </div>
-              </div>
-            </iron-pages>
-          </paper-material>
-
+          <div id="componentsPage" class="vertical layout start">
+            <div>Components</div>
+            <div class="layout horizontal wrap">
+              <template is="dom-repeat" items="[[components]]">
+                <paper-button match$="[[item.refdes]]"
+                    class$="[[itemClassList(item)]] layout vertical start"
+                    on-tap="buttonTap"
+                    on-mouseover="buttonOver"
+                    on-mouseout="buttonOut">
+                  <div>[[itemRefDes(item)]]</div>
+                  <template is="dom-if" if="{{itemClassList(item)}}"><div>[[itemName(item)]]</div></template>
+                </paper-button>
+              </template>
+            </div>
+          </div>
+        </iron-pages>
+      </paper-material>
     </app-drawer>
 
     <vaadin-split-layout class="horizontal layout justified" id="vaadin-container">
