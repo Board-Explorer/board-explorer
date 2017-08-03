@@ -399,7 +399,7 @@ limitations under the License.
     </div>
   </paper-material>
 
-  <div id="layout" id="layout" hidden$="[[isEmpty(board)]]">
+  <div id="layout" hidden$="[[isEmpty(board)]]">
 
     <div id="mobileHeader" hidden$="{{!isMobileLayout}}">
       <paper-material>
@@ -763,7 +763,8 @@ document.addEventListener("WebComponentsReady", function() {
 
     onPanelLeftResize: function(event) {
       this.async(function() {
-        if (this.$.panel-left.offsetWidth < 480) {
+        var panel = this.$.layout.querySelector("#panel-left");
+        if (panel && panel.offsetWidth < 480) {
           this._panelLeftClass = "constrained";
         } else {
           this._panelLeftClass = "";
@@ -929,6 +930,11 @@ document.addEventListener("WebComponentsReady", function() {
           el.disabled = false;
         });
 
+        Array.prototype.forEach.call(this.querySelectorAll("paper-button.hover"), function(el) {
+          el.classList.remove("hover");
+        });
+
+        this.hover = null;
         this.active = this.boardInfo;
         this.updateRoute(this.board, selected, null);
         return;
@@ -937,7 +943,6 @@ document.addEventListener("WebComponentsReady", function() {
       Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button"), function(el) {
         el.disabled = true;
       });
-
 
       var active = null;
 
@@ -955,7 +960,7 @@ document.addEventListener("WebComponentsReady", function() {
       if (isCategory && this.category) {
 
         Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button[match='"+ this.category.slug +"']"), function(el) {
-          el.disabled = true;
+          el.disabled = false;
         });
 
         this.active = this.boardInfo;
@@ -968,7 +973,7 @@ document.addEventListener("WebComponentsReady", function() {
       selected.forEach(function(refdes) {
         /* Disable the button that matches this refdes */
         Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button[match='"+ refdes +"']"), function(el) {
-          el.disabled = true;
+          el.disabled = false;
         });
 
         /* Check if it is a component/pin... */
@@ -1267,6 +1272,14 @@ document.addEventListener("WebComponentsReady", function() {
         return;
       }
 
+      if (this.$.boardViewer._isTouchDevice()) {
+        this._panelScroll(info);
+         Array.prototype.forEach.call(this.querySelectorAll("paper-button.hover"), function(el) {
+          el.classList.remove("hover");
+        });
+        return;
+      }
+
       /* Getting owner categories for the item refdes. */
       for (var i = 0; i < this.categories.length; i++) {
         if (this.categories[i].list.indexOf(item.refdes) != -1
@@ -1309,29 +1322,7 @@ document.addEventListener("WebComponentsReady", function() {
         info.refdes = item.component;
       }
 
-      /* Toggle the "hover" state for the item and scroll it into view */
-      el = this.$[this.searchMode].querySelector("paper-button[match='" + info.refdes + "']");
-      if (el) {
-        el.classList.toggle("hover", info.in);
-        if (info.in && info.source == "board-viewer") {
-          var panel = this.$.layout.querySelector("#panel-left");
-          var top = panel.scrollTop;
-          /* If the element is above the top of the viewport scroll the viewport,
-           * to have the element at the top of the viewport. */
-          if (el.offsetTop < top) {
-            top = el.offsetTop;
-          }
-          /* Otherwise, if the element is below the viewport scroll the viewport,
-           * to have the element at the bottom of the viewport. */
-          else if (el.offsetTop + el.offsetHeight > top + panel.offsetHeight) {
-            top = el.offsetTop  + panel.offsetHeight + el.offsetHeight;
-          }
-          /* If scroll position changed, update it on the panel */
-          if (top != panel.scrollTop) {
-            panel.scrollTop = top;
-          }
-        }
-      }
+      this._panelScroll(info);
 
       /* Leaving an item */
       if (!info.in && this.hover == item) {
@@ -1497,6 +1488,34 @@ document.addEventListener("WebComponentsReady", function() {
       }
     },
 
+    _panelScroll: function(info) {
+      /* Toggle the "hover" state for the item and scroll it into view */
+      if (this.$[this.searchMode] && info) {
+        var el = this.$[this.searchMode].querySelector("paper-button[match='" + info.refdes + "']");
+        if (el) {
+          el.classList.toggle("hover", info.in);
+          if (info.in && info.source == "board-viewer") {
+            var panel = this.$.layout.querySelector("#panel-left");
+            var top = panel.scrollTop;
+            /* If the element is above the top of the viewport scroll the viewport,
+             * to have the element at the top of the viewport. */
+            if (el.offsetTop < top) {
+              top = el.offsetTop;
+            }
+            /* Otherwise, if the element is below the viewport scroll the viewport,
+             * to have the element at the bottom of the viewport. */
+            else if (el.offsetTop + el.offsetHeight > top + panel.offsetHeight) {
+              top = el.offsetTop  + panel.offsetHeight + el.offsetHeight;
+            }
+            /* If scroll position changed, update it on the panel */
+            if (top != panel.scrollTop) {
+              panel.scrollTop = top;
+            }
+          }
+        }
+      }
+    },
+
     updateRoute: function(board, selected, category) {
       /* Start with an empty route by trimming the hash parameters */
       var href = window.location.href.replace(/#.*/, ""),
@@ -1554,12 +1573,6 @@ document.addEventListener("WebComponentsReady", function() {
 
     buttonTap: function(event) {
       event.preventDefault();
-
-      this.$.boardViewer.setHover({
-        type: event.model.item.type,
-        refdes: event.model.item.refdes,
-        in: true
-      });
 
       var refdes = event.model.item.refdes,
         category = this.$.boardViewer.findCategory(refdes),
