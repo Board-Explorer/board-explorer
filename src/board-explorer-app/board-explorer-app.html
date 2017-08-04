@@ -952,7 +952,7 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       if (isCategory && this.category) {
-
+        /* Enabling category button */
         Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button[match='"+ this.category.slug +"']"), function(el) {
           el.disabled = false;
         });
@@ -965,7 +965,7 @@ document.addEventListener("WebComponentsReady", function() {
       /* Walk through the list of selected items and enable them in the
        * keywords and components */
       selected.forEach(function(refdes) {
-        /* Disable the button that matches this refdes */
+        /* Enabling the button that matches this refdes */
         Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button[match='"+ refdes +"']"), function(el) {
           el.disabled = false;
         });
