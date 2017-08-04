@@ -929,11 +929,6 @@ document.addEventListener("WebComponentsReady", function() {
           el.disabled = false;
         });
 
-        Array.prototype.forEach.call(this.querySelectorAll("paper-button.hover"), function(el) {
-          el.classList.remove("hover");
-        });
-
-        this.hover = null;
         this.active = this.boardInfo;
         this.updateRoute(this.board, selected, null);
         return;
@@ -1268,14 +1263,6 @@ document.addEventListener("WebComponentsReady", function() {
         categories = [], el;
 
       if (!item) {
-        return;
-      }
-
-      if (this.$.boardViewer._isTouchDevice()) {
-        this._panelScroll(info);
-         Array.prototype.forEach.call(this.querySelectorAll("paper-button.hover"), function(el) {
-          el.classList.remove("hover");
-        });
         return;
       }
 
