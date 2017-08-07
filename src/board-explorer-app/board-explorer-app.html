@@ -1396,11 +1396,6 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     onAnchorHoverIn: function(event) {
-      /* If this event can trigger touches then prevent it */
-      if (event.sourceCapabilities.firesTouchEvents) {
-        event.preventDefault();
-        return;
-      }
       var href  = event.target.href;
       var refdes = href.split("/").pop();
       var component  = this.$.boardViewer.findComponent(refdes);
@@ -1415,11 +1410,6 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     onAnchorHoverOut: function(event) {
-      /* If this event can trigger touches then prevent it */
-     if (event.sourceCapabilities.firesTouchEvents) {
-        event.preventDefault();
-        return;
-      }
       var href  = event.target.href;
       var refdes = href.split("/").pop();
       var component  = this.$.boardViewer.findComponent(refdes);
