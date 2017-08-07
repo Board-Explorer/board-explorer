@@ -929,6 +929,10 @@ document.addEventListener("WebComponentsReady", function() {
           el.disabled = false;
         });
 
+        /* forcing the clean up of hovered items */
+        this.hover = null;
+        this.$.boardViewer.setHover();
+
         this.active = this.boardInfo;
         this.updateRoute(this.board, selected, null);
         return;
