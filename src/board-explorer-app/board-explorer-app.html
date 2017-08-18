@@ -17,8 +17,9 @@ limitations under the License.
 -->
 <html>
 <head>
-  <link rel="import" href="../../bower_components/polymer/polymer.html">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
+  <link rel="import" href="../../bower_components/polymer/polymer.html">
   <link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 
   <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
@@ -82,35 +83,38 @@ limitations under the License.
     }
 
     #mobileHeader {
-      display: flex;
-      height: 15%;
-      max-height: 15%;
+      display: block;
+      height: 72px;
+      max-height: 72px;
+      width: 100%;
+      position: fixed;
+      z-index: 20;
+      margin-left: 10px;
     }
 
     #mobileHeader paper-material {
-      width: 100%;
-      margin-left: 18px;
+      height: 64px;
+      max-height: 64px;
+      padding: 0px;
     }
 
     #mobileHeader div {
-      height: 10%;
-      cursor: pointer;
-      float: left;
-      margin-top: -8px;
+      height: 64px;
+      padding-right: 5px;
     }
 
     #mobileHeader #boardTitle{
-      margin-left: 50px;
+      float: right;
       width: 85%;
-      font-size: 0.9em;
-      margin-top: 0px !important;
+      margin-top: 8px !important;
+      cursor: pointer;
     }
 
     app-drawer {
       background: white;
       overflow: auto;
       z-index: 1;
-      top: 13%;
+      top: 73px;
       bottom: 0;
       --app-drawer-width: 100%;
       --app-drawer-scrim-background: rgb(255, 255, 255);
@@ -327,9 +331,10 @@ limitations under the License.
     }
 
     #layout.mobile {
-      height: 87%;
-      max-height: 87%;
+      height: 100%;
+      max-height: 100%;
       margin-left: -10px;
+      bottom: 0;
     }
 
     #sidebar-left {
@@ -356,6 +361,13 @@ limitations under the License.
     #panel-right {
       width: 66.7%;
       max-width: 100%;
+    }
+
+    .mobile #panel-right {
+      position: absolute;
+      top: 79px;
+      width: 100%;
+      height: calc(100% - 72px);
     }
 
     #panel-bottom {
@@ -408,12 +420,14 @@ limitations under the License.
 
     <div id="mobileHeader" hidden$="{{!isMobileLayout}}">
       <paper-material>
-        <div><paper-icon-button icon="menu" slot="dropdown-trigger" alt="menu" on-tap="toggleDrawer"></paper-icon-button></div>
-        <div id="boardTitle" on-tap="unloadBoard">[[getBoardBoxTitle(board)]]</div>
+        <div>
+          <paper-icon-button icon="menu" slot="dropdown-trigger" alt="menu" on-tap="toggleDrawer"></paper-icon-button>
+          <span id="boardTitle" on-tap="unloadBoard">[[getBoardBoxTitle(board)]]</span>
+        </div>
       </paper-material>
     </div>
 
-    <app-drawer id="drawer">
+    <app-drawer id="drawer" disable-swipe no-focus-trap>
       <paper-material class="vertical layout">
         <paper-tabs id="searchTabs" selected="{{searchMode}}" attr-for-selected="name">
           <paper-tab name="searchPage">Search</paper-tab>
