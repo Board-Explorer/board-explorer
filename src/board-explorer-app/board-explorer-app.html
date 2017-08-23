@@ -1226,7 +1226,7 @@ document.addEventListener("WebComponentsReady", function() {
             "<p>" + component.html;
         }
 
-        return promise.then(function(results) {
+        return this.getDocumentation(component, "HTML").then(function(item, results) {
           if (results.status == 200) {
             /* Set the component's html so it doesn't get fetched again */
             component.html = results.content;
@@ -1254,7 +1254,7 @@ document.addEventListener("WebComponentsReady", function() {
         /* If this is the item currently being hovered on, notify the UI
          * to update the DOM */
         if (this.$.boardViewer.selected.length &&
-            this.$.boardViewer.selected[0] == item.refdes) {
+            this.$.boardViewer.selected[0] == item.refdes.toUpperCase()) {
           Polymer.dom(this.$.documentation).innerHTML = item.html;
         }
 
