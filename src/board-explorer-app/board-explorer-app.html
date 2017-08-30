@@ -1254,7 +1254,7 @@ document.addEventListener("WebComponentsReady", function() {
         /* If this is the item currently being hovered on, notify the UI
          * to update the DOM */
         if (this.$.boardViewer.selected.length &&
-            this.$.boardViewer.selected[0] == item.refdes.toUpperCase()) {
+            this.$.boardViewer.selected[0].toUpperCase() == item.refdes.toUpperCase()) {
           Polymer.dom(this.$.documentation).innerHTML = item.html;
         }
 
