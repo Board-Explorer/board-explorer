@@ -173,8 +173,8 @@ of the board-viewer, and install it:
 ```bash
 cd board-explorer
 
-# Update the board-viewer version in board-explorer
-VERSION=0.0.32 # or whatever version was reported via ./tag-release.sh above
+# Update the board-viewer version in board-explorer (assumes board-viewer is in ../board-viewer)
+VERSION=$(git --git-dir=../board-viewer/.git tag | sort -rV | head -n 1)
 sed -ie "s,board-explorer/board-viewer#^[^\"]*,board-explorer/board-viewer#^${VERSION},g" bower.json
 bower install # Install the latest board-viewer
 
