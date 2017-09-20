@@ -492,7 +492,7 @@
 	<g id="BV_HAT" inkscape:label="#g314">
 		<polygon id="polygon795_1_" class="st22" points="136.4,15.4 138.3,12.9 138.3,6.3 136.4,3.7 20.1,3.7 18.2,6.3 18.2,12.9 
 			20.1,15.4 		"/>
-		<g id="BV_HATPin1" inkscape:label="#g587">
+		<g id="BV_HATPin2" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_1_" x="22" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_1_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_1_" x="22.7" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -502,7 +502,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_1_" class="st28" points="25,8.5 24.2,7.8 24.2,6.3 25,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin3" inkscape:label="#g587">
+		<g id="BV_HATPin4" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_2_" x="27.8" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_2_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_2_" x="28.5" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -512,7 +512,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_2_" class="st28" points="30.7,8.5 30,7.8 30,6.3 30.7,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin5" inkscape:label="#g587">
+		<g id="BV_HATPin6" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_3_" x="33.5" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_3_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_3_" x="34.3" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -522,7 +522,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_3_" class="st28" points="36.5,8.5 35.7,7.8 35.7,6.3 36.5,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin7" inkscape:label="#g587">
+		<g id="BV_HATPin8" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_4_" x="39.3" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_4_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_4_" x="40" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -532,7 +532,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_4_" class="st28" points="42.2,8.5 41.5,7.8 41.5,6.3 42.2,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin9" inkscape:label="#g587">
+		<g id="BV_HATPin10" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_5_" x="45" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_5_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_5_" x="45.8" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -542,7 +542,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_5_" class="st28" points="48,8.5 47.2,7.8 47.2,6.3 48,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin11" inkscape:label="#g587">
+		<g id="BV_HATPin12" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_6_" x="50.8" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_6_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_6_" x="51.6" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -552,7 +552,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_6_" class="st28" points="53.8,8.5 53,7.8 53,6.3 53.8,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin13" inkscape:label="#g587">
+		<g id="BV_HATPin14" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_7_" x="56.6" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_7_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_7_" x="57.3" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -562,7 +562,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_7_" class="st28" points="59.5,8.5 58.8,7.8 58.8,6.3 59.5,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin15" inkscape:label="#g587">
+		<g id="BV_HATPin16" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_8_" x="62.3" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_8_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_8_" x="63.1" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -572,7 +572,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_8_" class="st28" points="65.3,8.5 64.5,7.8 64.5,6.3 65.3,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin17" inkscape:label="#g587">
+		<g id="BV_HATPin18" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_9_" x="68.1" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_9_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_9_" x="68.8" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -582,7 +582,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_9_" class="st28" points="71,8.5 70.3,7.8 70.3,6.3 71,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin19" inkscape:label="#g587">
+		<g id="BV_HATPin20" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_10_" x="73.9" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_10_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_10_" x="74.6" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -592,7 +592,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_10_" class="st28" points="76.8,8.5 76.1,7.8 76.1,6.3 76.8,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin21" inkscape:label="#g587">
+		<g id="BV_HATPin22" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_11_" x="79.6" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_11_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_11_" x="80.4" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -602,7 +602,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_11_" class="st28" points="82.6,8.5 81.8,7.8 81.8,6.3 82.6,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin23" inkscape:label="#g587">
+		<g id="BV_HATPin24" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_12_" x="85.4" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_12_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_12_" x="86.1" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -612,7 +612,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_12_" class="st28" points="88.3,8.5 87.6,7.8 87.6,6.3 88.3,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin25" inkscape:label="#g587">
+		<g id="BV_HATPin26" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_13_" x="91.1" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_13_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_13_" x="91.9" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -622,7 +622,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_13_" class="st28" points="94.1,8.5 93.3,7.8 93.3,6.3 94.1,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin27" inkscape:label="#g587">
+		<g id="BV_HATPin28" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_14_" x="96.9" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_14_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_14_" x="97.7" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -632,7 +632,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_14_" class="st28" points="99.9,8.5 99.1,7.8 99.1,6.3 99.9,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin29" inkscape:label="#g587">
+		<g id="BV_HATPin30" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_15_" x="102.7" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_15_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_15_" x="103.4" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -642,7 +642,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_15_" class="st28" points="105.6,8.5 104.9,7.8 104.9,6.3 105.6,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin31" inkscape:label="#g587">
+		<g id="BV_HATPin32" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_16_" x="108.4" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_16_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_16_" x="109.2" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -652,7 +652,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_16_" class="st28" points="111.4,8.5 110.6,7.8 110.6,6.3 111.4,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin33" inkscape:label="#g587">
+		<g id="BV_HATPin34" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_17_" x="114.2" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_17_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_17_" x="114.9" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -662,7 +662,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_17_" class="st28" points="117.1,8.5 116.4,7.8 116.4,6.3 117.1,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin35" inkscape:label="#g587">
+		<g id="BV_HATPin36" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_18_" x="120" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_18_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_18_" x="120.7" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -672,7 +672,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_18_" class="st28" points="122.9,8.5 122.2,7.8 122.2,6.3 122.9,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin37" inkscape:label="#g587">
+		<g id="BV_HATPin38" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_19_" x="125.7" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_19_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_19_" x="126.5" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -682,7 +682,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_19_" class="st28" points="128.7,8.5 127.9,7.8 127.9,6.3 128.7,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin39" inkscape:label="#g587">
+		<g id="BV_HATPin40" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_20_" x="131.5" y="5.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_20_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_20_" x="132.2" y="6.3" class="st24" width="1.5" height="1.5"/>
@@ -692,7 +692,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_20_" class="st28" points="134.4,8.5 133.7,7.8 133.7,6.3 134.4,5.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin2" inkscape:label="#g587">
+		<g id="BV_HATPin1" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_40_" x="22" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_40_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_40_" x="22.7" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -702,7 +702,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_40_" class="st28" points="25,13.5 24.2,12.8 24.2,11.3 25,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin4" inkscape:label="#g587">
+		<g id="BV_HATPin3" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_39_" x="27.8" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_39_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_39_" x="28.5" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -712,7 +712,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_39_" class="st28" points="30.7,13.5 30,12.8 30,11.3 30.7,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin6" inkscape:label="#g587">
+		<g id="BV_HATPin5" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_38_" x="33.5" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_38_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_38_" x="34.3" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -722,7 +722,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_38_" class="st28" points="36.5,13.5 35.7,12.8 35.7,11.3 36.5,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin8" inkscape:label="#g587">
+		<g id="BV_HATPin7" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_37_" x="39.3" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_37_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_37_" x="40" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -732,7 +732,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_37_" class="st28" points="42.2,13.5 41.5,12.8 41.5,11.3 42.2,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin10" inkscape:label="#g587">
+		<g id="BV_HATPin9" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_36_" x="45" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_36_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_36_" x="45.8" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -742,7 +742,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_36_" class="st28" points="48,13.5 47.2,12.8 47.2,11.3 48,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin12" inkscape:label="#g587">
+		<g id="BV_HATPin11" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_35_" x="50.8" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_35_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_35_" x="51.6" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -752,7 +752,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_35_" class="st28" points="53.8,13.5 53,12.8 53,11.3 53.8,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin14" inkscape:label="#g587">
+		<g id="BV_HATPin13" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_34_" x="56.6" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_34_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_34_" x="57.3" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -762,7 +762,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_34_" class="st28" points="59.5,13.5 58.8,12.8 58.8,11.3 59.5,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin16" inkscape:label="#g587">
+		<g id="BV_HATPin15" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_33_" x="62.3" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_33_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_33_" x="63.1" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -772,7 +772,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_33_" class="st28" points="65.3,13.5 64.5,12.8 64.5,11.3 65.3,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin18" inkscape:label="#g587">
+		<g id="BV_HATPin17" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_32_" x="68.1" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_32_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_32_" x="68.8" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -782,7 +782,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_32_" class="st28" points="71,13.5 70.3,12.8 70.3,11.3 71,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin20" inkscape:label="#g587">
+		<g id="BV_HATPin19" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_31_" x="73.9" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_31_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_31_" x="74.6" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -792,7 +792,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_31_" class="st28" points="76.8,13.5 76.1,12.8 76.1,11.3 76.8,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin22" inkscape:label="#g587">
+		<g id="BV_HATPin21" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_30_" x="79.6" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_30_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_30_" x="80.4" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -802,7 +802,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_30_" class="st28" points="82.6,13.5 81.8,12.8 81.8,11.3 82.6,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin24" inkscape:label="#g587">
+		<g id="BV_HATPin23" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_29_" x="85.4" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_29_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_29_" x="86.1" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -812,7 +812,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_29_" class="st28" points="88.3,13.5 87.6,12.8 87.6,11.3 88.3,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin26" inkscape:label="#g587">
+		<g id="BV_HATPin25" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_28_" x="91.1" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_28_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_28_" x="91.9" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -822,7 +822,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_28_" class="st28" points="94.1,13.5 93.3,12.8 93.3,11.3 94.1,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin28" inkscape:label="#g587">
+		<g id="BV_HATPin27" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_27_" x="96.9" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_27_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_27_" x="97.7" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -832,7 +832,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_27_" class="st28" points="99.9,13.5 99.1,12.8 99.1,11.3 99.9,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin30" inkscape:label="#g587">
+		<g id="BV_HATPin29" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_26_" x="102.7" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_26_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_26_" x="103.4" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -842,7 +842,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_26_" class="st28" points="105.6,13.5 104.9,12.8 104.9,11.3 105.6,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin32" inkscape:label="#g587">
+		<g id="BV_HATPin31" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_25_" x="108.4" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_25_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_25_" x="109.2" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -852,7 +852,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_25_" class="st28" points="111.4,13.5 110.6,12.8 110.6,11.3 111.4,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin34" inkscape:label="#g587">
+		<g id="BV_HATPin33" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_24_" x="114.2" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_24_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_24_" x="114.9" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -862,7 +862,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_24_" class="st28" points="117.1,13.5 116.4,12.8 116.4,11.3 117.1,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin36" inkscape:label="#g587">
+		<g id="BV_HATPin35" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_23_" x="120" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_23_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_23_" x="120.7" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -872,7 +872,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_23_" class="st28" points="122.9,13.5 122.2,12.8 122.2,11.3 122.9,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin38" inkscape:label="#g587">
+		<g id="BV_HATPin37" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_22_" x="125.7" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_22_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_22_" x="126.5" y="11.3" class="st24" width="1.5" height="1.5"/>
@@ -882,7 +882,7 @@
 				<polygon id="_0.1.2.0.0.0.0.36-13_22_" class="st28" points="128.7,13.5 127.9,12.8 127.9,11.3 128.7,10.6 				"/>
 			</g>
 		</g>
-		<g id="BV_HATPin40" inkscape:label="#g587">
+		<g id="BV_HATPin39" inkscape:label="#g587">
 			<rect id="_0.1.2.0.0.0.0.7.0-13_21_" x="131.5" y="10.6" class="st23" width="3" height="2.9"/>
 			<g id="lsePin2_21_">
 				<rect id="_0.1.2.0.0.0.0.32.0-13_21_" x="132.2" y="11.3" class="st24" width="1.5" height="1.5"/>
