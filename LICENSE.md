@@ -6,9 +6,9 @@ provided under the following licenses:
 
 # Board documentation and assets
 
-The contents of boards/* is provided under the CC-BY-3.0 license.
+The contents of boards/* is provided under the CC-BY-4.0 license.
 
-    https://creativecommons.org/licenses/by/3.0/
+    https://creativecommons.org/licenses/by/4.0/
 
 This includes the graphical assets, JSON declarations, markdown  
 documentation files, etc.

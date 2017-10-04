@@ -2,9 +2,9 @@
 
 Copyright (C) 2016-2017 Intel Corporation
 
-![Board Explorer (June '17)](board-explorer.png)
-
 [Live demo!](https://board-explorer.github.io/board-explorer/#quark_mcu_dev_kit_d2000)
+
+![Board Explorer (June '17)](board-explorer.png)
 
 
 # License
@@ -12,7 +12,7 @@ Copyright (C) 2016-2017 Intel Corporation
 | License    | Components                                           |
 |:-----------|:-----------------------------------------------------|
 | Apache 2.0 | Front-end application and components                 |
-| CC-BY-3.0  | boards/* including documentation and graphics        |
+| CC-BY-4.0  | boards/* including documentation and graphics        |
 
 
 ## Overview
