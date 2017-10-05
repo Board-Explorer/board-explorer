@@ -487,7 +487,7 @@ limitations under the License.
                     on-tap="buttonTap"
                     on-mouseover="buttonOver"
                     on-mouseout="buttonOut"
-                    selected="[[item.selected]]">
+                    selected$="[[item.selected]]">
                   <div>[[item.refdes]]</div>
                   <div></div>
                 </paper-button>
@@ -945,13 +945,14 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       var selected = this.$.boardViewer.selected || this.selected;
+
+      /* Disable all items in the currently viewed page*/
+      Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button"), function(el) {
+        el.removeAttribute('selected');
+      });
+
       /* If no selection is active, then enable everything and return */
       if (selected.length == 0) {
-
-        Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button"), function(el) {
-          el.removeAttribute('selected');
-        });
-
         /* forcing the clean up of hovered items */
         this.hover = null;
         this.$.boardViewer.setHover();
@@ -960,11 +961,6 @@ document.addEventListener("WebComponentsReady", function() {
         this.updateRoute(this.board, selected, null);
         return;
       }
-
-      /* Disable all items in the currently viewed page*/
-      Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button"), function(el) {
-        el.removeAttribute('selected');
-      });
 
       var active = null;
 
@@ -980,12 +976,12 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       if (isCategory && this.category) {
-
         /* Selecting category button */
-        var el = this.$$("paper-button[match='"+ this.category.slug +"']");
-
+        var el = this.$.layout.querySelector("paper-button[match='" + this.category.slug + "']");
         if (el) {
-           el.setAttribute('selected', '');
+          this._enableItemButtons({
+            refdes: this.category.slug
+          });
         }
 
         this.active = this.boardInfo;
@@ -996,16 +992,17 @@ document.addEventListener("WebComponentsReady", function() {
       /* Walk through the list of selected items and enable them in the
        * keywords and components */
       selected.forEach(function(refdes) {
-        /* Enabling the button that matches this refdes */
-        var el = this.$$("paper-button[match='"+ refdes +"']");
-        if (el) {
-          el.setAttribute('selected', '');
-        }
-
         /* Check if it is a component/pin... */
         var item = this.$.boardViewer.findComponent(refdes);
         if (!item) {
-          return;
+          /* Try to find if is a keyword. */
+          for (var i = 0; i < this.keywords.length; i++) {
+            /* If is a keyword then select the left button. */
+            if (this.keywords[i].refdes == refdes) {
+              item = ({ refdes: refdes });
+              break;
+            }
+          }
         }
 
         /* If the first non-keyword hasn't been set, set it to this item */
