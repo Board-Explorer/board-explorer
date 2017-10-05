@@ -153,9 +153,9 @@ limitations under the License.
       word-wrap: break-word;
     }
 
-    #layout paper-button[disabled] {
-      border-style: dashed;
-      color: #888;
+    #layout paper-button[selected],
+    #layout paper-button[focused] {
+      font-weight: bold;
     }
 
     #layout paper-button.hover,
@@ -469,7 +469,8 @@ limitations under the License.
                     class$="layout vertical start"
                     on-tap="buttonTap"
                     on-mouseover="buttonOver"
-                    on-mouseout="buttonOut">
+                    on-mouseout="buttonOut"
+                    selected$="[[item.selected]]">
                   <div>[[item.name]]</div>
                   <div></div>
                 </paper-button>
@@ -485,7 +486,8 @@ limitations under the License.
                     class$="layout vertical start"
                     on-tap="buttonTap"
                     on-mouseover="buttonOver"
-                    on-mouseout="buttonOut">
+                    on-mouseout="buttonOut"
+                    selected="[[item.selected]]">
                   <div>[[item.refdes]]</div>
                   <div></div>
                 </paper-button>
@@ -501,7 +503,8 @@ limitations under the License.
                     class$="[[itemClassList(item)]] layout vertical start"
                     on-tap="buttonTap"
                     on-mouseover="buttonOver"
-                    on-mouseout="buttonOut">
+                    on-mouseout="buttonOut"
+                    selected$="[[item.selected]]">
                   <div>[[itemRefDes(item)]]</div>
                   <template is="dom-if" if="{{itemClassList(item)}}"><div>[[itemName(item)]]</div></template>
                 </paper-button>
@@ -562,7 +565,8 @@ limitations under the License.
                         class$="layout vertical start"
                         on-tap="buttonTap"
                         on-mouseover="buttonOver"
-                        on-mouseout="buttonOut">
+                        on-mouseout="buttonOut"
+                        selected$="[[item.selected]]">
                       <div>[[item.name]]</div>
                       <div></div>
                     </paper-button>
@@ -578,7 +582,8 @@ limitations under the License.
                         class$="layout vertical start"
                         on-tap="buttonTap"
                         on-mouseover="buttonOver"
-                        on-mouseout="buttonOut">
+                        on-mouseout="buttonOut"
+                        selected$="[[item.selected]]">
                       <div>[[item.refdes]]</div>
                       <div></div>
                     </paper-button>
@@ -594,7 +599,8 @@ limitations under the License.
                         class$="[[itemClassList(item)]] layout vertical start"
                         on-tap="buttonTap"
                         on-mouseover="buttonOver"
-                        on-mouseout="buttonOut">
+                        on-mouseout="buttonOut"
+                        selected$="[[item.selected]]">
                       <div>[[itemRefDes(item)]]</div>
                       <template is="dom-if" if="{{itemClassList(item)}}"><div>[[itemName(item)]]</div></template>
                     </paper-button>
@@ -929,7 +935,7 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
      Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button[match='" + item.refdes + "']"), function(el) {
-        el.disabled = false;
+        el.setAttribute('selected', '');
       });
     },
 
@@ -938,12 +944,12 @@ document.addEventListener("WebComponentsReady", function() {
         return;
       }
 
-      var selected = this.$.boardViewer.selected || [];
+      var selected = this.$.boardViewer.selected || this.selected;
       /* If no selection is active, then enable everything and return */
       if (selected.length == 0) {
 
         Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button"), function(el) {
-          el.disabled = false;
+          el.removeAttribute('selected');
         });
 
         /* forcing the clean up of hovered items */
@@ -954,10 +960,11 @@ document.addEventListener("WebComponentsReady", function() {
         this.updateRoute(this.board, selected, null);
         return;
       }
-      /* Disable all items in the currently viewed page
+
+      /* Disable all items in the currently viewed page*/
       Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button"), function(el) {
-        el.disabled = true;
-      });*/
+        el.removeAttribute('selected');
+      });
 
       var active = null;
 
@@ -973,10 +980,13 @@ document.addEventListener("WebComponentsReady", function() {
       }
 
       if (isCategory && this.category) {
-        /* Enabling category button */
-        Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button[match='"+ this.category.slug +"']"), function(el) {
-          el.disabled = false;
-        });
+
+        /* Selecting category button */
+        var el = this.$$("paper-button[match='"+ this.category.slug +"']");
+
+        if (el) {
+           el.setAttribute('selected', '');
+        }
 
         this.active = this.boardInfo;
         this.updateRoute(this.board, [], this.category);
@@ -987,14 +997,14 @@ document.addEventListener("WebComponentsReady", function() {
        * keywords and components */
       selected.forEach(function(refdes) {
         /* Enabling the button that matches this refdes */
-        Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button[match='"+ refdes +"']"), function(el) {
-          el.disabled = false;
-        });
+        var el = this.$$("paper-button[match='"+ refdes +"']");
+        if (el) {
+          el.setAttribute('selected', '');
+        }
 
         /* Check if it is a component/pin... */
         var item = this.$.boardViewer.findComponent(refdes);
         if (!item) {
-          /* It's a keyword, so return */
           return;
         }
 
@@ -1059,8 +1069,8 @@ document.addEventListener("WebComponentsReady", function() {
     _searchModeChanged: function(searchMode) {
       console.log("Mode changed to " + searchMode);
 
-      this.$.boardViewer.selected = [];
-      this.$.boardViewer.setHover();
+      //this.$.boardViewer.selected = [];
+      //this.$.boardViewer.setHover();
 
       if (searchMode == "searchPage") {
         this.$.search.value = "";
@@ -1519,6 +1529,7 @@ document.addEventListener("WebComponentsReady", function() {
       /* If there are categories for this board, select the 'Categories' radio box */
       if (this.category) {
         this.searchMode = "categoriesPage";
+        this.$.searchTabs.select('categoriesPage');
       } else if (this.keyword) {
         this.searchMode = "keywordsPage";
       } else {
@@ -1554,12 +1565,37 @@ document.addEventListener("WebComponentsReady", function() {
       if (this.selectedOnceLoaded) {
         var category = this.$.boardViewer.findCategory(this.selectedOnceLoaded[0]);
         if (category) {
-          this.category = category;
-          this.selected = category.list;
+          for (var i = 0; i < this.categories.length; i++) {
+            if (this.categories[i].refdes == this.selectedOnceLoaded[0].toLowerCase()) {
+              this.$.searchTabs.select('categoriesPage');
+              this.categories[i].selected = true;
+              console.log(this.categories[i]);
+              this.category = category;
+              this.selected = category.list;
+            }
+          }
+
         }
         else {
+          for (var i = 0; i < this.keywords.length; i++) {
+            if (this.keywords[i].refdes == this.selectedOnceLoaded[0]) {
+              this.$.searchTabs.select('keywordsPage');
+              this.keywords[i].selected = true;
+            }
+          }
+
+
+          for (var i = 0; i < this.components.length; i++) {
+            for (var j = 0; j < this.selectedOnceLoaded.length; j++) {
+              if (this.components[i].refdes == this.selectedOnceLoaded[j]) {
+                this.components[i].selected = true;
+              }
+            }
+          }
+
           this.selected = this.selectedOnceLoaded;
         }
+
         delete this.selectedOnceLoaded;
       }
     },
