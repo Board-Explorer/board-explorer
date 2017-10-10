@@ -46,7 +46,7 @@ limitations under the License.
   <link rel="stylesheet" href="../../bower_components/highlightjs/styles/atom-one-light.css">
 
   <!--
-  `<board-explorer-app>` Provides a container for the board-viewer.
+  `<board-explorer-app>` Provides a board-explorer container for the board-viewer.
 
   The board-explorer loads the board-viewer and displays additional selection
   elements for interacting with the board-viewer. It also provides an area
@@ -71,9 +71,13 @@ limitations under the License.
       --bg-l: #f8f8f1;
     }
 
-    #boardTitle {
+    .multi-board #boardTitle {
       cursor: pointer;
       display: block;
+    }
+
+    .single-board #boardTitle {
+      display: none;
     }
 
     #searchPage {
@@ -102,21 +106,29 @@ limitations under the License.
       padding-right: 5px;
     }
 
-    #mobileHeader #boardTitle{
+    .multi-board #mobileHeader #boardTitle {
       float: right;
       width: 85%;
-      margin-top: 8px !important;
       cursor: pointer;
     }
 
     app-drawer {
       background: white;
       overflow: auto;
-      z-index: 1;
+      z-index: 10;
       top: 0;
       bottom: 0;
       --app-drawer-width: 100%;
       --app-drawer-scrim-background: rgb(255, 255, 255);
+    }
+
+    .single-board app-drawer {
+      --app-drawer-content-container: {
+        padding: 0 !important;
+      }
+    }
+
+    .multi-board app-drawer {
       --app-drawer-content-container: {
         padding: 73px 0 0 0 !important;
       }
@@ -131,7 +143,14 @@ limitations under the License.
       position: absolute;
       top: 0;
       left: 0;
+    }
+
+    .multi-board #drawer #sidebar-left {
       padding: 120px 0;
+    }
+
+    .single-board #drawer #sidebar-left {
+      padding: 64px 0;
     }
 
     #layout paper-button {
@@ -361,11 +380,39 @@ limitations under the License.
       max-width: 100%;
     }
 
-    .mobile #panel-right {
+    /* In single-board mode, there is no top header, so don't set these styles */
+    .multi-board.mobile #panel-right {
       position: absolute;
       top: 79px;
       width: 100%;
       height: calc(100% - 72px);
+    }
+
+    /* In single-board mode, the hamburger menu item floats in the upper left
+     * corner */
+    .single-board #overlayMenu {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 5; /* On top of board-viewer, below app-drawer */
+      color: #f0f0f0;
+    }
+
+    .multi-board #drawer paper-icon-button {
+      display: none;
+    }
+
+    .multi-board #overlayMenu {
+      display: none;
+    }
+
+    /* Mobile header is not shown in single-board mode */
+    .single-board #mobileHeader {
+      display: none;
+    }
+
+    app-drawer paper-icon {
+      color: #f0f0f0;
     }
 
     #panel-bottom {
@@ -394,7 +441,6 @@ limitations under the License.
     .context-and-name div:last-child {
       font-size: 1em;
     }
-
   </style>
 
   <iron-media-query query="(max-width:480px)" query-matches="{{isMobileLayout}}" on-query-matches-changed="onLayoutChange"></iron-media-query>
@@ -414,11 +460,16 @@ limitations under the License.
     </div>
   </paper-material>
 
-  <div id="layout" hidden$="[[isEmpty(board)]]">
+  <div class$="[[layoutClasses(singleBoardMode, mobileMode)]]" id="layout" hidden$="[[isEmpty(board)]]">
 
+    <!-- In single board mode, the hamburger menu overlays the board-viewer.
+         If not in single-board mode, the CSS for this sets it to display:none -->
+    <paper-icon-button id="overlayMenu" hidden$="[[!isMobileLayout]]" icon="menu" slot="dropdown-trigger" alt="menu" on-tap="toggleDrawer"></paper-icon-button>
+
+    <!-- The following is set to display:none if single-board mode -->
     <div id="mobileHeader" hidden$="{{!isMobileLayout}}">
       <paper-material>
-        <div>
+        <div class="layout horizontal center">
           <paper-icon-button icon="menu" slot="dropdown-trigger" alt="menu" on-tap="toggleDrawer"></paper-icon-button>
           <span id="boardTitle" on-tap="unloadBoard">[[getBoardBoxTitle(board)]]</span>
         </div>
@@ -426,8 +477,9 @@ limitations under the License.
     </div>
 
     <app-drawer id="drawer" disable-swipe no-focus-trap>
-      <paper-material class="vertical layout">
-        <paper-tabs id="searchTabs" selected="{{searchMode}}" attr-for-selected="name">
+      <paper-material class="horizontal layout center">
+        <paper-icon-button icon="menu" slot="dropdown-trigger" alt="menu" on-tap="toggleDrawer"></paper-icon-button>
+        <paper-tabs class="flex" id="searchTabs" selected="{{searchMode}}" attr-for-selected="name">
           <paper-tab name="searchPage">Search</paper-tab>
           <paper-tab name="categoriesPage" hidden$="[[isEmpty(categories)]]">Categories</paper-tab>
           <paper-tab name="keywordsPage">Keywords</paper-tab>
@@ -516,9 +568,9 @@ limitations under the License.
     </app-drawer>
 
     <vaadin-split-layout class="horizontal layout justified" id="vaadin-container">
-      <div id="panel-left" hidden$="{{isMobileLayout}}" class$="[[_panelLeftClass]]">
+      <div id="panel-left" hidden$="[[isMobileLayout]]" class$="[[_panelLeftClass]]">
         <div class="vertical layout flex" id="sidebar-left">
-          <paper-material id="boardTitle" on-tap="unloadBoard" class="vertical layout start" hidden$="{{isMobileLayout}}">
+          <paper-material id="boardTitle" on-tap="unloadBoard" class="vertical layout start" hidden$="[[isMobileLayout]]">
             [[getBoardBoxTitle(board)]]
           </paper-material>
 
@@ -687,6 +739,14 @@ document.addEventListener("WebComponentsReady", function() {
   Polymer({
     is: "board-explorer-app",
     properties: {
+      singleBoardMode: {
+        type: Boolean,
+        value: false
+      },
+      mobileMode: {
+        type: Boolean,
+        value: false
+      },
       boards: {
         type: Array,
         value: []
@@ -799,12 +859,25 @@ document.addEventListener("WebComponentsReady", function() {
       this.$.drawer.toggle();
     },
 
-    onLayoutChange: function(event) {
-      if (event.detail.value) {
-        this.$.layout.classList.add('mobile');
+    layoutClasses: function(singleBoardMode, mobileMode) {
+      var klass = "";
+
+      if (singleBoardMode) {
+        klass += " single-board";
+      } else {
+        klass += " multi-board";
       }
-      else {
-        this.$.layout.classList.remove('mobile');
+
+      if (mobileMode) {
+        klass += " mobile";
+      }
+
+      return klass;
+    },
+
+    onLayoutChange: function(event) {
+      this.mobileMode = event.detail.value;
+      if (!event.displayMode) {
         this.$.drawer.close();
       }
     },
