@@ -1,5 +1,5 @@
 #!/usr/bin/node
-const board = (process.argv[2] || "all").toLowerCase(),
+const board = process.argv[2] ? process.argv[2].toLowerCase() : "",
   child_process = require("child_process"),
   fs = require("fs");
 
