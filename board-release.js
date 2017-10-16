@@ -67,40 +67,71 @@ function build(board) {
     return execPromise("bower install");
   }).then(function() {
     console.log("Building...");
-    return execPromise("polymer build")
+    return execPromise("polymer build");
+  }).then(function() {
+    try {
+      process.chdir("..");
+    } catch (error) {
+      return reject(error);
+    }
+    return resolve();
   });
 }
 
-execPromise("git checkout-index -a -f --prefix=build/" + board).then(function() {
+
+let boardDir = "board-explorer-" + board, boardVersion = 0,
+  files = fs.readDirSync(".");
+
+/* Walk the releases/ directory looking for built versions */
+let regex = new RegExp("^" + boardDir + "([0-9])*\.tgz$");
+files.forEach(function(path) {
+  let matches = regex.exec(path);
+  if (matches && matches[1] > boardVersion) {
+    releaseVersion = parseInt(matches[1]);
+  }
+});
+releaseVersion++;
+
+boardDir = boardDir + "-" + releaseVersion;
+
+execPromise("git checkout-index -a -f --prefix=build/" + boardDir).then(function() {
   return build(board);
 }).then(function() {
   try {
-    fs.writeFileSync("build/" + board + "/boards.json", JSON.stringify(boards));
+    fs.writeFileSync("build/" + boardDir + "/boards.json", JSON.stringify(boards));
   } catch (error) {
     return Promise.reject(error);
   }
   return Promise.resolve();
 }).then(function() {
-  let contents;
+  if (board != "all") {
+    let contents;
+    try {
+      content = fs.readFileSync("build/" + boardDir + "/single-board.html");
+      content = content.replace(
+            /<board-explorer-app /g,
+            "<board-explorer single-board='" + board + "' ");
+
+      fs.writeFileSync("build/" + boardDir + "/single-board.html", content);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
   try {
-    content = fs.readFileSync("build/" + board + "/index.html");
-  } =
-  try {
-    fs.writeFileSync("build/" + board + "/index.html",
-      fs.JSON.stringify(boards));
+    fs.writeFileSync("build/" + boardDir + "/boards.json", fs.JSON.stringify(boards));
   } catch (error) {
     return Promise.reject(error);
   }
   return Promise.resolve();
+}).then(function() {
+  return execPromise("tar -C build czvf " + boardDir + ".tgz " + boardDir);
+}).then(function() {
+  return execPromise([
+      "git tag",
+      "-a v" + boardDir,
+      "-m 'Tagged v' " + releaseVersion + " for " + board + "'"
+    ].join(" "));
 }).catch(function(error) {
   console.error(error);
 });
-/*
-edit index.html and change singleBoard: "" to singleBoard: "foo"
-rm -rf boards/ all except "foo"
-
-sed -i 's#singleBoard:{type:String,value:""}#singleBoard:{type:String,value:"quark_mcu_dev_kit_d2000"}#' index.html
-
-mv default board-explorer
- tar czvf ../board-explorer-qd2000-4.tgz --exclude=.git board-explorer/
-*/
