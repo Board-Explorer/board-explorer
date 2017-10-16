@@ -934,12 +934,9 @@ document.addEventListener("WebComponentsReady", function() {
         return;
       }
 
-      for (var i = 0; i < this.components.length; i++) {
-        if (this.components[i].refdes == item.refdes) {
-          this.set('components.' + i + '.selected', true);
-          return;
-        }
-      }
+     Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button[match='" + item.refdes + "']"), function(el) {
+        delete el.selected;
+      });
     },
 
     onBoardSelectedChanged: function(event) {
@@ -950,17 +947,9 @@ document.addEventListener("WebComponentsReady", function() {
       var selected = this.$.boardViewer.selected || this.selected;
 
       /* Disable all items in the currently viewed page*/
-      for (var i = 0; i < this.categories.length; i++) {
-        this.set('categories.' + i + '.selected', false);
-      }
-
-       for (var i = 0; i < this.keywords.length; i++) {
-        this.set('keywords.' + i + '.selected', false);
-      }
-
-       for (var i = 0; i < this.components.length; i++) {
-        this.set('components.' + i + '.selected', false);
-      }
+      Array.prototype.forEach.call(this.$.layout.querySelectorAll("paper-button"), function(el) {
+        delete el.selected;
+      });
 
       /* If no selection is active, then enable everything and return */
       if (selected.length == 0) {
@@ -976,15 +965,28 @@ document.addEventListener("WebComponentsReady", function() {
       var active = null;
 
       /* Comparing selected set with all category lists */
+      var isCategory = false;
       for (var i = 0; i < this.categories.length; i++) {
         /* If the current selection is the same list as a defined category list,
          * Then we assume that is a category interaction. */
         if (this.categories[i].list == selected) {
-          this.set('categories.' + i + '.selected', true);
-          this.active = this.boardInfo;
-          this.updateRoute(this.board, [], this.category);
-          return;
+          isCategory = true;
+          break;
         }
+      }
+
+      if (isCategory && this.category) {
+        /* Selecting category button */
+        var el = this.$.layout.querySelector("paper-button[match='" + this.category.slug + "']");
+        if (el) {
+          this._enableItemButtons({
+            refdes: this.category.slug
+          });
+        }
+
+        this.active = this.boardInfo;
+        this.updateRoute(this.board, [], this.category);
+        return;
       }
 
       /* Walk through the list of selected items and enable them in the
@@ -997,8 +999,8 @@ document.addEventListener("WebComponentsReady", function() {
           for (var i = 0; i < this.keywords.length; i++) {
             /* If is a keyword then select the left button. */
             if (this.keywords[i].refdes == refdes) {
-              this.set('keywords.' + i + '.selected', true);
-              return;
+              item = ({ refdes: refdes });
+              break;
             }
           }
         }
@@ -1563,7 +1565,8 @@ document.addEventListener("WebComponentsReady", function() {
           for (var i = 0; i < this.categories.length; i++) {
             if (this.categories[i].refdes == this.selectedOnceLoaded[0].toLowerCase()) {
               this.$.searchTabs.select('categoriesPage');
-              this.set('categories.' + i + '.selected', true);
+              this.set("categories." + i + ".selected", true);
+              console.log(this.categories[i]);
               this.category = category;
               this.selected = category.list;
             }
@@ -1574,14 +1577,15 @@ document.addEventListener("WebComponentsReady", function() {
           for (var i = 0; i < this.keywords.length; i++) {
             if (this.keywords[i].refdes == this.selectedOnceLoaded[0]) {
               this.$.searchTabs.select('keywordsPage');
-              this.set('keywords.' + i + '.selected', true);
+              this.keywords[i].selected = true;
             }
           }
+
 
           for (var i = 0; i < this.components.length; i++) {
             for (var j = 0; j < this.selectedOnceLoaded.length; j++) {
               if (this.components[i].refdes == this.selectedOnceLoaded[j]) {
-                this.set('components.' + i + '.selected', true);
+                this.components[i].selected = true;
               }
             }
           }

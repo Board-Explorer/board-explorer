@@ -188,6 +188,6 @@ git commit -s bower.json -m "Updated board-viewer to ${VERSION}"
 git push origin master
 
 # Build and publish the live site
-polymer build
+./build.sh
 ./publish.sh
 ```
