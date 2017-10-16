@@ -86,9 +86,9 @@ releaseVersion++;
 boardDir = boardDir + "-" + releaseVersion;
 
 Promise.resolve().then(function() {
-//  return execPromise("git checkout-index -a -f --prefix=build/" + boardDir + "/");
+  return execPromise("git checkout-index -a -f --prefix=build/" + boardDir + "/");
 }).then(function() {
-//  return build(boardDir);
+  return build(boardDir);
 }).then(function() {
   try {
     fs.writeFileSync("build/" + boardDir + "/boards.json", JSON.stringify(boards));
