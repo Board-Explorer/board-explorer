@@ -1,5 +1,5 @@
 #!/usr/bin/node
-const board = process.argv[2].toLowerCase(),
+const board = (process.argv[2] || "all").toLowerCase(),
   child_process = require("child_process"),
   fs = require("fs");
 
@@ -25,9 +25,6 @@ if (boardIndex != -1) {
   boards = [ boards[boardIndex] ];
 }
 
-console.log(JSON.stringify(boards));
-process.exit(0);
-console.log(process.argv);
 console.log("Building for '" + board + "'");
 
 try {
@@ -40,30 +37,65 @@ try {
 } catch (___) {
 }
 
-function checkout(board) {
-  let args = [
-    "-a", "-f", "--prefix=build/" + board + "/"
-  ];
-  child_process.execFile("git", args, function (error, stdout, stderr) {
-    if (error) {
-      console.log("Unable to checkout " + board + ": " + error);
-      return;
-    }
+function execPromise(cmdLine) {
+  let args = cmdLine.split(" "),
+    cmd = cmdLine.pop();
+  return new Promise(function(resolve, reject) {
+    child_process.execFile(cmd, args, function (error, stdout, stderr) {
+      if (error) {
+        return reject(error);
+      }
+
+      resolve();
+    });
   });
 }
 
-checkout(board);
+function checkout(board) {
+}
 
+function build(board) {
+  return new Promise(function(resolve, reject) {
+    try {
+      process.chdir("build/" + board);
+    } catch (error) {
+      return reject(error);
+    }
+    return resolve();
+  }).then(function() {
+    console.log("Installing bower components...");
+    return execPromise("bower install");
+  }).then(function() {
+    console.log("Building...");
+    return execPromise("polymer build")
+  });
+}
+
+execPromise("git checkout-index -a -f --prefix=build/" + board).then(function() {
+  return build(board);
+}).then(function() {
+  try {
+    fs.writeFileSync("build/" + board + "/boards.json", JSON.stringify(boards));
+  } catch (error) {
+    return Promise.reject(error);
+  }
+  return Promise.resolve();
+}).then(function() {
+  let contents;
+  try {
+    content = fs.readFileSync("build/" + board + "/index.html");
+  } =
+  try {
+    fs.writeFileSync("build/" + board + "/index.html",
+      fs.JSON.stringify(boards));
+  } catch (error) {
+    return Promise.reject(error);
+  }
+  return Promise.resolve();
+}).catch(function(error) {
+  console.error(error);
+});
 /*
-
-process...
-
-bower install
-polymer build
-cd build/default
-for board "foo":
-
-remove all entries in boards.json for all but foo
 edit index.html and change singleBoard: "" to singleBoard: "foo"
 rm -rf boards/ all except "foo"
 
