@@ -32,14 +32,9 @@ try {
 } catch (___) {
 }
 
-try {
-  fs.mkdirSync("build/" + board);
-} catch (___) {
-}
-
 function execPromise(cmdLine) {
   let args = cmdLine.split(" "),
-    cmd = cmdLine.pop();
+    cmd = args.shift();
   return new Promise(function(resolve, reject) {
     child_process.execFile(cmd, args, function (error, stdout, stderr) {
       if (error) {
@@ -51,13 +46,10 @@ function execPromise(cmdLine) {
   });
 }
 
-function checkout(board) {
-}
-
-function build(board) {
+function build(boardDir) {
   return new Promise(function(resolve, reject) {
     try {
-      process.chdir("build/" + board);
+      process.chdir("build/" + boardDir);
     } catch (error) {
       return reject(error);
     }
@@ -72,15 +64,14 @@ function build(board) {
     try {
       process.chdir("..");
     } catch (error) {
-      return reject(error);
+      return Promise.reject(error);
     }
-    return resolve();
   });
 }
 
 
-let boardDir = "board-explorer-" + board, boardVersion = 0,
-  files = fs.readDirSync(".");
+let boardDir = "board-explorer-" + board, releaseVersion = 0,
+  files = fs.readdirSync(".");
 
 /* Walk the releases/ directory looking for built versions */
 let regex = new RegExp("^" + boardDir + "([0-9])*\.tgz$");
@@ -94,12 +85,15 @@ releaseVersion++;
 
 boardDir = boardDir + "-" + releaseVersion;
 
-execPromise("git checkout-index -a -f --prefix=build/" + boardDir).then(function() {
-  return build(board);
+Promise.resolve().then(function() {
+//  return execPromise("git checkout-index -a -f --prefix=build/" + boardDir + "/");
+}).then(function() {
+//  return build(boardDir);
 }).then(function() {
   try {
     fs.writeFileSync("build/" + boardDir + "/boards.json", JSON.stringify(boards));
   } catch (error) {
+    console.log(process.cwd());
     return Promise.reject(error);
   }
   return Promise.resolve();
@@ -117,20 +111,13 @@ execPromise("git checkout-index -a -f --prefix=build/" + boardDir).then(function
       return Promise.reject(error);
     }
   }
-
-  try {
-    fs.writeFileSync("build/" + boardDir + "/boards.json", fs.JSON.stringify(boards));
-  } catch (error) {
-    return Promise.reject(error);
-  }
-  return Promise.resolve();
 }).then(function() {
-  return execPromise("tar -C build czvf " + boardDir + ".tgz " + boardDir);
+  return execPromise("tar czvf " + boardDir + ".tgz -C build " + boardDir);
 }).then(function() {
   return execPromise([
       "git tag",
       "-a v" + boardDir,
-      "-m 'Tagged v' " + releaseVersion + " for " + board + "'"
+      "-m 'Tagged-v" + releaseVersion + "-for-" + board + "'"
     ].join(" "));
 }).catch(function(error) {
   console.error(error);
