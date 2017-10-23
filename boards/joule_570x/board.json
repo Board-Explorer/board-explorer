@@ -25,6 +25,19 @@
           "name": "DC Jack",
           "description": "DC Jack"
         },
+        "J1": {
+          "name": "UART_2",
+          "description": "UART_2",
+          "keywords": [ "uart" ],
+          "pins": {
+            "1": { "description": "GND" },
+            "2": { "description": "RTS" },
+            "3": { "description": "N/C" },
+            "4": { "description": "N/C" },
+            "5": { "description": "TXD" },
+            "6": { "description": "CTS" }
+          }
+        },
         "J6": {
           "name": "USB 3.0",
           "description": "USB 3.0",
