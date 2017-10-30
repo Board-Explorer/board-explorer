@@ -1,0 +1,16 @@
+
+@font-face {
+    font-family: ClearSansRegular;
+    src: url(ClearSans/WOFF/ClearSans-Regular.woff) format("woff"),url(ClearSans/TTF/ClearSans-Regular.ttf) format("truetype")
+}
+
+@font-face {
+    font-family: ClearSansThin;
+    src: url(ClearSans/WOFF/ClearSans-Thin.woff) format("woff"),url(ClearSans/TTF/ClearSans-Thin.ttf) format("truetype")
+}
+
+@font-face {
+    font-family: ClearSansBold;
+    src: url(ClearSans/WOFF/ClearSans-Bold.woff) format("woff"),url(ClearSans/TTF/ClearSans-Bold.ttf) format("truetype")
+}
+

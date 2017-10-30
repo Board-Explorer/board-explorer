@@ -45,6 +45,8 @@ limitations under the License.
 
   <link rel="stylesheet" href="../../bower_components/highlightjs/styles/atom-one-light.css">
 
+  <link rel="stylesheet" href="../../fonts/clearsans.css">
+
   <!--
   `<board-explorer-app>` Provides a board-explorer container for the board-viewer.
 
@@ -54,6 +56,16 @@ limitations under the License.
 
   @demo demo/index.html Simple demo showing a statically loaded view.
   -->
+
+  <style>
+  body,* {
+    font-family: ClearSansThin,Helvetica Neue,Helvetica,Arial,sans-serif;
+  }
+
+  b,strong {
+    font-family: ClearSansBold,Helvetica Neue,Helvetica,Arial,sans-serif;
+  }
+  </style>
 
 </head>
 
@@ -69,6 +81,11 @@ limitations under the License.
       --blur-background-color: #f8f8f1;
       --blur-border-color: #f0efe0;
       --bg-l: #f8f8f1;
+
+      --paper-font-common-base: {
+        font-family: ClearSansThin,Helvetica Neue,Helvetica,Arial,sans-serif;
+        -webkit-font-smoothing: antialiased;
+      };
     }
 
     .multi-board #boardTitle {
