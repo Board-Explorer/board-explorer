@@ -6,6 +6,6 @@ J5 pin #2 provides Ground
 
 | Description | Pin | Pin | Description |
 |------------:|-----|-----|:------------|
-|       +5VSB |  1  |  **2**  | **Ground**      |
+|       +5VSB |  1  |**2**| **Ground**  |
 
 
