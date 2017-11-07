@@ -1,5 +1,3 @@
-# Connector LSE, pin #26
-
 LSE pin #26 provides I2S MCLK / GPIO
 
 In hardware schematics, this pin is referred to as **I2SMCLK_GPIO**.

@@ -1,5 +1,3 @@
-# Connector LSE, pin #11
-
 LSE pin #11 provides SPI Clock
 
 In hardware schematics, this pin is referred to as **GPIO_SPI_CLK**.

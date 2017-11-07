@@ -1,5 +1,3 @@
-# Connector LSE, pin #20
-
 LSE pin #20 provides Data In / GPIO
 
 In hardware schematics, this pin is referred to as **GPIO_I2S_DI**.

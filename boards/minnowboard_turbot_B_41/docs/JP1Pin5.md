@@ -1,5 +1,3 @@
-# Connector LSE, pin #5
-
 LSE pin #5 provides SPI Chip Select 1
 
 In hardware schematics, this pin is referred to as **GPIO_SPI_CS#**.

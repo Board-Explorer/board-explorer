@@ -1,5 +1,3 @@
-# Connector LSE, pin #14
-
 LSE pin #14 provides Clock / GPIO
 
 In hardware schematics, this pin is referred to as **GPIO_I2S_CLK**.

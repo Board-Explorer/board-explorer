@@ -1,5 +1,3 @@
-# Connector LSE, pin #21
-
 LSE pin #21 provides GPIO / Wakeup
 
 In hardware schematics, this pin is referred to as **GPIO_S5_0**.

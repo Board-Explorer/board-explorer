@@ -1,5 +1,3 @@
-# Connector LSE, pin #15
-
 LSE pin #15 provides Data / GPIO
 
 In hardware schematics, this pin is referred to as **GPIO_I2C_SDA (I2C #5)**.

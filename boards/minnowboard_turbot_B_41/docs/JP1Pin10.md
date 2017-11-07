@@ -1,5 +1,3 @@
-# Connector LSE, pin #10
-
 LSE pin #10 provides CTS / GPIO
 
 In hardware schematics, this pin is referred to as **GPIO_UART1_CTS**.

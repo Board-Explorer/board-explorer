@@ -1,5 +1,3 @@
-# Connector: Low Speed Expansion (LSE)
-
 Located on the top side of the board, the low speed expansion connector (LSE) 
 is a 26-pin header connector for low-speed I/O. The I/O can include I2C, SPI, 
 PWM, I2S, and various UARTs and GPIO. The LSE connector provides signals 

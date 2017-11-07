@@ -1,5 +1,3 @@
-# Connector LSE, pin #9
-
 LSE pin #9 provides Master Out / Slave In
 
 In hardware schematics, this pin is referred to as **GPIO_SPI_MOSI**.

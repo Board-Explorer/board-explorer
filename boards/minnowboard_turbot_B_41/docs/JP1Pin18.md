@@ -1,5 +1,3 @@
-# Connector LSE, pin #18
-
 LSE pin #18 provides GPIO_I2S_DO
 
 In hardware schematics, this pin is referred to as **Data Out / GPIO**.

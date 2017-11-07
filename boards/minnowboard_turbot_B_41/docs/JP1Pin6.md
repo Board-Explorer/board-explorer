@@ -1,5 +1,3 @@
-# Connector LSE, pin #6
-
 LSE pin #6 provides UART Transmit
 
 In hardware schematics, this pin is referred to as **GPIO_UART1_TXD**.

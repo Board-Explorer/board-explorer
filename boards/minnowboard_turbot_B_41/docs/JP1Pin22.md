@@ -1,5 +1,3 @@
-# Connector LSE, pin #22
-
 LSE pin #22 provides PWM / GPIO
 
 In hardware schematics, this pin is referred to as **GPIO_PWM0**.

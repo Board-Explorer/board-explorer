@@ -1,5 +1,3 @@
-# Connector LSE, pin #24
-
 LSE pin #24 provides PWM / GPIO
 
 In hardware schematics, this pin is referred to as **GPIO_PWM1**.

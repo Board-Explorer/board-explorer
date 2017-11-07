@@ -1,5 +1,3 @@
-# Connector LSE, pin #13
-
 LSE pin #13 provides Clock / GPIO
 
 In hardware schematics, this pin is referred to as **GPIO_I2C_SCL (I2C #5)**.

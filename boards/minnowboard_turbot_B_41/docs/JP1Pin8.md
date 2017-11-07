@@ -1,5 +1,3 @@
-# Connector LSE, pin #8
-
 LSE pin #8 provides UART Receive
 
 In hardware schematics, this pin is referred to as **GPIO_UART1_RXD**.

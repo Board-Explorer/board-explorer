@@ -1,5 +1,3 @@
-# Connector LSE, pin #12
-
 LSE pin #12 provides RTS / GPIO
 
 In hardware schematics, this pin is referred to as **GPIO_UART1_RTS**.

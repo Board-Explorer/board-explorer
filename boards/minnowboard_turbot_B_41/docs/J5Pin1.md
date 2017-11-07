@@ -1,5 +1,3 @@
-# Connector J5: Pin #1
-
 J5 pin #1 provides +5V
 
 ## J5 Layout

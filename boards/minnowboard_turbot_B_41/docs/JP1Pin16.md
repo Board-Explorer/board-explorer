@@ -1,5 +1,3 @@
-# Connector LSE, pin #16
-
 LSE pin #16 provides GPIO_I2S_FRM
 
 In hardware schematics, this pin is referred to as **Frame / GPIO**.

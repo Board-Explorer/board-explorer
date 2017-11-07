@@ -1,5 +1,3 @@
-# Connector LSE, pin #17
-
 LSE pin #17 provides UART Transmit / GPIO
 
 In hardware schematics, this pin is referred to as **GPIO_UART2_TXD**.

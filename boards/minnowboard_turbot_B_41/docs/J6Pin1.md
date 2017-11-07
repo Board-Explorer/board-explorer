@@ -1,5 +1,3 @@
-# Connector J6, pin #1
-
 J6 pin #1 goes to ground when the SATA LED should illuminate.
 
 ## J6 Layout

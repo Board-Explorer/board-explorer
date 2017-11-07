@@ -1,5 +1,3 @@
-# Connector J1: Pin #7
-
 ## J1 Layout
 
 | Description | Pin | Pin | Description |

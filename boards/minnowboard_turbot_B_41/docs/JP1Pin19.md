@@ -1,5 +1,3 @@
-# Connector LSE, pin #19
-
 LSE pin #19 provides UART Receive / GPIO
 
 In hardware schematics, this pin is referred to as **GPIO_UART2_RXD**.

@@ -1,5 +1,3 @@
-# Switch: SW1
-
 This component is referred to as **Switch 1** or **System reset button**.
 
 When pressed, the system will perform a system reset by issuing the

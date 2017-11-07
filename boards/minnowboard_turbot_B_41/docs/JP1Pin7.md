@@ -1,5 +1,3 @@
-# Connector LSE, pin #7
-
 LSE pin #7 provides Master In / Slave Out
 
 In hardware schematics, this pin is referred to as **GPIO_SPI_MISO**.
