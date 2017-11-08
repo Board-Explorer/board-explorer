@@ -242,6 +242,12 @@ limitations under the License.
       margin: 1em;
     }
 
+    .documentation table {
+      border: 1px solid black;
+      width: 100%;
+      margin-bottom: 0.5em;
+    }
+
     .info-content a {
       margin-right: 0.25em;
     }
@@ -337,14 +343,21 @@ limitations under the License.
 
     #documentation table {
       padding: 0px;
-      margin: 0px;
+      margin: 0 0 0.5em 0;
       border-spacing: 0px;
+      border: 1px solid black;
+      width: 100%;
+      margin-bottom: 0.5em;
     }
 
     #documentation th,
     #documentation td {
       border-right: 1px solid black;
       padding: 0 0.5em;
+    }
+
+    #documentation td:first-child {
+      width: 120px;
     }
 
     #documentation th {
@@ -355,6 +368,37 @@ limitations under the License.
     #documentation td:last-child {
       border-right: 1px none black;
     }
+
+    #documentation thead:not(:last-child) {
+      background: #ddd;
+      border-bottom: 1px solid black;
+    }
+
+    #documentation thead:not(:first-of-type) {
+      border-top: 1px solid black;
+    }
+
+    #documentation tbody {
+      font-weight: normal;
+    }
+
+    #documentation td {
+      vertical-align: top;
+    }
+
+    #documentation tr {
+    }
+
+    #documentation a {
+      margin-right: 0.25em;
+      text-decoration: none;
+    }
+
+    #documentation a:hover {
+      text-decoration: underline;
+    }
+
+
 
     #layout {
       height: 100%;
@@ -1085,15 +1129,9 @@ document.addEventListener("WebComponentsReady", function() {
       selected.forEach(function(refdes) {
         /* Check if it is a component/pin... */
         var item = this.$.boardViewer.findComponent(refdes);
-        if (!item) {
-          /* Try to find if is a keyword. */
-          for (var i = 0; i < this.keywords.length; i++) {
-            /* If is a keyword then select the left button. */
-            if (this.keywords[i].refdes == refdes) {
-              item = ({ refdes: refdes });
-              break;
-            }
-          }
+        /* Try to find if is a keyword. */
+        if (!item && this.isKeyword(refdes)) {
+          item = { refdes: refdes };
         }
 
         /* If the first non-keyword hasn't been set, set it to this item */
@@ -1303,6 +1341,11 @@ document.addEventListener("WebComponentsReady", function() {
           return Promise.reject(new Error("Error returned from getDocumentation"));
         }
 
+        /* If this is a keyword and there is no content, don't return anything */
+        if (this.isKeyword(item.refdes)) {
+          return "";
+        }
+
         /* If there was no content, and there is a parent component,
          * and the current hover item is still the one being fetched,
          * fetch the documentation for the parent component and set this
@@ -1344,7 +1387,55 @@ document.addEventListener("WebComponentsReady", function() {
           return "<p>No additional documentation for " + this.itemRefDes(item);
         }.bind(this, item));
       }.bind(this, item)).then(function(item, html) {
-        item.html = html;
+        var info = "";
+
+        /* If the item being looked up is a keyword, postfix the keyword
+         * item index */
+        if (this.isKeyword(item.refdes)) {
+          var items = this.$.boardViewer.getItemsByKeyword(item.refdes);
+          if (items && items.length) {
+            var component = null;
+
+            info += "<h2>Items tagged with '<b>"+item.refdes+"</b>'</h2>";
+
+            items.forEach(function(item) {
+              if (component && item.type == "component") {
+                info += "</table>";
+              }
+
+              if (!component || item.type == "component") {
+                info += "<table class='keyword-index'>";
+                component = item;
+              }
+
+              var names = this._getItemNamesAndContexts(item);
+
+              if (item.type == "component") {
+                info += "<thead>";
+              }
+
+              info += "<tr>";
+              info += "<td><a href='#" + this.board + "/" + item.refdes + "'>" +
+                item.readable + "</a></td>";
+              names.forEach(function(name) {
+                var span = "";
+                if (names.length == 1) {
+                  span = "colspan='100'";
+                }
+                info += "<td " + span + ">" + name.context + ": " + name.name + "</td>";
+              });
+              info += "</tr>";
+
+              if (item.type == "component") {
+                info += "</thead>";
+              }
+
+            }.bind(this));
+            info += "</table>";
+          }
+        }
+
+        item.html = html + info;
       }.bind(this, item)).catch(function(item, error) {
         /* On error, set the item's HTML to "No additional documentation..." */
         item.html = "<p>No additional documentation for " + this.itemRefDes(item);
@@ -1665,11 +1756,9 @@ document.addEventListener("WebComponentsReady", function() {
 
         }
         else {
-          for (var i = 0; i < this.keywords.length; i++) {
-            if (this.keywords[i].refdes == this.selectedOnceLoaded[0]) {
-              this.$.searchTabs.select('keywordsPage');
-              this.keywords[i].selected = true;
-            }
+          if (this.isKeyword(this.selectedOnceLoaded[0])) {
+            this.$.searchTabs.select('keywordsPage');
+            this.keywords[i].selected = true;
           }
 
 
@@ -1717,6 +1806,16 @@ document.addEventListener("WebComponentsReady", function() {
       }
     },
 
+    isKeyword: function(refdes) {
+      var keyword = null;
+      for (var j = 0; !keyword && j < this.keywords.length; j++) {
+        if (this.keywords[j].refdes == refdes) {
+          keyword = refdes;
+        }
+      }
+      return keyword;
+    },
+
     updateRoute: function(board, selected, category) {
       /* Start with an empty route by trimming the hash parameters */
       var href = window.location.href.replace(/#.*/, ""),
@@ -1734,14 +1833,8 @@ document.addEventListener("WebComponentsReady", function() {
               continue;
             }
 
-            var keyword = null;
-            for (var j = 0; !keyword && j < this.keywords.length; j++) {
-              if (this.keywords[j].refdes == selected[i]) {
-                keyword = selected[i];
-              }
-            }
-            if (keyword) {
-              params.push(keyword);
+            if (this.isKeyword(selected[i])) {
+              params.push(this.isKeyword(selected[i]));
               continue;
             }
 
