@@ -88,45 +88,13 @@ limitations under the License.
       };
     }
 
-    .multi-board #boardTitle {
+    #boardTitle {
       cursor: pointer;
       display: block;
-    }
-
-    .single-board #boardTitle {
-      display: none;
     }
 
     #searchPage {
       display: block;
-    }
-
-    #mobileHeader {
-      display: block;
-      height: 72px;
-      max-height: 72px;
-      width: 100%;
-      position: fixed;
-      z-index: 20;
-      margin-left: 10px;
-      background-color: #fff;
-    }
-
-    #mobileHeader paper-material {
-      height: 64px;
-      max-height: 64px;
-      padding: 0px;
-    }
-
-    #mobileHeader div {
-      height: 64px;
-      padding-right: 5px;
-    }
-
-    .multi-board #mobileHeader #boardTitle {
-      float: right;
-      width: 85%;
-      cursor: pointer;
     }
 
     app-drawer {
@@ -139,21 +107,19 @@ limitations under the License.
       --app-drawer-scrim-background: rgb(255, 255, 255);
     }
 
-    .single-board app-drawer {
+    app-drawer {
       --app-drawer-content-container: {
         padding: 0 !important;
-      }
-    }
-
-    .multi-board app-drawer {
-      --app-drawer-content-container: {
-        padding: 73px 0 0 0 !important;
       }
     }
 
     board-viewer {
       position: relative;
       height: 480px;
+    }
+
+    #drawer {
+      overflow-y: scroll;
     }
 
     #drawer #sidebar-left {
@@ -168,6 +134,23 @@ limitations under the License.
 
     .single-board #drawer #sidebar-left {
       padding: 64px 0;
+    }
+
+    .multi-board #hamburger {
+      @apply(--layout-self-start);
+    }
+
+    .single-board #hamburger {
+      @apply(--layout-self-center);
+    }
+
+
+    #left-menu {
+      overflow: hidden;
+    }
+
+    #left-contents {
+      z-index: 1000;
     }
 
     #layout paper-button {
@@ -270,7 +253,7 @@ limitations under the License.
       position: absolute;
       left: 0px;
       right: 0px;
-      margin: -64px 32px auto 32px;
+      margin: -64px 32px 0 32px;
       padding: 4px 16px;
       box-shadow: 0px 3px 3px rgba(64, 64, 64, 0.25);
       box-sizing: border-box;
@@ -440,19 +423,19 @@ limitations under the License.
     #panel-right {
       width: 66.7%;
       max-width: 100%;
+      height: 100%;
+      box-sizing: border-box;
     }
 
     /* In single-board mode, there is no top header, so don't set these styles */
     .multi-board.mobile #panel-right {
       position: absolute;
-      top: 79px;
       width: 100%;
-      height: calc(100% - 72px);
     }
 
-    /* In single-board mode, the hamburger menu item floats in the upper left
-     * corner */
-    .single-board #overlayMenu {
+    /* The hamburger menu item floats in the upper left; it is hidden
+     * when !isMobileMode */
+    #overlayMenu {
       position: absolute;
       top: 0;
       left: 0;
@@ -460,24 +443,16 @@ limitations under the License.
       color: #f0f0f0;
     }
 
-    .multi-board #drawer paper-icon-button {
-      display: none;
-    }
-
-    .multi-board #overlayMenu {
-      display: none;
-    }
-
-    /* Mobile header is not shown in single-board mode */
-    .single-board #mobileHeader {
-      display: none;
-    }
-
     app-drawer paper-icon {
       color: #f0f0f0;
     }
 
+    #info {
+      box-sizing: border-box;
+    }
+
     #panel-bottom {
+      box-sizing: border-box;
       height: 33.3%;
     }
 
@@ -526,203 +501,139 @@ limitations under the License.
 
     <!-- In single board mode, the hamburger menu overlays the board-viewer.
          If not in single-board mode, the CSS for this sets it to display:none -->
-    <paper-icon-button id="overlayMenu" hidden$="[[!isMobileLayout]]" icon="menu" slot="dropdown-trigger" alt="menu" on-tap="toggleDrawer"></paper-icon-button>
-
-    <!-- The following is set to display:none if single-board mode -->
-    <div id="mobileHeader" hidden$="{{!isMobileLayout}}">
-      <paper-material>
-        <div class="layout horizontal center">
-          <paper-icon-button icon="menu" slot="dropdown-trigger" alt="menu" on-tap="toggleDrawer"></paper-icon-button>
-          <span id="boardTitle" on-tap="unloadBoard">[[getBoardBoxTitle(board)]]</span>
-        </div>
-      </paper-material>
-    </div>
+    <paper-icon-button
+        id="overlayMenu"
+        hidden$="[[!isMobileLayout]]"
+        icon="menu"
+        slot="dropdown-trigger"
+        alt="menu"
+        on-tap="toggleDrawer"></paper-icon-button>
 
     <app-drawer id="drawer" disable-swipe no-focus-trap>
-      <paper-material class="horizontal layout center">
-        <paper-icon-button icon="menu" slot="dropdown-trigger" alt="menu" on-tap="toggleDrawer"></paper-icon-button>
-        <paper-tabs class="flex" id="searchTabs" selected="{{searchMode}}" attr-for-selected="name">
-          <paper-tab name="searchPage">Search</paper-tab>
-          <paper-tab name="categoriesPage" hidden$="[[isEmpty(categories)]]">Categories</paper-tab>
-          <paper-tab name="keywordsPage">Keywords</paper-tab>
-          <paper-tab name="componentsPage">Components</paper-tab>
-          <paper-tab name="overviewPage" hidden>Get to know the board</paper-tab>
-        </paper-tabs>
-      </paper-material>
+      <div id="left-contents">
 
-      <paper-material class="vertical layout">
-        <iron-pages id="pages" selected="[[searchMode]]" attr-for-selected="id">
-          <div id="searchPage" class="vertical layout">
-            <paper-input id="search" value="{{search}}" label="Search" class="flex">
-              <iron-icon suffix slot="suffix" icon="search"></iron-icon>
-            </paper-input>
-            <div hidden$="[[!isEmpty(search)]]">Enter a string to search (for example "I2C").</div>
-            <div hidden$="[[isEmpty(search)]]">
-              <div>Search results</div>
-              <div hidden$="[[!isEmpty(matches)]]">No matches.</div>
-              <div class="layout horizontal wrap">
-                <template is="dom-repeat" items="[[matches]]">
-                  <paper-button match$="[[item.refdes]]"
-                      class="item-with-name layout vertical start"
-                      on-tap="buttonTap"
-                      on-mouseover="buttonOver"
-                      on-mouseout="buttonOut">
-                    <div>[[itemName(item)]]</div>
-                    <div>[[item.field]]: [[item.value]]</div>
-                  </paper-button>
-                </template>
-              </div>
-            </div>
-          </div>
+        <!-- in mobile mode && !single board mode, the heading is:
+        * [icon] | [title]
+        *        |=========
+        *        | [menu]
+        *
+        * In mobile mode && single board mode, the heading is:
+        * [icon] | [menu]
+        -->
+        <paper-material id="left-menu" class="horizontal layout">
+          <paper-icon-button
+              id="hamburger"
+              hidden$="[[!isMobileLayout]]"
+              icon="menu"
+              slot="dropdown-trigger"
+              alt="menu"
+              on-tap="toggleDrawer"></paper-icon-button>
 
-          <div id="categoriesPage" class="vertical layout">
-            <div>Categories</div>
-            <div class="layout horizontal wrap">
-              <template is="dom-repeat" items="[[categories]]">
-                <paper-button match$="[[item.slug]]"
-                    class$="layout vertical start"
-                    on-tap="buttonTap"
-                    on-mouseover="buttonOver"
-                    on-mouseout="buttonOut"
-                    selected$="[[item.selected]]">
-                  <div>[[item.name]]</div>
-                  <div></div>
-                </paper-button>
-              </template>
-            </div>
-          </div>
+          <div class="flex layout vertical center-justified">
+            <paper-material hidden$="[[singleBoardMode]]"
+                id="boardTitle"
+                on-tap="unloadBoard"
+                class="flex vertical layout start">
+              [[getBoardBoxTitle(board)]]
+            </paper-material>
 
-          <div id="keywordsPage" class="vertical layout">
-            <div>Keywords</div>
-            <div class="horizontal layout wrap">
-              <template is="dom-repeat" items="[[keywords]]">
-                <paper-button match$="[[item.refdes]]"
-                    class$="layout vertical start"
-                    on-tap="buttonTap"
-                    on-mouseover="buttonOver"
-                    on-mouseout="buttonOut"
-                    selected$="[[item.selected]]">
-                  <div>[[item.refdes]]</div>
-                  <div></div>
-                </paper-button>
-              </template>
-            </div>
-          </div>
-
-          <div id="componentsPage" class="vertical layout start">
-            <div>Components</div>
-            <div class="layout horizontal wrap">
-              <template is="dom-repeat" items="[[components]]">
-                <paper-button match$="[[item.refdes]]"
-                    class$="[[itemClassList(item)]] layout vertical start"
-                    on-tap="buttonTap"
-                    on-mouseover="buttonOver"
-                    on-mouseout="buttonOut"
-                    selected$="[[item.selected]]">
-                  <div>[[itemRefDes(item)]]</div>
-                  <template is="dom-if" if="{{itemClassList(item)}}"><div>[[itemName(item)]]</div></template>
-                </paper-button>
-              </template>
-            </div>
-          </div>
-        </iron-pages>
-      </paper-material>
-    </app-drawer>
-
-    <vaadin-split-layout class="horizontal layout justified" id="vaadin-container">
-      <div id="panel-left" hidden$="[[isMobileLayout]]" class$="[[_panelLeftClass]]">
-        <div class="vertical layout flex" id="sidebar-left">
-          <paper-material id="boardTitle" on-tap="unloadBoard" class="vertical layout start" hidden$="[[isMobileLayout]]">
-            [[getBoardBoxTitle(board)]]
-          </paper-material>
-
-          <paper-material class="vertical layout">
-            <paper-tabs id="searchTabs" selected="{{searchMode}}" attr-for-selected="name">
+            <paper-tabs
+                class="layout horizontal center-justified"
+                id="searchTabs"
+                selected="{{searchMode}}"
+                attr-for-selected="name">
               <paper-tab name="searchPage">Search</paper-tab>
               <paper-tab name="categoriesPage" hidden$="[[isEmpty(categories)]]">Categories</paper-tab>
               <paper-tab name="keywordsPage">Keywords</paper-tab>
               <paper-tab name="componentsPage">Components</paper-tab>
               <paper-tab name="overviewPage" hidden>Get to know the board</paper-tab>
             </paper-tabs>
-          </paper-material>
+          </div>
+        </paper-material>
 
-          <paper-material class="vertical layout">
-            <iron-pages id="pages" selected="[[searchMode]]" attr-for-selected="id">
-              <div id="searchPage" class="vertical layout">
-                <paper-input id="search" value="{{search}}" label="Search" class="flex">
-                  <iron-icon suffix slot="suffix" icon="search"></iron-icon>
-                </paper-input>
-                <div hidden$="[[!isEmpty(search)]]">Enter a string to search (for example "I2C").</div>
-                <div hidden$="[[isEmpty(search)]]">
-                  <div>Search results</div>
-                  <div hidden$="[[!isEmpty(matches)]]">No matches.</div>
-                  <div class="layout horizontal wrap">
-                    <template is="dom-repeat" items="[[matches]]">
-                      <paper-button match$="[[item.refdes]]"
-                          class="item-with-name layout vertical start"
-                          on-tap="buttonTap"
-                          on-mouseover="buttonOver"
-                          on-mouseout="buttonOut">
-                        <div>[[itemName(item)]]</div>
-                        <div>[[item.field]]: [[item.value]]</div>
-                      </paper-button>
-                    </template>
-                  </div>
-                </div>
-              </div>
-
-              <div id="categoriesPage" class="vertical layout">
-                <div>Categories</div>
+        <paper-material class="vertical layout">
+          <iron-pages id="pages" selected="[[searchMode]]" attr-for-selected="id">
+            <div id="searchPage" class="vertical layout">
+              <paper-input id="search" value="{{search}}" label="Search" class="flex">
+                <iron-icon suffix slot="suffix" icon="search"></iron-icon>
+              </paper-input>
+              <div hidden$="[[!isEmpty(search)]]">Enter a string to search (for example "I2C").</div>
+              <div hidden$="[[isEmpty(search)]]">
+                <div>Search results</div>
+                <div hidden$="[[!isEmpty(matches)]]">No matches.</div>
                 <div class="layout horizontal wrap">
-                  <template is="dom-repeat" items="[[categories]]">
-                    <paper-button match$="[[item.slug]]"
-                        class$="layout vertical start"
-                        on-tap="buttonTap"
-                        on-mouseover="buttonOver"
-                        on-mouseout="buttonOut"
-                        selected$="[[item.selected]]">
-                      <div>[[item.name]]</div>
-                      <div></div>
-                    </paper-button>
-                  </template>
-                </div>
-              </div>
-
-              <div id="keywordsPage" class="vertical layout">
-                <div>Keywords</div>
-                <div class="horizontal layout wrap">
-                  <template is="dom-repeat" items="[[keywords]]">
+                  <template is="dom-repeat" items="[[matches]]">
                     <paper-button match$="[[item.refdes]]"
-                        class$="layout vertical start"
+                        class="item-with-name layout vertical start"
                         on-tap="buttonTap"
                         on-mouseover="buttonOver"
-                        on-mouseout="buttonOut"
-                        selected$="[[item.selected]]">
-                      <div>[[item.refdes]]</div>
-                      <div></div>
+                        on-mouseout="buttonOut">
+                      <div>[[itemName(item)]]</div>
+                      <div>[[item.field]]: [[item.value]]</div>
                     </paper-button>
                   </template>
                 </div>
               </div>
+            </div>
 
-              <div id="componentsPage" class="vertical layout start">
-                <div>Components</div>
-                <div class="layout horizontal wrap">
-                  <template is="dom-repeat" items="[[components]]">
-                    <paper-button match$="[[item.refdes]]"
-                        class$="[[itemClassList(item)]] layout vertical start"
-                        on-tap="buttonTap"
-                        on-mouseover="buttonOver"
-                        on-mouseout="buttonOut"
-                        selected$="[[item.selected]]">
-                      <div>[[itemRefDes(item)]]</div>
-                      <template is="dom-if" if="{{itemClassList(item)}}"><div>[[itemName(item)]]</div></template>
-                    </paper-button>
-                  </template>
-                </div>
+            <div id="categoriesPage" class="vertical layout">
+              <div>Categories</div>
+              <div class="layout horizontal wrap">
+                <template is="dom-repeat" items="[[categories]]">
+                  <paper-button match$="[[item.slug]]"
+                      class$="layout vertical start"
+                      on-tap="buttonTap"
+                      on-mouseover="buttonOver"
+                      on-mouseout="buttonOut"
+                      selected$="[[item.selected]]">
+                    <div>[[item.name]]</div>
+                    <div></div>
+                  </paper-button>
+                </template>
               </div>
-            </iron-pages>
-          </paper-material>
+            </div>
+
+            <div id="keywordsPage" class="vertical layout">
+              <div>Keywords</div>
+              <div class="horizontal layout wrap">
+                <template is="dom-repeat" items="[[keywords]]">
+                  <paper-button match$="[[item.refdes]]"
+                      class$="layout vertical start"
+                      on-tap="buttonTap"
+                      on-mouseover="buttonOver"
+                      on-mouseout="buttonOut"
+                      selected$="[[item.selected]]">
+                    <div>[[item.refdes]]</div>
+                    <div></div>
+                  </paper-button>
+                </template>
+              </div>
+            </div>
+
+            <div id="componentsPage" class="vertical layout start">
+              <div>Components</div>
+              <div class="layout horizontal wrap">
+                <template is="dom-repeat" items="[[components]]">
+                  <paper-button match$="[[item.refdes]]"
+                      class$="[[itemClassList(item)]] layout vertical start"
+                      on-tap="buttonTap"
+                      on-mouseover="buttonOver"
+                      on-mouseout="buttonOut"
+                      selected$="[[item.selected]]">
+                    <div>[[itemRefDes(item)]]</div>
+                    <template is="dom-if" if="{{itemClassList(item)}}"><div>[[itemName(item)]]</div></template>
+                  </paper-button>
+                </template>
+              </div>
+            </div>
+          </iron-pages>
+        </paper-material>
+      </div>
+    </app-drawer>
+
+    <vaadin-split-layout class="horizontal layout justified" id="vaadin-container">
+      <div id="panel-left" hidden$="[[isMobileLayout]]" class$="[[_panelLeftClass]]">
+        <div class="vertical layout flex" id="sidebar-left">
         </div>
       </div>
 
@@ -880,8 +791,7 @@ document.addEventListener("WebComponentsReady", function() {
         value: false
       },
       isMobileLayout: {
-        type: Boolean,
-        value: false
+        type: Boolean
       },
 
       /** Class to apply to left-panel (used for responsive design) */
@@ -892,6 +802,7 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     observers: [
+      "_switchModes(isMobileLayout)",
       "setBoardAndSelectedFromHash(boards, hash)",
       "_searchModeChanged(searchMode)",
       "_searchChanged(search)",
@@ -904,6 +815,22 @@ document.addEventListener("WebComponentsReady", function() {
       "boardViewer.item-hover": "onBoardItemHover",
       "boardViewer.selected-changed": "onBoardSelectedChanged",
       "search.focused-changed": "_searchFocus"
+    },
+
+    _switchModes: function(mobile) {
+      var leftContent = this.querySelector("#left-contents"),
+        parent;
+      if (mobile) {
+        console.log("Changing to MOBILE");
+        parent = this.$.drawer.$.contentContainer;
+      } else {
+        console.log("Changing to DESKTOP");
+        parent = this.$["panel-left"];
+      }
+
+      if (leftContent.parentElement != parent) {
+        parent.appendChild(leftContent);
+      }
     },
 
     onPanelLeftResize: function(event) {
