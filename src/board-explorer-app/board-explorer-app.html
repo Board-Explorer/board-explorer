@@ -874,7 +874,7 @@ document.addEventListener("WebComponentsReady", function() {
         }
         var container = this.$.pages.selectedItem.querySelector(".button-list");
         var buttons = container.querySelectorAll("paper-button");
-        var top, row, fitWidth = container.clientWidth, cumulative, gap, marginWidth;
+        var top, row = [], fitWidth = container.clientWidth, cumulative = 0, gap, marginWidth;
 
         Array.prototype.forEach.call(buttons, function(button) {
           button.style.minWidth = "8em";
@@ -885,10 +885,9 @@ document.addEventListener("WebComponentsReady", function() {
           if (top === undefined) {
             var style = window.getComputedStyle(button);
             top = button.offsetTop;
-            cumulative = 0;
-            row = [];
             marginWidth = parseInt(style.marginLeft) + parseInt(style.marginRight);
           }
+
           if (button.offsetTop == top) {
             cumulative += Math.ceil(button.getBoundingClientRect().width + marginWidth);
             row.push(button);
