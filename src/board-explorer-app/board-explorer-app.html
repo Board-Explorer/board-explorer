@@ -171,9 +171,9 @@ limitations under the License.
     #layout paper-button {
       cursor: pointer;
       box-sizing: border-box;
-      padding: 0.25em 0.5em;
-      margin: 0.25em 0.5em;
-      border-radius: 6px;
+      padding: 0.25em 1.1em;
+      margin: 0.25em 0.25em;
+      border-radius: 2.2em;
       border: 1px solid rgba(0, 0, 0, 0.5);
       min-width: 8em;
       display: inline-block;
@@ -185,11 +185,13 @@ limitations under the License.
       color: black;
       font-size: 1em;
       min-height: 2.2em;
+      text-align: center;
     }
 
     #layout paper-button[selected],
     #layout paper-button[focused] {
       font-weight: bold;
+      font-family: ClearSansBold;
     }
 
     #layout paper-button.hover,
@@ -215,20 +217,28 @@ limitations under the License.
       background-color: #e0e0e0;
     }
 
-    #layout paper-button.item-with-name div:first-child {
-      padding-top: 0.3em;
-      font-size: 0.8em;
-      line-height: 0.8em;
+    #layout paper-button.item-with-name div {
+      display: inline-block
     }
 
-    #layout paper-button.item-with-name div:last-child {
-      box-sizing: border-box;
-      padding-top: 0.3em;
+    #layout paper-button.search-result > div:first-child {
       font-size: 0.9em;
     }
 
+    #layout paper-button.search-result > div:last-child {
+      padding-top: 0.2em;
+      font-size: 0.8em;
+      padding-bottom: 0.2em;
+    }
+
+    #layout paper-button.item-with-name div:first-child::after {
+      content: ": ";
+    }
+
+    #layout paper-button.item-with-name div:last-child {
+    }
+
     #layout paper-button:not(.item-with-name) div:first-child {
-      line-height: 2.1em;
     }
 
     paper-material {
@@ -333,6 +343,7 @@ limitations under the License.
     #board-selector .heading {
       margin: 0 0 0.5em 0;
       font-weight: bold;
+      font-family: ClearSansBold;
     }
 
     #board-selector paper-button {
@@ -579,7 +590,7 @@ limitations under the License.
                 <div class="button-list layout horizontal wrap">
                   <template is="dom-repeat" items="[[matches]]">
                     <paper-button match$="[[item.refdes]]"
-                        class="item-with-name layout vertical start"
+                        class="search-result layout vertical start"
                         on-tap="buttonTap"
                         on-mouseover="buttonOver"
                         on-mouseout="buttonOut">
@@ -596,7 +607,6 @@ limitations under the License.
               <div class="button-list layout horizontal wrap">
                 <template is="dom-repeat" items="[[categories]]">
                   <paper-button match$="[[item.slug]]"
-                      class$="layout vertical start"
                       on-tap="buttonTap"
                       on-mouseover="buttonOver"
                       on-mouseout="buttonOut"
@@ -613,7 +623,6 @@ limitations under the License.
               <div class="button-list horizontal layout wrap">
                 <template is="dom-repeat" items="[[keywords]]">
                   <paper-button match$="[[item.refdes]]"
-                      class$="layout vertical start"
                       on-tap="buttonTap"
                       on-mouseover="buttonOver"
                       on-mouseout="buttonOut"
@@ -630,13 +639,13 @@ limitations under the License.
               <div class="button-list layout horizontal wrap">
                 <template is="dom-repeat" items="[[components]]">
                   <paper-button match$="[[item.refdes]]"
-                      class$="[[itemClassList(item)]] layout vertical start"
+                      class$="[[itemClassList(item)]]"
                       on-tap="buttonTap"
                       on-mouseover="buttonOver"
                       on-mouseout="buttonOut"
                       selected$="[[item.selected]]">
-                    <div>[[itemRefDes(item)]]</div>
-                    <template is="dom-if" if="{{itemClassList(item)}}"><div>[[itemName(item)]]</div></template>
+                      <div>[[itemRefDes(item)]]</div>
+                      <template is="dom-if" if="{{itemClassList(item)}}"><div>[[itemName(item)]]</div></template>
                   </paper-button>
                 </template>
               </div>
