@@ -73,6 +73,15 @@ limitations under the License.
 <template>
   <style include="iron-flex iron-flex-alignment iron-positioning">
     :host {
+      /* Colors from UX mockups
+      font color: fbfbfb
+      background dark gray: 22252e
+      heading background: 3c404c
+      button background light gray: 38424b
+      line highlight bar: 02e089
+      */
+
+
       /* Used in board-viewer tab header */
       --focus-foreground-color: #52595a;
       --focus-background-color: #d6eab0;
@@ -153,23 +162,29 @@ limitations under the License.
       z-index: 1000;
     }
 
+    .button-list {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
     #layout paper-button {
       cursor: pointer;
-      display: inline-block;
       box-sizing: border-box;
       padding: 0.25em 0.5em;
       margin: 0.25em 0.5em;
       border-radius: 6px;
       border: 1px solid rgba(0, 0, 0, 0.5);
       min-width: 8em;
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-wrap: break-word;
       text-decoration: none;
       background-color: #f0f0f0;
       color: black;
       font-size: 1em;
       min-height: 2.2em;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      word-wrap: break-word;
     }
 
     #layout paper-button[selected],
@@ -561,7 +576,7 @@ limitations under the License.
               <div hidden$="[[isEmpty(search)]]">
                 <div>Search results</div>
                 <div hidden$="[[!isEmpty(matches)]]">No matches.</div>
-                <div class="layout horizontal wrap">
+                <div class="button-list layout horizontal wrap">
                   <template is="dom-repeat" items="[[matches]]">
                     <paper-button match$="[[item.refdes]]"
                         class="item-with-name layout vertical start"
@@ -578,7 +593,7 @@ limitations under the License.
 
             <div id="categoriesPage" class="vertical layout">
               <div>Categories</div>
-              <div class="layout horizontal wrap">
+              <div class="button-list layout horizontal wrap">
                 <template is="dom-repeat" items="[[categories]]">
                   <paper-button match$="[[item.slug]]"
                       class$="layout vertical start"
@@ -595,7 +610,7 @@ limitations under the License.
 
             <div id="keywordsPage" class="vertical layout">
               <div>Keywords</div>
-              <div class="horizontal layout wrap">
+              <div class="button-list horizontal layout wrap">
                 <template is="dom-repeat" items="[[keywords]]">
                   <paper-button match$="[[item.refdes]]"
                       class$="layout vertical start"
@@ -612,7 +627,7 @@ limitations under the License.
 
             <div id="componentsPage" class="vertical layout start">
               <div>Components</div>
-              <div class="layout horizontal wrap">
+              <div class="button-list layout horizontal wrap">
                 <template is="dom-repeat" items="[[components]]">
                   <paper-button match$="[[item.refdes]]"
                       class$="[[itemClassList(item)]] layout vertical start"
@@ -834,13 +849,63 @@ document.addEventListener("WebComponentsReady", function() {
     },
 
     onPanelLeftResize: function(event) {
-      this.async(function() {
-        if (this.$["panel-left"].offsetWidth < 480) {
-          this._panelLeftClass = "constrained";
-        } else {
-          this._panelLeftClass = "";
+      if (this.$["panel-left"].offsetWidth < 480) {
+        this._panelLeftClass = "constrained";
+      } else {
+        this._panelLeftClass = "";
+      }
+      this.updateStyles();
+
+      this.debounce("resize", function() {
+        /* justify-content: stretch combined with width:auto is not
+         * fitting the paper-button items in the button-list container when
+         * it is multiple rows of elements */
+        if (!this.$.pages.selectedItem) {
+           return;
         }
-        this.updateStyles();
+        var container = this.$.pages.selectedItem.querySelector(".button-list");
+        var buttons = container.querySelectorAll("paper-button");
+        var top, row, fitWidth = container.clientWidth, cumulative, gap, marginWidth;
+
+        Array.prototype.forEach.call(buttons, function(button) {
+          button.style.minWidth = "8em";
+          button.style.width = "auto";
+        });
+
+        Array.prototype.forEach.call(buttons, function(button) {
+          if (top === undefined) {
+            var style = window.getComputedStyle(button);
+            top = button.offsetTop;
+            cumulative = 0;
+            row = [];
+            marginWidth = parseInt(style.marginLeft) + parseInt(style.marginRight);
+          }
+          if (button.offsetTop == top) {
+            cumulative += Math.ceil(button.getBoundingClientRect().width + marginWidth);
+            row.push(button);
+          } else {
+            gap = Math.floor((fitWidth - cumulative) / row.length);
+            row.forEach(function(item, index) {
+              /* Account for rounding errors in final item in the row */
+              if (index == row.length - 1) {
+                gap = (fitWidth - cumulative) - (gap * index) - 1;
+              }
+              item.style.minWidth = Math.floor(item.getBoundingClientRect().width) + gap + 'px';
+            });
+            top = button.offsetTop;
+            cumulative = button.getBoundingClientRect().width + marginWidth;
+            row = [ button ];
+          }
+        }, 10);
+
+        gap = Math.floor((fitWidth - cumulative) / row.length);
+        row.forEach(function(item, index) {
+          /* Account for rounding errors in final item in the row */
+          if (index == row.length - 1) {
+            gap = (fitWidth - cumulative) - (gap * index) - 1;
+          }
+          item.style.minWidth = Math.floor(item.getBoundingClientRect().width) + gap + 'px';
+        });
       });
     },
 
@@ -981,6 +1046,11 @@ document.addEventListener("WebComponentsReady", function() {
       });
 
       this.matches = matches;
+
+      /* After the categories, components, or search results change, trigger
+       * a re-layout of the left-panel */
+      Polymer.dom.flush();
+      this.onPanelLeftResize();
     },
 
     _searchFocus: function(event) {
@@ -1623,7 +1693,6 @@ document.addEventListener("WebComponentsReady", function() {
       }.bind(this));
 
       this.components = components;
-
       this.categories = this.$.boardViewer.getCategories();
 
       /* When the application loads, the default filter is set as follows:
@@ -1688,7 +1757,6 @@ document.addEventListener("WebComponentsReady", function() {
             this.keywords[i].selected = true;
           }
 
-
           for (var i = 0; i < this.components.length; i++) {
             for (var j = 0; j < this.selectedOnceLoaded.length; j++) {
               if (this.components[i].refdes == this.selectedOnceLoaded[j]) {
@@ -1702,6 +1770,11 @@ document.addEventListener("WebComponentsReady", function() {
 
         delete this.selectedOnceLoaded;
       }
+
+      /* After the categories, components, or search results change, trigger
+       * a re-layout of the left-panel */
+      Polymer.dom.flush();
+      this.onPanelLeftResize();
     },
 
     _panelScroll: function(info) {
