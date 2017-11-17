@@ -468,6 +468,29 @@ limitations under the License.
       height: 100vh;
     }
 
+    .vaadin-left-right {
+      --vaadin-split-layout-splitter: {
+        fill: var(--color-green);
+        background: var(--color-dark-gray);
+      };
+    }
+
+    #panel-left::-webkit-scrollbar {
+      width: 10px;
+      background: var(--color-dark-gray);
+    }
+
+    #panel-left::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+    	background-color: var(--color-green);
+    }
+
+    .vaadin-up-down {
+      --vaadin-split-layout-splitter: {
+        fill: var(--color-green);
+      };
+    }
+
     #layout.mobile {
       height: 100%;
       max-height: 100%;
@@ -706,13 +729,13 @@ limitations under the License.
       </div>
     </app-drawer>
 
-    <vaadin-split-layout class="horizontal layout justified" id="vaadin-container">
+    <vaadin-split-layout class="vaadin-left-right horizontal layout justified" id="vaadin-container">
       <div id="panel-left" hidden$="[[isMobileLayout]]" class$="[[_panelLeftClass]]">
         <div class="vertical layout flex" id="sidebar-left">
         </div>
       </div>
 
-      <vaadin-split-layout vertical id="panel-right">
+      <vaadin-split-layout vertical id="panel-right" class="vaadin-up-down">
         <board-viewer
           class="flex-grow"
           hidden$="[[isEmpty(board)]]"
@@ -916,7 +939,7 @@ document.addEventListener("WebComponentsReady", function() {
       }
       this.updateStyles();
 
-      this.debounce("resize", function() {
+      //this.debounce("resize", function() {
         /* justify-content: stretch combined with width:auto is not
          * fitting the paper-button items in the button-list container when
          * it is multiple rows of elements */
@@ -925,7 +948,7 @@ document.addEventListener("WebComponentsReady", function() {
         }
         var container = this.$.pages.selectedItem.querySelector(".button-list");
         var buttons = container.querySelectorAll("paper-button");
-        var top, row = [], fitWidth = container.clientWidth, cumulative = 0, gap, marginWidth;
+        var top, row = [], fitWidth = container.getBoundingClientRect().width, cumulative = 0, gap, marginWidth;
 
         Array.prototype.forEach.call(buttons, function(button) {
           button.style.minWidth = "8em";
@@ -965,7 +988,7 @@ document.addEventListener("WebComponentsReady", function() {
           }
           item.style.minWidth = Math.floor(item.getBoundingClientRect().width) + gap + 'px';
         });
-      });
+//      });
     },
 
     toggleDrawer: function () {
