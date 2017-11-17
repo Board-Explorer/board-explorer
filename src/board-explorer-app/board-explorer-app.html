@@ -73,14 +73,12 @@ limitations under the License.
 <template>
   <style include="iron-flex iron-flex-alignment iron-positioning">
     :host {
-      /* Colors from UX mockups
-      font color: fbfbfb
-      background dark gray: 22252e
-      heading background: 3c404c
-      button background light gray: 38424b
-      line highlight bar: 02e089
-      */
-
+      /* Colors from UX mockups */
+      --color-green: #02e089;
+      --color-dark-gray: #22252e;
+      --color-font: #fbfbfb;
+      --color-light-gray: #38424b;
+      --color-heading-background: #3c404c;
 
       /* Used in board-viewer tab header */
       --focus-foreground-color: #52595a;
@@ -98,8 +96,28 @@ limitations under the License.
     }
 
     #boardTitle {
+      padding: 1em;
       cursor: pointer;
-      display: block;
+      font-family: ClearSansBold,Helvetica Neue,Helvetica,Arial,sans-serif;
+      font-weight: bold;
+    }
+
+    #searchTabs {
+      --paper-tabs-selection-bar-color: var(--color-green);
+    }
+
+    paper-input {
+      --paper-input-container-focus-color: var(--color-green);
+      --paper-input-container-input-color: var(--color-font);
+    }
+
+    #searchTabs paper-tab {
+      text-transform: uppercase;
+    }
+
+    #searchTabs iron-icon {
+      --iron-icon-width: 1.5em;
+      --iron-icon-height: 1.5em;
     }
 
     #searchPage {
@@ -156,10 +174,21 @@ limitations under the License.
 
     #left-menu {
       overflow: hidden;
+      background-color: var(--color-heading-background);
+      color: var(--color-font);
     }
 
     #left-contents {
       z-index: 1000;
+    }
+
+    #left-pages {
+      color: var(--color-font);
+      padding: 2em 1em;
+    }
+
+    .page-title {
+      margin: 1.25em 0.25em;
     }
 
     .button-list {
@@ -181,8 +210,8 @@ limitations under the License.
       text-overflow: ellipsis;
       word-wrap: break-word;
       text-decoration: none;
-      background-color: #f0f0f0;
-      color: black;
+      background-color: var(--color-light-gray);
+      color: var(--color-font);
       font-size: 1em;
       min-height: 2.2em;
       text-align: center;
@@ -196,9 +225,9 @@ limitations under the License.
 
     #layout paper-button.hover,
     #layout paper-button:hover {
-      background-color: #404040;
-      border-color: #00ffff;
-      color: #00ffff;
+      background-color: var(--color-heading-background);
+      border-color: var(--color-green);
+      color: var(--color-green);
     }
 
     #layout paper-button.connected {
@@ -430,7 +459,9 @@ limitations under the License.
     }
 
     #panel-left {
-      width: 33.3%;
+      background-color: var(--color-dark-gray);
+      box-sizing: border-box;
+      width: 512px;
       min-width: 250px;
       overflow-x: auto;
       overflow-y: scroll;
@@ -508,7 +539,7 @@ limitations under the License.
 
   <iron-media-query query="(max-width:480px)" query-matches="{{isMobileLayout}}" on-query-matches-changed="onLayoutChange"></iron-media-query>
 
-  <paper-material id="board-selector" hidden$="[[hideSelector(board,initialized)]]" class="layout vertical start">
+  <div id="board-selector" hidden$="[[hideSelector(board,initialized)]]" class="layout vertical start">
     <div class="vertical layout wrap">
       <div class="heading">Select a board to explore</div>
       <div id="board-list" class="layout horizontal start-justified wrap">
@@ -521,7 +552,7 @@ limitations under the License.
         </template>
       </div>
     </div>
-  </paper-material>
+  </div>
 
   <div class$="[[layoutClasses(singleBoardMode, mobileMode)]]" id="layout" hidden$="[[isEmpty(board)]]">
 
@@ -546,7 +577,7 @@ limitations under the License.
         * In mobile mode && single board mode, the heading is:
         * [icon] | [menu]
         -->
-        <paper-material id="left-menu" class="horizontal layout">
+        <div id="left-menu" class="horizontal layout">
           <paper-icon-button
               id="hamburger"
               hidden$="[[!isMobileLayout]]"
@@ -556,36 +587,35 @@ limitations under the License.
               on-tap="toggleDrawer"></paper-icon-button>
 
           <div class="flex layout vertical center-justified">
-            <paper-material hidden$="[[singleBoardMode]]"
+            <div hidden$="[[singleBoardMode]]"
                 id="boardTitle"
                 on-tap="unloadBoard"
-                class="flex vertical layout start">
+                class="flex vertical layout center">
               [[getBoardBoxTitle(board)]]
-            </paper-material>
+            </div>
 
             <paper-tabs
                 class="layout horizontal center-justified"
                 id="searchTabs"
                 selected="{{searchMode}}"
                 attr-for-selected="name">
-              <paper-tab name="searchPage">Search</paper-tab>
               <paper-tab name="categoriesPage" hidden$="[[isEmpty(categories)]]">Categories</paper-tab>
               <paper-tab name="keywordsPage">Keywords</paper-tab>
               <paper-tab name="componentsPage">Components</paper-tab>
               <paper-tab name="overviewPage" hidden>Get to know the board</paper-tab>
+              <paper-tab name="searchPage"><iron-icon icon="search"></iron-icon></paper-tab>
             </paper-tabs>
           </div>
-        </paper-material>
+        </div>
 
-        <paper-material class="vertical layout">
+        <div id="left-pages" class="vertical layout">
           <iron-pages id="pages" selected="[[searchMode]]" attr-for-selected="id">
             <div id="searchPage" class="vertical layout">
               <paper-input id="search" value="{{search}}" label="Search" class="flex">
-                <iron-icon suffix slot="suffix" icon="search"></iron-icon>
               </paper-input>
               <div hidden$="[[!isEmpty(search)]]">Enter a string to search (for example "I2C").</div>
               <div hidden$="[[isEmpty(search)]]">
-                <div>Search results</div>
+                <div class="page-title">Search results</div>
                 <div hidden$="[[!isEmpty(matches)]]">No matches.</div>
                 <div class="button-list layout horizontal wrap">
                   <template is="dom-repeat" items="[[matches]]">
@@ -603,7 +633,7 @@ limitations under the License.
             </div>
 
             <div id="categoriesPage" class="vertical layout">
-              <div>Categories</div>
+              <div class="page-title">Categories</div>
               <div class="button-list layout horizontal wrap">
                 <template is="dom-repeat" items="[[categories]]">
                   <paper-button match$="[[item.slug]]"
@@ -619,7 +649,7 @@ limitations under the License.
             </div>
 
             <div id="keywordsPage" class="vertical layout">
-              <div>Keywords</div>
+              <div class="page-title">Keywords</div>
               <div class="button-list horizontal layout wrap">
                 <template is="dom-repeat" items="[[keywords]]">
                   <paper-button match$="[[item.refdes]]"
@@ -635,7 +665,7 @@ limitations under the License.
             </div>
 
             <div id="componentsPage" class="vertical layout start">
-              <div>Components</div>
+              <div class="page-title">Components</div>
               <div class="button-list layout horizontal wrap">
                 <template is="dom-repeat" items="[[components]]">
                   <paper-button match$="[[item.refdes]]"
@@ -651,7 +681,7 @@ limitations under the License.
               </div>
             </div>
           </iron-pages>
-        </paper-material>
+        </div>
       </div>
     </app-drawer>
 
