@@ -95,6 +95,27 @@ limitations under the License.
       };
     }
 
+    a:link,
+    a:visited {
+      color: var(--color-green);
+      text-decoration: none;
+    }
+
+    a:link:active,
+    a:visited:active {
+      text-decoration: underline;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    ul li::before {
+      content: "•";
+      padding-right: 0.5em;
+      color: var(--color-green);
+    }
+
     #boardTitle {
       padding: 1em;
       cursor: pointer;
