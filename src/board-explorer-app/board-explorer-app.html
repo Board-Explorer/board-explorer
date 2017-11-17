@@ -167,25 +167,11 @@ limitations under the License.
     }
 
     #drawer {
-      overflow-y: scroll;
       --app-drawer-content-container: {
+        margin: 0;
         padding: 0;
         background-color: var(--color-dark-gray);
       };
-    }
-
-    #drawer #sidebar-left {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    .multi-board #drawer #sidebar-left {
-      padding: 120px 0;
-    }
-
-    .single-board #drawer #sidebar-left {
-      padding: 64px 0;
     }
 
     .multi-board #hamburger {
@@ -205,11 +191,16 @@ limitations under the License.
 
     #left-contents {
       z-index: 1000;
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
     }
 
     #left-pages {
       color: var(--color-font);
       padding: 2em 1em;
+      overflow-x: auto;
+      overflow-y: scroll;
     }
 
     .page-title {
@@ -479,13 +470,17 @@ limitations under the License.
       };
     }
 
-    #panel-left::-webkit-scrollbar {
+    #left-pages::-webkit-scrollbar {
       width: 10px;
       background: var(--color-dark-gray);
+      cursor: pointer;
     }
 
-    #panel-left::-webkit-scrollbar-thumb {
-      border-radius: 5px;
+    #left-pages::-webkit-scrollbar-thumb {
+      border: solid transparent;
+      border: 0 3px;
+      background-clip: content-box;
+      border-radius: 10px;
     	background-color: var(--color-green);
     }
 
@@ -501,18 +496,11 @@ limitations under the License.
       margin-left: -10px;
     }
 
-    #sidebar-left {
-      width: 100%;
-      max-width: 100%;
-    }
-
     #panel-left {
       background-color: var(--color-dark-gray);
       box-sizing: border-box;
       width: 512px;
       min-width: 250px;
-      overflow-x: auto;
-      overflow-y: scroll;
     }
 
     #panel-left.constrained {
@@ -614,9 +602,8 @@ limitations under the License.
         alt="menu"
         on-tap="toggleDrawer"></paper-icon-button>
 
-    <app-drawer id="drawer" disable-swipe no-focus-trap>
-      <div id="left-contents">
-
+    <app-drawer id="drawer" disable-swipe no-focus-trap class="layout vertical">
+      <div id="left-contents" class="flex layout vertical">
         <!-- in mobile mode && !single board mode, the heading is:
         * [icon] | [title]
         *        |=========
@@ -638,7 +625,7 @@ limitations under the License.
             <div hidden$="[[singleBoardMode]]"
                 id="boardTitle"
                 on-tap="unloadBoard"
-                class="flex vertical layout center">
+                class="vertical layout center">
               [[getBoardBoxTitle(board)]]
             </div>
 
@@ -656,7 +643,7 @@ limitations under the License.
           </div>
         </div>
 
-        <div id="left-pages" class="vertical layout">
+        <div id="left-pages" class="flex vertical layout">
           <iron-pages id="pages" selected="[[searchMode]]" attr-for-selected="id">
             <div id="searchPage" class="vertical layout">
               <paper-input id="search" value="{{search}}" label="Search" class="flex">
@@ -734,9 +721,7 @@ limitations under the License.
     </app-drawer>
 
     <vaadin-split-layout class="vaadin-left-right horizontal layout justified" id="vaadin-container">
-      <div id="panel-left" hidden$="[[isMobileLayout]]" class$="[[_panelLeftClass]]">
-        <div class="vertical layout flex" id="sidebar-left">
-        </div>
+      <div id="panel-left" hidden$="[[isMobileLayout]]" class$="flex layout vertical [[_panelLeftClass]]">
       </div>
 
       <vaadin-split-layout vertical id="panel-right" class="vaadin-up-down">
@@ -1294,6 +1279,8 @@ document.addEventListener("WebComponentsReady", function() {
         var attr = searchTabs[i].getAttribute('control');
         searchTabs[i].hidden = (attr == event.detail.value) ? false : true;
       }
+
+      this.onPanelLeftResize();
     },
 
     hideSelector: function(board, initialized) {
