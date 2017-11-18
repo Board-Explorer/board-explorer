@@ -16,5 +16,8 @@
     "js": {"minify": true},
     "css": {"minify": true},
     "html": {"minify": true}
-  }]
+  }],
+  "extraDependencies": [
+    "bower_components/board-viewer/unit.svg"
+  ]
 }
