@@ -657,6 +657,8 @@ limitations under the License.
                   <template is="dom-repeat" items="[[matches]]">
                     <paper-button match$="[[item.refdes]]"
                         class="search-result layout vertical start"
+                        on-focus="buttonOver"
+                        on-blur="buttonOut"
                         on-tap="buttonTap"
                         on-mouseover="buttonOver"
                         on-mouseout="buttonOut">
@@ -673,6 +675,8 @@ limitations under the License.
               <div class="button-list layout horizontal wrap">
                 <template is="dom-repeat" items="[[categories]]">
                   <paper-button match$="[[item.slug]]"
+                      on-focus="buttonOver"
+                      on-blur="buttonOut"
                       on-tap="buttonTap"
                       on-mouseover="buttonOver"
                       on-mouseout="buttonOut"
@@ -689,6 +693,8 @@ limitations under the License.
               <div class="button-list horizontal layout wrap">
                 <template is="dom-repeat" items="[[keywords]]">
                   <paper-button match$="[[item.refdes]]"
+                      on-focus="buttonOver"
+                      on-blur="buttonOut"
                       on-tap="buttonTap"
                       on-mouseover="buttonOver"
                       on-mouseout="buttonOut"
@@ -706,6 +712,8 @@ limitations under the License.
                 <template is="dom-repeat" items="[[components]]">
                   <paper-button match$="[[item.refdes]]"
                       class$="[[itemClassList(item)]]"
+                      on-focus="buttonOver"
+                      on-blur="buttonOut"
                       on-tap="buttonTap"
                       on-mouseover="buttonOver"
                       on-mouseout="buttonOut"
@@ -727,6 +735,7 @@ limitations under the License.
 
       <vaadin-split-layout vertical id="panel-right" class="vaadin-up-down">
         <board-viewer
+          tabindex="0"
           class="flex-grow"
           hidden$="[[isEmpty(board)]]"
           id="boardViewer"
@@ -751,7 +760,7 @@ limitations under the License.
               </div>
             </template>
           </div>
-          <div id="info"
+          <div tabindex="0" id="info"
             hidden$="[[isEmpty(active)]]"
             class$="[[itemClassList(active)]] vertical layout">
             <paper-toolbar>
