@@ -1827,6 +1827,7 @@ document.addEventListener("WebComponentsReady", function() {
       /* After everything has loaded and is initialized, *then* set the active
        * selection */
       if (this.selectedOnceLoaded) {
+
         var category = this.$.boardViewer.findCategory(this.selectedOnceLoaded[0]);
         if (category) {
           for (var i = 0; i < this.categories.length; i++) {
@@ -1853,13 +1854,10 @@ document.addEventListener("WebComponentsReady", function() {
               }
             }
           }
-
           this.selected = this.selectedOnceLoaded;
         }
-
         delete this.selectedOnceLoaded;
       }
-
       /* After the categories, components, or search results change, trigger
        * a re-layout of the left-panel */
       Polymer.dom.flush();
@@ -2084,6 +2082,7 @@ document.addEventListener("WebComponentsReady", function() {
          return;
       }
 
+
       // Get selected from the url if there are some.
       if (uri[1]) {
         var tokens = uri[1].split(",");
@@ -2094,14 +2093,15 @@ document.addEventListener("WebComponentsReady", function() {
       } else {
         this.selected = [];
       }
+
       if (boardToLoad != this.$.boardViewer.board) {
         console.log("Loading board via setBoardAndSelectedFromHash: " + boardToLoad);
         this.selectedOnceLoaded = this.selected;
         this.$.boardViewer.loadBoard(boardToLoad);
-      } else {
-        this.$.boardViewer.setSelected(this.selected);
-        this.updateRoute(boardToLoad, this.selected, null);
       }
+
+      this.$.boardViewer.setSelected(this.selected);
+      this.updateRoute(boardToLoad, this.selected, null);
     },
 
     attached: function() {
