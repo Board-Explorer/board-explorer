@@ -1691,28 +1691,40 @@ document.addEventListener("WebComponentsReady", function() {
       var href  = event.target.href;
       var refdes = href.split("/").pop();
       var component  = this.$.boardViewer.findComponent(refdes);
+      var options = {
+        refdes: refdes,
+        source: "board-viewer",
+        in: true
+      };
+
       if (component) {
-        this.$.boardViewer.setHover({
-          type: component.type,
-          refdes: component.refdes,
-          source: "board-viewer",
-          in: true
-        });
+        options.type = 'component';
       }
+      else if (this.isKeyword(refdes)) {
+        options.type ='keyword';
+      }
+
+      this.$.boardViewer.setHover(options);
     },
 
     onAnchorHoverOut: function(event) {
       var href  = event.target.href;
       var refdes = href.split("/").pop();
       var component  = this.$.boardViewer.findComponent(refdes);
-      if (component) {
-        this.$.boardViewer.setHover({
-          type: component.type,
-          refdes: component.refdes,
-          source: "board-viewer",
-          in: false
-        });
+      var options = {
+        refdes: refdes,
+        source: "board-viewer",
+        in: false
       }
+
+      if (component) {
+        options.type = 'component';
+      }
+      else if (this.isKeyword(refdes)) {
+        options.type = 'keyword';
+      }
+
+      this.$.boardViewer.setHover(options);
     },
 
     boardTap: function(event) {
