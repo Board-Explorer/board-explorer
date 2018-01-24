@@ -1790,7 +1790,9 @@ document.addEventListener("WebComponentsReady", function() {
       console.log("Asking for components...");
       var components = [];
       this.$.boardViewer.getComponents().forEach(function(refdes) {
-        components.push(this.$.boardViewer.getInfo(refdes));
+        if (refdes != 'JTAGSEL') {
+          components.push(this.$.boardViewer.getInfo(refdes));
+        }
       }.bind(this));
 
       this.components = components;

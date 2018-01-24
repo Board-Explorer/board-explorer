@@ -259,19 +259,19 @@
           }
         },
         "J9": {
-          "keywords": [ "jumper" ],
+          "keywords": [ "jumper", "jtagsel" ],
           "pins": {
             "12": {
               "keywords": [ "uart" ]
             },
             "23": {
-              "keywords": [ "jtag" ]
+              "keywords": [ "jtag", "jtagsel" ]
             }
           }
         },
         "J10": {
           "description": "JTAG/UART select",
-          "keywords": [ "jumper" ],
+          "keywords": [ "jumper", "jtagsel" ],
           "pins": {
             "12": {
               "name": "UART TXD",
@@ -279,18 +279,18 @@
             },
             "23": {
               "name": "JTAG TDI",
-              "keywords": [ "jtag" ]
+              "keywords": [ "jtag", "jtagsel" ]
             }
           }
         },
         "J11": {
-          "keywords": [ "jumper" ],
+          "keywords": [ "jumper", "jtagsel" ],
           "pins": {
             "12": {
               "keywords": [ "uart" ]
             },
             "23": {
-              "keywords": [ "jtag" ]
+              "keywords": [ "jtag", "jtagsel" ]
             }
           }
         },
@@ -328,13 +328,13 @@
           "keywords": [ "accel" ]
         },
         "J15": {
-          "keywords": [ "jumper", "jtag" ]
+          "keywords": [ "jumper", "jtag", "jtagsel" ]
         },
         "J16": {
           "keywords": [ "accel" ]
         },
         "J17": {
-          "keywords": [ "jumper", "jtag" ]
+          "keywords": [ "jumper", "jtag", "jtagsel" ]
         },
         "J18": {
           "keywords": [ "accel" ]
@@ -504,6 +504,7 @@
             }
           }
         },
+        "JTAGSEL" : {},
         "J28": {
           "name": "J28",
           "description": "No description provided."
@@ -527,9 +528,6 @@
         },
         "FTDI": {
           "name": "FTDI chip"
-        },
-        "JTAGSEL": {
-          "name": "UART/JTAG mode select"
         },
         "SW1": {
           "name": "Board reset button",
