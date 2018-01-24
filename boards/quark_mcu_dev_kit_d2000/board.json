@@ -504,7 +504,6 @@
             }
           }
         },
-        "JTAGSEL" : {},
         "J28": {
           "name": "J28",
           "description": "No description provided."
