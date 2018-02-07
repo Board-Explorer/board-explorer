@@ -1387,12 +1387,16 @@ document.addEventListener("WebComponentsReady", function() {
 
     getDocumentation: function(item, type) {
       return new Promise(function(resolve, reject) {
-        if (item.html) {
-          return resolve({
-            status: 200,
-            content: item.html
-          });
+
+        if (!item.html) {
+          console.warn("Additional documentation for " + item.refdes + " was not found.");
+          item.html = "";
         }
+
+        return resolve({
+          status: 200,
+          content: item.html
+        });
 
         this.$.boardViewer.getDocumentation(item.refdes, type, function(results) {
           if (!results || results.error) {
