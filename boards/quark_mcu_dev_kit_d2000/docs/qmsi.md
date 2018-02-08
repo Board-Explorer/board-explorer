@@ -6,6 +6,7 @@
 | QMSI Function Id | QM_PMUX_FN_0 | QM_PMUX_FN_1 | QM_PMUX_FN_2 |
 | Function         | {{#function}}{{.}} | {{/function}}
 
+{{#name.2}}
 When referencing this pin in QMSI, it is available as **{{name.2}}**.
 
 For example:
@@ -14,3 +15,4 @@ For example:
 /* Configure {{readable}} to function {{function.0}} */
 qm_pmux_select({{name.2}}, QM_PMUX_FN_0);
 ```
+{{/name.2}}
