@@ -53,67 +53,59 @@
           "description": "No description provided.",
           "pins": {
             "1": {
-              "refdes": "RX",
-              "name": "RX",
+              "refdes": "J13Pin1",
+              "name": "1",
               "component": "J13",
-              "keywords": [ "serial" ],
-              "description": "RX Serial pin"
+              "description": "No description provided."
             },
             "2": {
-              "refdes": "TX",
-              "name": "TX",
+              "refdes": "J13Pin2",
+              "name": "2",
               "component": "J13",
-              "keywords": [ "serial" ],
-              "description": "Digital input / output pin"
+              "description": "No description provided."
             },
             "3": {
-              "refdes": "IO2",
-              "name": "IO2",
+              "refdes": "J13Pin3",
+              "name": "3",
               "component": "J13",
-              "keywords": [ "gpio" ],
-              "description": "Digital input / output pin"
+              "description": "No description provided."
             },
             "4": {
-              "refdes": "IO3",
-              "name": "IO3",
+              "refdes": "J13Pin4",
+              "name": "4",
               "component": "J13",
-              "keywords": [ "gpio", "pwm" ],
-              "description": "Digital input / output pin"
+              "description": "No description provided."
             },
             "5": {
-              "refdes": "IO4",
-              "name": "IO4",
+              "refdes": "J13Pin5",
+              "name": "5",
               "component": "J13",
-              "keywords": [ "gpio" ],
-              "description": "Digital input / output pin"
+              "description": "No description provided."
             },
             "6": {
-              "refdes": "IO5",
-              "name": "IO5",
+              "refdes": "J13Pin6",
+              "name": "6",
               "component": "J13",
-              "keywords": [ "gpio", "pwm" ],
-              "description": "Digital input / output pin"
+              "description": "No description provided."
             },
             "7": {
-              "refdes": "IO6",
-              "name": "IO6",
+              "refdes": "J13Pin7",
+              "name": "7",
               "component": "J13",
-              "keywords": [ "gpio", "pwm" ],
-              "description": "Digital input / output pin"
+              "description": "No description provided."
             },
             "8": {
-              "refdes": "IO7",
-              "name": "IO7",
+              "refdes": "J13Pin8",
+              "name": "8",
               "component": "J13",
-              "keywords": [ "gpio" ],
-              "description": "Digital input / output pin"
+              "description": "No description provided."
             }
           }
         },
         "J16": {
-          "refdes": "Power barrel connector",
-          "name": "Power barrel connector",
-          "description": "Can provide additional power to the board"
+          "refdes": "J16",
+          "name": "J16",
+          "description": "No description provided."
         },
         "J17": {
           "refdes": "J17",
@@ -126,9 +118,9 @@
           "description": "No description provided."
         },
         "SW10": {
-          "refdes": "Reset switch",
-          "name": "Reset switch",
-          "description": "Used to restart your board."
+          "refdes": "SW10",
+          "name": "SW10",
+          "description": "No description provided."
         },
         "J14": {
           "refdes": "J14",
@@ -136,46 +128,40 @@
           "description": "No description provided.",
           "pins": {
             "1": {
-              "refdes": "A0",
-              "name": "A0",
+              "refdes": "J14Pin1",
+              "name": "1",
               "component": "J14",
-              "keywords": [ "aio" ],
-              "description": "Analog input pin"
+              "description": "No description provided."
             },
             "2": {
-              "refdes": "A1",
-              "name": "A1",
+              "refdes": "J14Pin2",
+              "name": "2",
               "component": "J14",
-              "keywords": [ "aio" ],
-              "description": "Analog input pin"
+              "description": "No description provided."
             },
             "3": {
-              "refdes": "A2",
-              "name": "A2",
+              "refdes": "J14Pin3",
+              "name": "3",
               "component": "J14",
-              "keywords": [ "aio" ],
-              "description": "Analog input pin"
+              "description": "No description provided."
             },
             "4": {
-              "refdes": "A3",
-              "name": "A3",
+              "refdes": "J14Pin4",
+              "name": "4",
               "component": "J14",
-              "keywords": [ "aio" ],
-              "description": "Analog input pin"
+              "description": "No description provided."
             },
             "5": {
-              "refdes": "A4",
-              "name": "A4",
+              "refdes": "J14Pin5",
+              "name": "5",
               "component": "J14",
-              "keywords": [ "aio" ],
-              "description": "Analog input pin"
+              "description": "No description provided."
             },
             "6": {
-              "refdes": "A5",
-              "name": "A5",
+              "refdes": "J14Pin6",
+              "name": "6",
               "component": "J14",
-              "keywords": [ "aio" ],
-              "description": "Analog input pin"
+              "description": "No description provided."
             }
           }
         },
@@ -203,28 +189,28 @@
               "description": "No description provided."
             },
             "4": {
-              "refdes": "3.3v",
-              "name": "3.3v",
+              "refdes": "J10Pin4",
+              "name": "4",
               "component": "J10",
-              "description": "Supplies power at 3.3v."
+              "description": "No description provided."
             },
             "5": {
-              "refdes": "5v",
-              "name": "5V",
+              "refdes": "J10Pin5",
+              "name": "5",
               "component": "J10",
-              "description": "Supplies power at 5v."
+              "description": "No description provided."
             },
             "6": {
-              "refdes": "Ground",
-              "name": "Ground",
+              "refdes": "J10Pin6",
+              "name": "6",
               "component": "J10",
-              "description": "Ground."
+              "description": "No description provided."
             },
             "7": {
-              "refdes": "Ground",
-              "name": "Ground",
+              "refdes": "J10Pin7",
+              "name": "7",
               "component": "J10",
-              "description": "Ground."
+              "description": "No description provided."
             },
             "8": {
               "refdes": "J10Pin8",
@@ -237,55 +223,49 @@
         "J11": {
           "refdes": "J11",
           "name": "J11",
-          "description": "Digital input / output pin",
+          "description": "No description provided.",
           "pins": {
             "1": {
-              "refdes": "IO8",
-              "name": "IO8",
+              "refdes": "J11Pin1",
+              "name": "1",
               "component": "J11",
-              "keywords": [ "gpio" ],
-              "description": "Digital input / output pin"
+              "description": "No description provided."
             },
             "2": {
-              "refdes": "IO9",
-              "name": "IO9",
+              "refdes": "J11Pin2",
+              "name": "2",
               "component": "J11",
-              "keywords": [ "gpio", "pwm" ],
-              "description": "Digital input / output pin"
+              "description": "No description provided."
             },
             "3": {
-              "refdes": "IO10",
-              "name": "IO10",
+              "refdes": "J11Pin3",
+              "name": "3",
               "component": "J11",
-              "keywords": [ "gpio", "spi" ],
-              "description": "Digital input / output pin or CS for SPI"
+              "description": "No description provided."
             },
             "4": {
-              "refdes": "IO11",
-              "name": "IO11",
+              "refdes": "J11Pin4",
+              "name": "4",
               "component": "J11",
-              "keywords": [ "gpio", "spi" ],
-              "description": "Digital input / output pin or MOSI for SPI"
+              "description": "No description provided."
             },
             "5": {
-              "refdes": "IO12",
-              "name": "IO12",
+              "refdes": "J11Pin5",
+              "name": "5",
               "component": "J11",
-              "keywords": [ "gpio", "spi" ],
-              "description": "Digital input / output pin or MISO for SPI"
+              "description": "No description provided."
             },
             "6": {
-              "refdes": "IO13",
-              "name": "IO13",
+              "refdes": "J11Pin6",
+              "name": "6",
               "component": "J11",
-              "keywords": [ "gpio", "spi" ],
-              "description": "Digital input / output pin or SCK for SPI"
+              "description": "No description provided."
             },
             "7": {
-              "refdes": "Ground",
-              "name": "Ground",
+              "refdes": "J11Pin7",
+              "name": "7",
               "component": "J11",
-              "description": "Ground."
+              "description": "No description provided."
             },
             "8": {
               "refdes": "J11Pin8",
@@ -294,18 +274,16 @@
               "description": "No description provided."
             },
             "9": {
-              "refdes": "SDA",
-              "name": "SDA",
+              "refdes": "J11Pin9",
+              "name": "9",
               "component": "J11",
-              "keywords": [ "i2c" ],
-              "description": "Serial data pin"
+              "description": "No description provided."
             },
             "10": {
-              "refdes": "SCL",
-              "name": "SCL",
+              "refdes": "J11Pin10",
+              "name": "10",
               "component": "J11",
-              "keywords": [ "i2c" ],
-              "description": "Serial clock pin"
+              "description": "No description provided."
             }
           }
         }
