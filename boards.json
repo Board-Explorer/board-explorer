@@ -1,0 +1,29 @@
+[ {
+  "title": "Arduino 101",
+  "board": "arduino_101",
+  "image": "genuino101.svg"
+}, {
+  "title": "MinnowBoard Turbot B 41",
+  "board": "minnowboard_turbot_B_41",
+  "image": "front.svg"
+}, {
+  "title": "The Intel® Quark™ Microcontroller Developer Kit D2000",
+  "board": "quark_mcu_dev_kit_d2000",
+  "image": "front.svg"
+}, {
+  "title": "The Intel® Quark™ Microcontroller Developer Kit C1000",
+  "board": "quark_mcu_dev_kit_c1000",
+  "image": "front.svg"
+}, {
+  "title": "The Intel® IoT Developer Kit for the Intel® Joule™",
+  "board": "joule_570x",
+  "image": "front.svg"
+}, {
+  "title": "UP",
+  "board": "up-board",
+  "image": "upboard.svg"
+}, {
+  "title": "tinyTILE - Intel Curie Module Based Board",
+  "board": "tinyTILE",
+  "image": "tinyTILE.svg"
+} ]

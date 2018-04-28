@@ -1,0 +1,431 @@
+{
+  "title": "Intel Quark Microcontroller Developmer Kit C1000",
+  "categories": [ {
+    "name": "Power supply inputs and main power switch provision",
+    "list": [ "J2", "J1", "J4", "J20", "J21" ]
+  }, {
+    "name": "System configuration and user controls and indicators",
+    "list": [ "S1", "D1", "SW1", "SW2", "J3", "D3", "D4", "J6", "D2", "J3", "J5" ]
+  }, {
+    "name": "Radio systems, processor module, and memory",
+    "list": [ "TI_CC2520", "SMD_ANTENNA", "C1000", "BLE", "FLASH", "EEPROM" ]
+  }, {
+    "name": "JTAG support, sensors, and functional system blocks",
+    "list": [
+      "FTDI1", "FTDI2", "FTDIEEPROM", "TEMP", "USBTOSERIAL",
+      "FTDIBUS", "ACCEL", "ALS", "regulator", "SOCSWITCHING", "SIGSELMUX",
+      "SIGSELMUXSEL", "BUCKBOOST", "U19", "U25", "U20", "U23", "U28" ]
+  }, {
+    "name": "Development signal headers, BLE, and Arduino shield sockets",
+    "list": [ "J8", "J9", "J10", "J11", "J12", "J14", "J15" ]
+  } ],
+  "views": {
+    "front": {
+      "image": "front.svg",
+      "components": {
+        "SW1": {
+          "name": "User switch",
+          "description": "User Push Button 0"
+        },
+        "SW2": {
+          "name": "User switch",
+          "description": "User Push Button 1"
+        },
+        "J10": {
+          "name": "Programming Header",
+          "description": "BLE, ARM, SWDIO Programming Header",
+          "pins": {
+          }
+        },
+        "J8": {
+          "name": "Arduino Shield Sockets",
+          "description": "Arduino Shield Sockets",
+          "pins": {
+
+          }
+        },
+        "J9": {
+          "name": "Arduino Shield Sockets",
+          "description": "Arduino Shield Sockets",
+          "pins": {
+
+          }
+        },
+        "J11": {
+          "name": "Arduino Shield Sockets",
+          "description": "Arduino Shield Sockets",
+          "pins": {
+          }
+        },
+        "J12": {
+          "name": "Arduino Shield Sockets",
+          "description": "Arduino Shield Sockets",
+          "pins": {
+          }
+        },
+        "J14": {
+          "name": "Development Signal Header",
+          "pins": {
+            "1": {
+              "description": "VDD_HDR",
+              "name": "VDD_HDR",
+              "type": "male"
+            },
+            "2": {
+              "description": "VDD_HDR",
+              "name": "VDD_HDR",
+              "type": "male"
+            }
+          }
+        },
+        "J15": {
+          "name": "Development Signal Header",
+          "pins": {
+            "1": {
+              "description": "VDD_HDR",
+              "name": "VDD_HDR",
+              "type": "male"
+            },
+            "2": {
+              "description": "VDD_HDR",
+              "name": "VDD_HDR",
+              "type": "male"
+            },
+            "3": {
+              "description": "AP_SPI0_SS_SCLK",
+              "name": "AP_SPI0_SS_SCLK",
+              "type": "male"
+            },
+            "4": {
+              "description": "AP_GPIO21_SPI0_M_SCLK",
+              "name": "AP_GPIO21_SPI0_M_SCLK",
+              "type": "male"
+            },
+            "5": {
+              "description": "AP_SPI0_SS_MISO",
+              "name": "AP_SPI0_SS_MISO",
+              "type": "male"
+            },
+            "6": {
+              "description": "AP_GPIO22_SPI0_M_MISO",
+              "name": "AP_GPIO22_SPI0_M_MISO",
+              "type": "male"
+            },
+            "7": {
+              "description": "AP_SPI0_SS_MOSI",
+              "name": "AP_SPI0_SS_MOSI",
+              "type": "male"
+            },
+            "8": {
+              "description": "AP_GPIO23_SPI0_M_MOSI",
+              "name": "AP_GPIO23_SPI0_M_MOSI",
+              "type": "male"
+            },
+            "9": {
+              "description": "AP_SPI0_SS_CS0_N",
+              "name": "AP_SPI0_SS_CS0_N",
+              "type": "male"
+            },
+            "10": {
+              "description": "AP_GPIO24_SPI0_M_nCS0_N",
+              "name": "AP_GPIO24_SPI0_M_nCS0_N",
+              "type": "male"
+            },
+            "11": {
+              "description": "AP_SPI0_SS_CS1_N",
+              "name": "AP_SPI0_SS_CS1_N",
+              "type": "male"
+            },
+            "12": {
+              "description": "AP_GPIO25_SPI0_M_nCS1_N",
+              "name": "AP_GPIO25_SPI0_M_nCS1_N",
+              "type": "male"
+            },
+            "13": {
+              "description": "AP_SPI0_SS_CS2_N_GPIO29",
+              "name": "AP_SPI0_SS_CS2_N_GPIO29",
+              "type": "male"
+            },
+            "14": {
+              "description": "AP_GPIO26_SPI0_M_nCS2_N",
+              "name": "AP_GPIO26_SPI0_M_nCS2_N",
+              "type": "male"
+            },
+            "15": {
+              "description": "AP_SPI0_SS_CS3_N_GPIO30",
+              "name": "AP_SPI0_SS_CS3_N_GPIO30",
+              "type": "male"
+            },
+            "16": {
+              "description": "AP_GPIO27_SPI0_M_nCS3_N_MUX",
+              "name": "AP_GPIO27_SPI0_M_nCS3_N_MUX",
+              "type": "male"
+            },
+            "17": {
+              "description": "GND",
+              "name": "GND",
+              "type": "male"
+            },
+            "18": {
+              "description": "GND",
+              "name": "GND",
+              "type": "male"
+            },
+            "19": {
+              "description": "AP_SPI1_SS_SCLK",
+              "name": "AP_SPI1_SS_SCLK",
+              "type": "male"
+            },
+            "20": {
+              "description": "AP_GPIO8_SPI1_M_SCLK",
+              "name": "AP_GPIO8_SPI1_M_SCLK",
+              "type": "male"
+            },
+            "21": {
+              "description": "AP_SPI1_SS_MISO",
+              "name": "AP_SPI1_SS_MISO",
+              "type": "male"
+            },
+            "22": {
+              "description": "AP_GPIO9_SPI1_M_MISO",
+              "name": "AP_GPIO9_SPI1_M_MISO",
+              "type": "male"
+            },
+            "23": {
+              "description": "AP_SPI1_SS_MOSI",
+              "name": "AP_SPI1_SS_MOSI",
+              "type": "male"
+            },
+            "24": {
+              "description": "AP_GPIO10_SPI1_M_MOSI",
+              "name": "AP_GPIO10_SPI1_M_MOSI",
+              "type": "male"
+            },
+            "25": {
+              "description": "AP_SPI1_SS_CS0_N",
+              "name": "AP_SPI1_SS_CS0_N",
+              "type": "male"
+            },
+            "26": {
+              "description": "AP_GPIO11_SPI1_M_nCS0_N",
+              "name": "AP_GPIO11_SPI1_M_nCS0_N",
+              "type": "male"
+            },
+            "27": {
+              "description": "AP_SPI1_SS_CS1_N",
+              "name": "AP_SPI1_SS_CS1_N",
+              "type": "male"
+            },
+            "28": {
+              "description": "AP_GPIO12_SPI1_M_nCS1_N",
+              "name": "AP_GPIO12_SPI1_M_nCS1_N",
+              "type": "male"
+            },
+            "29": {
+              "description": "VDD_HDR",
+              "name": "VDD_HDR",
+              "type": "male"
+            },
+            "30": {
+              "description": "AP_GPIO13_SPI1_M_nCS2_N",
+              "name": "AP_GPIO13_SPI1_M_nCS2_N",
+              "type": "male"
+            },
+            "31": {
+              "description": "AP_I2C0_SCL",
+              "name": "AP_I2C0_SCL",
+              "type": "male"
+            },
+            "32": {
+              "description": "AP_GPIO14_SPI1_M_nCS3_N",
+              "name": "AP_GPIO14_SPI1_M_nCS3_N",
+              "type": "male"
+            },
+            "33": {
+              "description": "AP_I2C0_SDA",
+              "name": "AP_I2C0_SDA",
+              "type": "male"
+            },
+            "34": {
+              "description": "VDD_HDR",
+              "name": "VDD_HDR",
+              "type": "male"
+            },
+            "35": {
+              "description": "AP_I2C0_SS_SCL",
+              "name": "AP_I2C0_SS_SCL",
+              "type": "male"
+            },
+            "36": {
+              "description": "AP_GPIO2_ADC2_SPI_S_SCLK",
+              "name": "AP_GPIO2_ADC2_SPI_S_SCLK",
+              "type": "male"
+            },
+            "37": {
+              "description": "AP_I2C0_SS_SDA",
+              "name": "AP_I2C0_SS_SDA",
+              "type": "male"
+            },
+            "38": {
+              "description": "AP_GPIO1_ADC1_SPI_S_MISO",
+              "name": "AP_GPIO1_ADC1_SPI_S_MISO",
+              "type": "male"
+            },
+            "39": {
+              "description": "AP_I2C1_SCL",
+              "name": "AP_I2C1_SCL",
+              "type": "male"
+            },
+            "40": {
+              "description": "AP_GPIO3_ADC3_SPI_S_MOSI",
+              "name": "AP_GPIO3_ADC3_SPI_S_MOSI",
+              "type": "male"
+            },
+            "41": {
+              "description": "AP_I2C1_SDA",
+              "name": "AP_I2C1_SDA",
+              "type": "male"
+            },
+            "42": {
+              "description": "AP_GPIO0_ADC0_SPI_S_CS_N_R",
+              "name": "AP_GPIO0_ADC0_SPI_S_CS_N_R",
+              "type": "male"
+            },
+            "43": {
+              "description": "GND",
+              "name": "GND",
+              "type": "male"
+            },
+            "44": {
+              "description": "GND",
+              "name": "GND",
+              "type": "male"
+            }
+          }
+        },
+        "J1": {
+          "name": "ATP_USB",
+          "description": "ATP/USB Input",
+          "keywords": [ "ftdi", "atp", "power" ]
+        },
+        "J2": {
+          "name": "FTD_USB",
+          "description": "FTDI/USB Input",
+          "keywords": [ "ftdi", "usb", "power" ]
+        },
+        "J3": {
+          "name": "VSYS Voltage Selection",
+          "description": "Default settings shown",
+          "keywords": ["jumper", "power"],
+          "pins": {
+            "12": {
+              "name": "Internal regulator (default)"
+            },
+            "23": {
+              "name": "External DC input"
+            }
+          }
+        },
+        "J4": {
+          "name": "DC & Battery",
+          "description": "External Power Connector +5V DC Max",
+          "keywords": [ "power" ]
+        },
+        "J5": {
+          "name": "Main Voltage Selection",
+          "description": "Default settings shown",
+          "keywords": ["jumper", "power"],
+          "pins": {
+            "12": {
+              "name": "USB (default)"
+            },
+            "23": {
+              "name": "External DC input"
+            }
+          }
+        },
+        "J6": {
+          "name": "I/O Voltage Selection",
+          "description": "Default settings shown",
+          "keywords": ["jumper", "power"],
+          "pins": {
+            "12": {
+              "name": "3.3V (default)"
+            },
+            "23": {
+              "name": "1.8V"
+            }
+          }
+        },
+        "D1": {
+          "name": "Voltage Indicator",
+          "description": "FTDI/USB VBUS Voltage Indicator",
+          "keywords": [ "led", "power" ]
+        },
+        "D2": {
+          "name": "Voltage Indicator",
+          "description": "ATP/USB VBUS Voltage Indicator",
+          "keywords": [ "led", "power" ]
+        },
+        "D3": {
+          "name": "User LED: Yellow",
+          "description": "User LED Indicators 0",
+          "keywords": [ "led" ]
+        },
+        "D4": {
+          "name": "User LED: Green",
+          "description": "User LED Indicators 0",
+          "keywords": [ "led" ]
+        },
+        "J20": {
+          "name": "Ground",
+          "description": "User GND reference point"
+        },
+        "J21": {
+          "name": "Ground",
+          "description": "User GND reference point"
+        },
+        "S1": {
+          "name": "Master Reset",
+          "description": "Master Reset",
+          "keywords": [ "switch" ]
+        },
+        "TI_CC2520": {
+          "description": "TI CC2520 802.15.4 Radio Module"
+        },
+        "SMD_ANTENNA": {
+          "description": "2.4 GHz SMD WLAN Antenna"
+        },
+        "CPU": {
+          "description": "Quark SE Processor"
+        },
+        "BLE": {
+          "description": "Bluetooth Low Energy Radio Module"
+        },
+        "SW4": {
+          "description": "ARDUINO Shield Signal Selection Mux Selects"
+        },
+        "U19": {
+          "description": "ARDUINO Shield Signal Selection Muxes",
+          "keywords": [ "regulator" ]
+        },
+        "U20": {
+          "description": "ARDUINO Shield Signal Selection Muxes",
+          "keywords": [ "regulator" ]
+        },
+        "U23": {
+          "description": "ARDUINO Shield Signal Selection Muxes",
+          "keywords": [ "regulator" ]
+        },
+        "U28": {
+          "description": "ARDUINO Shield Signal Selection Muxes",
+          "keywords": [ "regulator" ]
+        },
+        "U25": {
+          "description": "ARDUINO Shield Signal Selection Muxes",
+          "keywords": [ "regulator" ]
+        }
+      }
+    }
+  }
+}

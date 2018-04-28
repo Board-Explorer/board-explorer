@@ -1,0 +1,260 @@
+{
+  "title": "UP",
+  "version": "July 17 2017",
+  "views": {
+    "front": {
+      "image": "upboard.svg",
+      "components": {
+        "CPU": {},
+        "CSI": {},
+        "DDR3L1": {
+          "readable": "RAM bank",
+          "name": "DDR3L",
+	        "markdown": "memory.md"
+        },
+        "DDR3L2": {
+          "readable": "RAM bank",
+          "name": "DDR3L",
+          "markdown": "memory.md"
+        },
+        "DSI": {},
+        "HAT": {
+          "readable": "HAT",
+          "name": "40 Pin GP-Bus",
+          "modes": [ "Mode 0", "Mode 1" ],
+          "pins": {
+            "1": {
+              "name": "3V3",
+              "description": "+3.3V",
+              "keywords": [ "power" ]
+            },
+            "2": {
+              "name": "5V",
+              "description": "+5V",
+              "keywords": [ "power" ],
+              "connected": [ "power_input" ]
+            },
+            "3": {
+              "name": "GPIO0/I2C_SDA",
+              "functions": [ "GPIO0", "I2C_SDA" ],
+              "keywords": [ "GPIO", "I2C" ]
+            },
+            "4": {
+              "name": "5V",
+              "description": "+5V",
+              "keywords": [ "power" ],
+              "connected": [ "power_input" ]
+            },
+            "5": {
+              "name": "GPIO1/I2C1_SCL",
+              "functions": [ "GPIO1", "I2C1_SCL" ],
+              "keywords": [ "GPIO", "I2C" ]
+            },
+            "6": {
+              "name": "GND",
+              "description": "Ground",
+              "keywords": [ "power" ]
+            },
+            "7": {
+              "name": "GPIO2/ADC-input",
+              "functions": [ "GPIO2", "ADC" ],
+              "keywords": [ "GPIO", "ADC" ]
+            },
+            "8": {
+              "name": "GPIO15/UART_TX",
+              "functions": [ "GPIO15", "UART_TX" ],
+              "keywords": [ "GPIO", "UART" ]
+            },
+            "9": {
+              "name": "GND",
+              "description": "Ground",
+              "keywords": [ "power" ]
+            },
+            "10": {
+              "name": "GPIO16/UART_RX",
+              "functions": [ "GPIO16", "UART_RX" ],
+              "keywords": [ "GPIO", "UART" ]
+            },
+            "11": {
+              "name": "GPIO3",
+              "keywords": [ "GPIO" ]
+            },
+            "12": {
+              "name": "GPIO17/I2S_CLK",
+              "functions": [ "GPIO17", "I2S_CLK" ],
+              "keywords": [ "GPIO", "I2S" ]
+            },
+            "13": {
+              "name": "GPIO4",
+              "keywords": [ "GPIO" ]
+            },
+            "14": {
+              "name": "GND",
+              "description": "Ground",
+              "keywords": [ "power" ]
+            },
+            "15": {
+              "name": "GPIO5",
+              "keywords": [ "GPIO" ]
+            },
+            "16": {
+              "name": "GPIO18",
+              "keywords": [ "GPIO" ]
+            },
+            "17": {
+              "name": "3V3",
+              "description": "+3.3V",
+              "keywords": [ "power" ]
+            },
+            "18": {
+              "name": "GPIO19",
+              "keywords": [ "GPIO" ]
+            },
+            "19": {
+              "name": "GPIO6/SPI_MOSI",
+              "functions": [ "GPIO6", "SPI_MOSI" ],
+              "keywords": [ "GPIO", "SPI" ]
+            },
+            "20": {
+              "name": "GND",
+              "description": "Ground",
+              "keywords": [ "power" ]
+            },
+            "21": {
+              "name": "GPIO7/SPI_MISO",
+              "functions": [ "GPIO7", "SPI_MISO" ],
+              "keywords": [ "GPIO", "SPI" ]
+            },
+            "22": {
+              "name": "GPIO20",
+              "keywords": [ "GPIO" ]
+            },
+            "23": {
+              "name": "GPIO8/SPI_CLK",
+              "functions": [ "GPIO8", "SPI_CLK" ],
+              "keywords": [ "GPIO", "SPI" ]
+            },
+            "24": {
+              "name": "GPIO21/SPI_CS0N",
+              "functions": [ "GPIO21", "SPI_CS0N" ],
+              "keywords": [ "GPIO", "SPI" ]
+            },
+            "25": {
+              "name": "GND",
+              "description": "Ground",
+              "keywords": [ "power" ]
+            },
+            "26": {
+              "name": "GPIO22/SPI_CS1N",
+              "functions": [ "GPIO22", "SPI_CS1N" ],
+              "keywords": [ "GPIO", "SPI" ]
+            },
+            "27": {
+              "name": "GPIO9/I2C0_SDA",
+              "functions": [ "GPIO9", "I2C0_SDA" ],
+              "keywords": [ "GPIO", "I2C" ],
+              "related": [ "HATPin28" ]
+            },
+            "28": {
+              "name": "GPIO23/I2C0_SCL",
+              "functions": [ "GPIO23", "I2C0_SCL" ],
+              "keywords": [ "GPIO", "I2C" ]
+            },
+            "29": {
+              "name": "GPIO10",
+              "keywords": [ "GPIO" ]
+            },
+            "30": {
+              "name": "GND",
+              "description": "Ground",
+              "keywords": [ "power" ]
+            },
+            "31": {
+              "name": "GPIO11",
+              "keywords": [ "GPIO" ]
+            },
+            "32": {
+              "name": "GPIO24/PWM0",
+              "functions": [ "GPIO24", "PWM0" ],
+              "keywords": [ "GPIO", "PWM" ]
+            },
+            "33": {
+              "name": "GPIO12/PWM1",
+              "functions": [ "GPIO12", "PWM1" ],
+              "keywords": [ "GPIO", "PWM" ]
+            },
+            "34": {
+              "name": "GND",
+              "description": "Ground",
+              "keywords": [ "power" ]
+            },
+            "35": {
+              "name": "GPIO13/I2S_FRM",
+              "functions": [ "GPIO13", "I2S_FRM" ],
+              "keywords": [ "GPIO", "I2S" ],
+              "related": [ "HATPin38", "HATPin40" ]
+            },
+            "36": {
+              "name": "GPIO25",
+              "keywords": [ "GPIO" ]
+            },
+            "37": {
+              "name": "GPIO14",
+              "keywords": [ "GPIO" ]
+            },
+            "38": {
+              "name": "GPIO26/I2S_DATAIN",
+              "functions": [ "GPIO26", "I2S_DATAIN" ],
+              "keywords": [ "GPIO", "I2S" ],
+              "related": [ "HATPin40" ]
+            },
+            "39": {
+              "name": "GND",
+              "description": "Ground",
+              "keywords": [ "power" ]
+            },
+            "40": {
+              "name": "GPIO27/I2S_DATAOUT",
+              "functions": [ "GPIO13", "I2S_DATAOUT" ],
+              "keywords": [ "GPIO", "I2S" ]
+            }
+          }
+        },
+        "HDMI": {},
+        "HEADER": {},
+        "J1": {},
+        "JPOWER": {},
+        "RTC": {},
+        "LED": {
+          "keywords": [ "power" ]
+        },
+        "POWER_INPUT": {
+          "keywords": [ "power" ],
+          "related": [ "LED" ]
+        },
+        "RESET": {},
+        "RJ45": {},
+        "UART_HEADER": {
+          "keywords": [ "UART", "USB" ]
+        },
+        "USB2_1": {
+          "readable": "USB Ports",
+          "name": "USB 2.0",
+          "description": "Provides 2 USB 2.0 ports",
+          "keywords": [ "USB" ]
+        },
+        "USB2_3": {
+          "readable": "USB Ports",
+          "name": "USB 2.0",
+          "description": "Provides 2 USB 2.0 ports",
+          "keywords": [ "USB" ]
+        },
+        "USB3_3": {
+          "readable": "USB 3.0",
+          "name": "USB 3 - OTG",
+          "keywords": [ "USB" ]
+        }
+      }
+    }
+  }
+}

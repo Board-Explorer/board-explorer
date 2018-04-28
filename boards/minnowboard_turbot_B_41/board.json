@@ -1,0 +1,611 @@
+{
+  "title": "Intel MinnowBoard Turbot B41",
+  "url": "https://MinnowBoard.org/",
+  "tags": {
+    "1": "MinnowBoard",
+    "2": "Intel"
+  },
+
+  "properties": {
+    "variant": "Turbot",
+    "family": "microcontroller board (intel)",
+    "type": "MinnowBoard"
+  },
+
+  "views": {
+    "front": {
+      "image": "front.svg",
+      "components": {
+        "P1": {
+          "name": "microHDMI",
+          "description": "Micro HDMI 1.4",
+          "keywords": ["microhdmi"]
+        },
+        "SW1": {
+          "name": "Reset button",
+          "description": "System reset toggle"
+        },
+        "D1": {
+          "name": "power LED",
+          "description": "power indicator LED. Illuminated when system has power.",
+          "type": "led",
+          "color": "rgb(0, 0, 255)"
+        },
+        "J1": {
+          "name": "SPI Flash Pinout",
+          "description": "SPI Flash Pintout",
+          "pins": {
+            "1": {
+              "description": "DDP_1V8",
+              "type": "male"
+            },
+            "2": {
+              "description": "Ground",
+              "type": "male"
+            },
+            "3": {
+              "description": "DDP_SPI_CS",
+              "type": "male"
+            },
+            "4": {
+              "description": "DDP_SPI_CLK",
+              "type": "male"
+            },
+            "5": {
+              "description": "DDP_SPI_MISO",
+              "type": "male"
+            },
+            "6": {
+              "description": "DDP_SPI_MOSI",
+              "type": "male"
+            },
+            "7": {
+              "description": "",
+              "type": "male"
+            },
+            "8": {
+              "description": "DDP_IO3L",
+              "type": "male"
+            }
+          }
+        },
+        "D2": {
+          "name": "System Status LED",
+          "description": "System controllable LED. Defaults to ON once OS is booting.",
+          "type": "led",
+          "color": "rgb(0, 0, 255)"
+        },
+        "J3": {
+          "name": "SATA",
+          "description": "Serial Advanced Technology Attachment",
+          "keywords": ["sata"]
+        },
+        "J4": {
+          "name": "UART0",
+          "description": "UART0 / Serial",
+          "keywords": ["uart", "ftdi" ],
+          "attribution": true,
+          "pins": {
+            "1": {
+              "description": "Ground",
+              "name": "Gnd",
+              "type": "male",
+              "keywords": [ "GND", "power" ]
+            },
+            "2": {
+              "description": "Not connected",
+              "name": "N/A",
+              "type": "male"
+            },
+            "3": {
+              "description": "Not connected",
+              "name": "N/A",
+              "type": "male"
+            },
+            "4": {
+              "description": "Transmit data",
+              "name": "TXD",
+              "type": "male"
+            },
+            "5": {
+              "description": "Receive data",
+              "name": "RXD",
+              "type": "male"
+            },
+            "6": {
+              "description": "Not connected",
+              "name": "N/A",
+              "type": "male"
+            }
+          }
+        },
+        "J2": {
+          "name": "External fan connector",
+          "description": "5V 2-pin power output for a CPU fan",
+          "pins": {
+            "1": {
+              "description": "+5VSB",
+              "type": "unpopulated",
+              "keywords": [ "+5V", "power" ]
+            },
+            "2": {
+              "description": "Ground",
+              "type": "unpopulated",
+              "keywords": [ "GND", "power" ]
+            }
+          }
+        },
+        "J5": {
+          "name": "Switch Jumper",
+          "description": "Pins usable for power toggling via remote switch or relay",
+          "keywords": [ "switch" ],
+          "pins": {
+            "1": {
+              "description": "+5VSB",
+              "keywords": [ "+5V", "power" ],
+              "type": "male"
+            },
+            "2": {
+              "description": "Ground",
+              "keywords": [ "GND", "power" ],
+              "type": "male"
+            }
+          }
+        },
+        "J6": {
+          "name": "SATA LED",
+          "description": "Pins used to externally connect to the SATA interface",
+          "pins": {
+            "1": {
+              "description": "",
+              "type": "unpopulated"
+            },
+            "2": {
+              "description": "V1P8S",
+              "keywords": [ "+1.8V", "power" ],
+              "type": "unpopulated"
+            }
+          }
+        },
+        "J7": {
+          "name": "GPIO inputs (NVRAM Reset)",
+          "description": "If jumpered, explicitly enable SD card write-protect"
+        },
+        "SDIO": {
+          "name": "SD Card slot",
+          "description": "Secure Digital Input Output",
+          "keywords": ["microsd"]
+        },
+        "USB1": {
+          "name": "USB Ports",
+          "description": "Universal Serial Bus - 1x USB 2.0 (upper), 1x USB 3.0 (lower)",
+          "keywords": ["usb"]
+        },
+        "J8": {
+          "name": "Ethernet",
+          "description": "Gigabit Eathernet Port",
+          "keywords": ["ethernet"]
+        },
+        "CPU": {
+          "name": "Intel® Atom™ E3826",
+          "description": "Dual core 1.46Ghz Intel® Atom™ E3826 with 1MB cache"
+        },
+        "BH1": {
+          "name": "Battery",
+          "description": "Real-Time Clock battery pad",
+          "keywords": [ "power" ]
+        },
+        "J9": {
+          "name": "power",
+          "description": "5V DC barrel plug",
+          "attribution": true,
+          "keywords": [ "power" ]
+        },
+        "MEM1": {
+          "name": "512MByte 256x16 DDR3L-1600 (2G total)",
+          "description": "512MB (of 2GB total) DDR3L"
+        },
+        "MEM2": {
+          "name": "512MByte 256x16 DDR3L-1600 (2G total)",
+          "description": "512MB (of 2GB total) DDR3L"
+        },
+        "JP1": {
+          "name": "Low Speed Expansion",
+          "description": "Low Speed Expansion - LSE",
+          "attribution": true,
+          "pins": {
+            "1": {
+              "description": "Ground",
+              "name": "Gnd",
+              "type": "male",
+              "keywords": [ "GND", "power" ]
+            },
+            "2": {
+              "description": "Ground",
+              "name": "Gnd",
+              "type": "male",
+              "keywords": [ "GND", "power" ]
+            },
+            "3": {
+              "description": "+5V power",
+              "name": "VCC",
+              "type": "male",
+              "keywords": [ "+5V", "power" ]
+            },
+            "4": {
+              "description": "+3.3V power",
+              "name": "+3V3",
+              "type": "male",
+              "keywords": [ "+3.3V", "power" ]
+            },
+            "5": {
+              "description": "SPI Chip Select 1",
+              "name": "GPIO_SPI_CS#",
+              "lGPIO": 476,
+              "type": "male",
+              "keywords": ["gpio", "spi"]
+            },
+            "6": {
+              "description": "UART1 Transmit",
+              "name": "GPIO_UART1_TXD",
+              "lGPIO": 481,
+              "type": "male",
+              "keywords": ["gpio", "uart"],
+              "notes": ["uart-note"]
+            },
+            "7": {
+              "description": "SPI Master In / Slave Out",
+              "name": "GPIO_SPI_MISO",
+              "lGPIO": 477,
+              "type": "male",
+              "keywords": ["gpio", "spi"]
+            },
+            "8": {
+              "description": "UART1 Receive",
+              "name": "GPIO_UART1_RXD",
+              "lGPIO": 480,
+              "type": "male",
+              "keywords": ["gpio", "uart"],
+              "notes": ["uart-note"]
+            },
+            "9": {
+              "description": "SPI Master Out / Slave In",
+              "name": "GPIO_SPI_MOSI",
+              "lGPIO": 478,
+              "type": "male",
+              "keywords": ["gpio", "spi"]
+            },
+            "10": {
+              "description": "UART1 CTS / GPIO",
+              "name": "GPIO_UART1_CTS",
+              "lGPIO": 483,
+              "type": "male",
+              "keywords": ["gpio", "uart"],
+              "notes": ["uart-note"]
+            },
+            "11": {
+              "description": "SPI Clock",
+              "name": "GPIO_SPI_CLK",
+              "lGPIO": 479,
+              "type": "male",
+              "keywords": ["gpio", "spi"]
+            },
+            "12": {
+              "description": "UART1 RTS / GPIO",
+              "name": "GPIO_UART1_RTS",
+              "lGPIO": 482,
+              "type": "male",
+              "keywords": ["gpio", "uart"],
+              "notes": ["uart-note"]
+            },
+            "13": {
+              "description": "I2C Clock / GPIO",
+              "name": "GPIO_I2C_SCL (I2C #5)",
+              "lGPIO": 499,
+              "type": "male",
+              "keywords": ["gpio", "i2c"]
+            },
+            "14": {
+              "description": "I2S Clock / GPIO",
+              "name": "GPIO_I2S_CLK",
+              "lGPIO": 472,
+              "type": "male",
+              "keywords": ["gpio", "i2s"]
+            },
+            "15": {
+              "description": "I2C Data / GPIO",
+              "name": "GPIO_I2C_SDA (I2C #5)",
+              "lGPIO": 498,
+              "type": "male",
+              "keywords": ["gpio", "i2c"]
+            },
+            "16": {
+              "description": "I2S Frame / GPIO",
+              "name": "GPIO_I2S_FRM",
+              "lGPIO": 473,
+              "type": "male",
+              "keywords": ["gpio", "i2s"]
+            },
+            "17": {
+              "description": "UART2 Transmit / GPIO",
+              "name": "GPIO_UART2_TXD",
+              "lGPIO": 485,
+              "type": "male",
+              "keywords": ["gpio", "uart"],
+              "notes": ["uart-note"]
+            },
+            "18": {
+              "description": "I2S Data Out / GPIO",
+              "name": "GPIO_I2S_DO",
+              "lGPIO": 475,
+              "type": "male",
+              "keywords": ["gpio", "i2s"]
+            },
+            "19": {
+              "description": "UART2 Receive / GPIO",
+              "name": "GPIO_UART2_RXD",
+              "lGPIO": 484,
+              "type": "male",
+              "keywords": ["gpio", "uart"],
+              "notes": ["uart-note"]
+            },
+            "20": {
+              "description": "I2S Data In / GPIO",
+              "name": "GPIO_I2S_DI",
+              "lGPIO": 474,
+              "type": "male",
+              "keywords": ["gpio", "i2s"]
+            },
+            "21": {
+              "description": "GPIO / S5 Wakeup",
+              "name": "GPIO_S5_0",
+              "lGPIO": 338,
+              "type": "male",
+              "keywords": ["gpio", "s5"]
+            },
+            "22": {
+              "description": "PWM / GPIO",
+              "name": "GPIO_PWM0",
+              "lGPIO": 504,
+              "type": "male",
+              "keywords": ["gpio", "pwm"]
+            },
+            "23": {
+              "description": "GPIO / S5 Wakeup",
+              "name": "GPIO_S5_1",
+              "lGPIO": 339,
+              "type": "male",
+              "keywords": ["gpio", "s5"]
+            },
+            "24": {
+              "description": "PWM / GPIO",
+              "name": "GPIO_PWM1",
+              "lGPIO": 505,
+              "type": "male",
+              "keywords": ["gpio", "pwm"]
+            },
+            "25": {
+              "description": "GPIO / S5 Wakeup",
+              "name": "GPIO_S5_2",
+              "lGPIO": 340,
+              "type": "male",
+              "keywords": ["gpio", "s5"]
+            },
+            "26": {
+              "description": "I2S MCLK / GPIO",
+              "name": "I2SMCLK_GPIO",
+              "lGPIO": 509,
+              "type": "male",
+              "keywords": ["gpio", "i2s"]
+            }
+          }
+        }
+      }
+    },
+
+    "back": {
+      "image": "board.svg",
+      "components": {
+        "hse": {
+          "keywords": ["hse"],
+          "pins": {
+            "1": {
+              "description": "Ground",
+              "keywords": [ "GND", "power" ]
+            },
+            "2": {
+              "description": "Ground",
+              "keywords": [ "GND", "power" ]
+            },
+            "3": {
+              "description": "mSATA_TX_P"
+            },
+            "4": {
+              "description": "mSATA_RX_P"
+            },
+            "5": {
+              "description": "mSATA_TX_N"
+            },
+            "6": {
+              "description": "mSATA_RX_N"
+            },
+            "7": {
+              "description": "+5V SB"
+            },
+            "8": {
+              "description": "+5V SB"
+            },
+            "9": {
+              "description": "mPCIE_REFCLK_P"
+            },
+            "10": {
+              "description": "USB_HOST_DP"
+            },
+            "11": {
+              "description": "mPCIE_REFCLK_N"
+            },
+            "12": {
+              "description": "USB_HOST_DN"
+            },
+            "13": {
+              "description": "Ground",
+              "keywords": [ "GND", "power" ]
+            },
+            "14": {
+              "description": "Ground",
+              "keywords": [ "GND", "power" ]
+            },
+            "15": {
+              "description": "mPCIE_TX_P"
+            },
+            "16": {
+              "description": "mPCIE_RX_P"
+            },
+            "17": {
+              "description": "mPCIE_TX_N"
+            },
+            "18": {
+              "description": "mPCIE_RX_N"
+            },
+            "19": {
+              "description": "+5V SB"
+            },
+            "20": {
+              "description": "+5V SB"
+            },
+            "21": {
+              "description": "EXP_I2C_SCL (I2C #6)\t"
+            },
+            "22": {
+              "description": "mPCIE_WAKEB"
+            },
+            "23": {
+              "description": "EXP_I2C_SDA (I2C #6)"
+            },
+            "24": {
+              "description": "mPCIe_CLKREQ3_B"
+            },
+            "25": {
+              "description": "Ground",
+              "keywords": [ "GND", "power" ]
+            },
+            "26": {
+              "description": "Ground",
+              "keywords": [ "GND", "power" ]
+            },
+            "27": {
+              "description": "EXP_GPIO1"
+            },
+            "28": {
+              "description": "EXP_GPIO3"
+            },
+            "29": {
+              "description": "EXP_GPIO2"
+            },
+            "30": {
+              "description": "EXP_GPIO4"
+            },
+            "31": {
+              "description": "+5V SB",
+              "name": "Gnd"
+            },
+            "32": {
+              "description": "+5V SB",
+              "name": "Gnd"
+            },
+            "33": {
+              "description": "EXP_GPIO6 (XDP_H_OBSDATA_A1)"
+            },
+            "34": {
+              "description": "EXP_GPIO5 (XDP_H_OBSDATA_A0)"
+            },
+            "35": {
+              "description": "EXP_GPIO7 (XDP_H_OBSDATA_A2)"
+            },
+            "36": {
+              "description": "EXP_GPIO8 (XDP_H_OBSDATA_A3)"
+            },
+            "37": {
+              "description": "Ground",
+              "keywords": [ "GND", "power" ]
+            },
+            "38": {
+              "description": "Ground",
+              "keywords": [ "GND", "power" ]
+            },
+            "39": {
+              "description": "XDP_H_PRDYB"
+            },
+            "40": {
+              "description": "XDP_H_PREQB_PB"
+            },
+            "41": {
+              "description": "PMC_RSMRST"
+            },
+            "42": {
+              "description": "FP_PWRBTN"
+            },
+            "43": {
+              "description": "+5V SB"
+            },
+            "44": {
+              "description": "+5V SB"
+            },
+            "45": {
+              "description": "PMC_CORE_PWROK"
+            },
+            "46": {
+              "description": "PMC_RSTBTN"
+            },
+            "47": {
+              "description": "PMC_PLTRST_R_V1P8"
+            },
+            "48": {
+              "description": "ILB_RTC_TESTB"
+            },
+            "49": {
+              "description": "Ground",
+              "keywords": [ "GND", "power" ]
+            },
+            "50": {
+              "description": "Ground",
+              "keywords": [ "GND", "power" ]
+            },
+            "51": {
+              "description": "XDP power Rail Status (3.3v ~250mA)"
+            },
+            "52": {
+              "description": "XDP_H_TRSTB"
+            },
+            "53": {
+              "description": "XDP power Rail Status (1.8v ~250mA)"
+            },
+            "54": {
+              "description": "XDP_H_TCK"
+            },
+            "55": {
+              "description": "+V1P8A"
+            },
+            "56": {
+              "description": "XDP_H_TMS"
+            },
+            "57": {
+              "description": "+V1P8A"
+            },
+            "58": {
+              "description": "XDP_H_TDI"
+            },
+            "59": {
+              "description": "Ground",
+              "keywords": [ "GND", "power" ]
+            },
+            "60": {
+              "description": "Ground",
+              "keywords": [ "GND", "power" ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
