@@ -59,7 +59,6 @@ dependencies:
 ```bash
 cd board-explorer
 bower install
-npm install
 ```
 
 ## Hosting a single board
